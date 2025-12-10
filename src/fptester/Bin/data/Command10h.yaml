@@ -1,0 +1,28 @@
+﻿name: "Команда 10h"
+description: "Короткий запрос состояния ККТ"
+
+tests:
+  - name: "Нормальный запрос"
+    testtype: command
+    command: "10 1E 00 00 00"
+    response: "10 00 1E"
+    
+  - name: "Неверная длина команды 1"
+    testtype: command
+    command: "10"
+    resultcode: 126
+
+  - name: "Неверная длина команды 2"
+    testtype: command
+    command: "10 1E"
+    resultcode: 126
+   
+  - name: "Неверная длина команды 3"
+    testtype: command
+    command: "10 1E 00 00 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF"
+    resultcode: 126
+    
+  - name: "Неверный пароль"
+    testtype: command
+    command: "10 FF FF FF FF"
+    resultcode: 79

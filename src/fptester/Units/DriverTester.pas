@@ -60,6 +60,7 @@ type
     testtype: string;
     ecrmode_before: Integer;
     ecrmode_after: Integer;
+    baudrate_after: Integer;
   end;
   TDriverTests = array of TDriverTest;
 
@@ -303,6 +304,10 @@ begin
         if test.TryGetValue('ecrmode_after', value) then
           TestSuite.tests[i].ecrmode_after := value.AsInteger;
 
+        TestSuite.tests[i].baudrate_after := 6;
+        if test.TryGetValue('baudrate_after', value) then
+          TestSuite.tests[i].baudrate_after := value.AsInteger;
+
         TestSuite.tests[i].resultcode := 0;
         if test.TryGetValue('resultcode', value) then
           TestSuite.tests[i].resultcode := value.AsInteger;
@@ -465,6 +470,10 @@ begin
       SetEcrMode(Test.ecrmode_before);
     end;
 
+    if FOptions.Verbose then
+    begin
+      WriteLn('-> ' + Test.Command);
+    end;
     Driver.BinaryConversion := BINARY_CONVERSION_HEX;
     Driver.TransferBytes := Test.Command;
     ResultCode := Driver.ExchangeBytes;
@@ -473,7 +482,6 @@ begin
       Check(ResultCode);
       if FOptions.Verbose then
       begin
-        WriteLn('-> ' + Test.Command);
         WriteLn('<- ' + Driver.TransferBytes);
       end;
 
@@ -487,6 +495,17 @@ begin
         WriteLn(Format('Получен ответ   : "%s"', [Trim(Driver.TransferBytes)]));
         SetNormalColor;
         Exit;
+      end;
+
+      if Test.baudrate_after <> 0 then
+      begin
+        Driver.Disconnect;
+        if (Driver.ConnectionType = 0) then
+        begin
+          Driver.BaudRate := Test.baudrate_after;
+          Check(Driver.GetShortECRStatus);
+          Driver.SaveParams;
+        end;
       end;
 
       if Test.ecrmode_after <> 0 then
@@ -515,7 +534,7 @@ begin
         Result.IsSucceeded := True;
       end else
       begin
-        Result.Text := 'код отшибки не совпадает';
+        Result.Text := 'код ошибки не совпадает';
         if FOptions.Verbose then
         begin
           SetErrorColor;
