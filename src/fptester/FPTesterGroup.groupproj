@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{84BA8BE7-F586-45CD-BBFD-E1C1E0EAF74D}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="fptester.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="fptester">
+        <MSBuild Projects="fptester.dproj"/>
+    </Target>
+    <Target Name="fptester:Clean">
+        <MSBuild Projects="fptester.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="fptester:Make">
+        <MSBuild Projects="fptester.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="fptester"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="fptester:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="fptester:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
