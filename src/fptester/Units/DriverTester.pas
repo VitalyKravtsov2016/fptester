@@ -200,6 +200,7 @@ begin
     begin
       SetErrorColor;
       WriteLn('ERROR: ' + E.Message);
+      SetNormalColor;
     end;
   end;
   WriteLn('Для завершения нажмите любую клавишу');
@@ -486,22 +487,26 @@ begin
       end;
 
       Result.IsSucceeded := CompareResponse(Driver.TransferBytes, Test.response);
-      if (not Result.IsSucceeded)and FOptions.Verbose then
+      if not Result.IsSucceeded then
       begin
-        SetErrorColor;
-        Result.Text := 'ответы не совпадают';
-        WriteLn('Ошибка: ответы не совпадают');
-        WriteLn(Format('Ожидается ответ : "%s"', [Trim(Test.response)]));
-        WriteLn(Format('Получен ответ   : "%s"', [Trim(Driver.TransferBytes)]));
-        SetNormalColor;
+        Result.Text := Format('ожидается: %s, получен: %s', [
+          Trim(Test.response), Trim(Driver.TransferBytes)]);
+        if FOptions.Verbose then
+        begin
+          SetErrorColor;
+          WriteLn('Ошибка: ответы не совпадают');
+          WriteLn(Format('Ожидается ответ : "%s"', [Trim(Test.response)]));
+          WriteLn(Format('Получен ответ   : "%s"', [Trim(Driver.TransferBytes)]));
+          SetNormalColor;
+        end;
         Exit;
       end;
 
-      if Test.baudrate_after <> 0 then
+      if Test.baudrate_after <> Driver.BaudRate then
       begin
-        Driver.Disconnect;
         if (Driver.ConnectionType = 0) then
         begin
+          Driver.Disconnect;
           Driver.BaudRate := Test.baudrate_after;
           Check(Driver.GetShortECRStatus);
           Driver.SaveParams;
@@ -526,7 +531,6 @@ begin
           Exit;
         end;
       end;
-      Result.IsSucceeded := True;
     end else
     begin
       if ResultCode = Test.ResultCode then
@@ -534,7 +538,8 @@ begin
         Result.IsSucceeded := True;
       end else
       begin
-        Result.Text := 'код ошибки не совпадает';
+        Result.Text := Format('ожидается: %d, получен: %d', [
+          Test.ResultCode, ResultCode]);
         if FOptions.Verbose then
         begin
           SetErrorColor;

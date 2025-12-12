@@ -24,7 +24,7 @@ tests:
   - name: "Корректная команда"
     testtype: command
     command: "03 00 00 00 00"
-    response: "02 00"
+    response: "03 00"
     ecrmode_before: 1
     ecrmode_after: 4
     

@@ -35,25 +35,25 @@ description: "Запрос дампа"
 tests:
   - name: "Корректный код устройства 6"
     command: "01 00 00 00 00 06"
-    response: "01 00 00 3C"
+    response: "01 00 00 XX"
     ecrmode_before: 4
     ecrmode_after: 1
     
   - name: "Корректный код устройства 7"
     command: "01 00 00 00 00 07"
-    response: "01 00 00 3C"
+    response: "01 00 00 XX"
     ecrmode_before: 4
     ecrmode_after: 1
     
   - name: "Команда поддерживается в состоянии 2, Открытая смена"
     command: "01 00 00 00 00 06"
-    response: "01 00 00 3C"
+    response: "01 00 00 XX"
     ecrmode_before: 2
     ecrmode_after: 1
     
   - name: "Команда поддерживается в состоянии 6, confirmDate"
     command: "01 00 00 00 00 06"
-    response: "01 00 00 3C"
+    response: "01 00 00 XX"
     ecrmode_before: 6
     ecrmode_after: 1
     

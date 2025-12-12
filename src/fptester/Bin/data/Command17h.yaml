@@ -1,0 +1,159 @@
+﻿################################################
+#
+#  Печать стандартной строки (шрифт 1) 
+#
+#  Код команды:	17h. Длина сообщения: 46 или 6+X1,2 байт.
+#    Пароль оператора (4 байта)
+#    Флаги (1 байт)
+#      Бит 0 – контрольная лента
+#      Бит 1 – чековая лента
+#      Бит 2 – подкладной документ
+#      Бит 3 – слип-чек
+#      Бит 6 – перенос строк5
+#      Бит 7 – отложенная печать
+#    Печатаемые символы6,7,8,9,10 (40 или X1,2 байт)
+#  
+#  Ответ: 		17h. Длина сообщения: 3 байта.
+#    Код ошибки (1 байт)
+#    Порядковый номер оператора (1 байт) 1…30.
+#
+################################################
+#
+#  Команда доступна в состояниях:
+#  2. Открытая смена, 24 часа не кончились
+#  3. Открытая смена, 24 часа кончились
+#  4. Закрытая смена
+#  8. Открытый документ
+#
+#  Команда недоступна в состояниях:
+#  1. Выдача данных
+#  6. Ожидание подтверждения ввода даты
+# 
+#  Команда не меняет состояние ФР
+#
+################################################
+
+name: "Команда 17h"
+description: "Печать стандартной строки"
+
+tests:
+  - name: "Корректная команда"
+    testtype: command
+    command: "17 1E 00 00 00 01"
+    response: "17 00 1E"
+    
+    #################################################
+    # Для ФР ШТРИХ-М-10Ф допускаются только биты 0 и 1
+    # Контрольная лента не поддерживается, но ФР это не проверяет
+    
+  - name: "Значение флагов 0x01h"
+    testtype: command
+    command: "17 1E 00 00 00 01"
+    response: "17 00 1E"
+    resultcode: 00
+    
+  - name: "Значение флагов 0x02h"
+    testtype: command
+    command: "17 1E 00 00 00 02"
+    response: "17 00 1E"
+    resultcode: 00
+    
+  - name: "Значение флагов 0x03h"
+    testtype: command
+    command: "17 1E 00 00 00 03"
+    response: "17 00 1E"
+    resultcode: 00
+    
+  - name: "Значение флагов 0xF1h"
+    testtype: command
+    command: "17 1E 00 00 00 F1"
+    response: "17 00 1E"
+    resultcode: 00
+    
+  - name: "Значение флагов 0xF2h"
+    testtype: command
+    command: "17 1E 00 00 00 F2"
+    response: "17 00 1E"
+    resultcode: 00
+    
+    #################################################
+    # ФР не проверяет длину команды - это ошибка
+    # 79, Неверный пароль - этой ошибки не должно быть
+  - name: "Команда: 17 - код ошибки 79"
+    testtype: command
+    command: "17"
+    resultcode: 79    
+    
+    #################################################
+    # ФР не проверяет длину команды - это ошибка
+    # 51, Неверные параметры команды - этой ошибки не должно быть
+  - name: "Команда 12 1E 00 00 00 - код ошибки 51"
+    testtype: command
+    command: "17 1E 00 00 00"
+    resultcode: 51  
+    
+  - name: "Неверный пароль 0x00000000 - ошибка 79"
+    testtype: command
+    command: "17 00 00 00 00 01"
+    resultcode: 79      
+    
+  - name: "Неверный пароль 0x12345678 - ошибка 79"
+    testtype: command
+    command: "17 12 34 56 78 01"
+    resultcode: 79          
+    
+  - name: "Значение флагов 0x00h - ошибка 51"
+    testtype: command
+    command: "17 1E 00 00 00 00"
+    resultcode: 51              
+    
+    # Если биты 0 и 1 не установлены - значение некорректное
+    
+  - name: "Значение флагов 0x04h - ошибка 51"
+    testtype: command
+    command: "17 1E 00 00 00 04"
+    resultcode: 51
+    
+  - name: "Значение флагов 0x08h - ошибка 51"
+    testtype: command
+    command: "17 1E 00 00 00 08"
+    resultcode: 51
+    
+  - name: "Значение флагов 0x10h - ошибка 51"
+    testtype: command
+    command: "17 1E 00 00 00 10"
+    resultcode: 51
+    
+  - name: "Значение флагов 0x20h - ошибка 51"
+    testtype: command
+    command: "17 1E 00 00 00 20"
+    resultcode: 51
+    
+  - name: "Значение флагов 0x40h - ошибка 51"
+    testtype: command
+    command: "17 1E 00 00 00 40"
+    resultcode: 51
+    
+  - name: "Значение флагов 0x80h - ошибка 51"
+    testtype: command
+    command: "17 1E 00 00 00 80"
+    resultcode: 51
+    
+  - name: "Значение флагов FF"
+    testtype: command
+    command: "17 1E 00 00 00 FF"
+    resultcode: 00                  
+    
+    # Максимальная длина строки - 72 символа
+  - name: "Длина данных 72 символа"
+    testtype: command
+    command: "17 1E 00 00 00 03 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF"
+    response: "17 00 1E"
+    resultcode: 00
+    
+    # Максимальная длина строки - 72 символа
+  - name: "Длина данных 73 символа - ошибка 126"
+    testtype: command
+    command: "17 1E 00 00 00 03 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF"
+    resultcode: 126
+    

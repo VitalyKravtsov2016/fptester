@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.890,=C:\Projects\src\frtest\src\FRTest\Units\FileUtils.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.081,=C:\Projects\src\frtest\src\FRTest\Units\DrvFRLib_TLB.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.197,=C:\Projects\src\frtest\src\FRTest\Units\DrvFRLib_TLB.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.585,C:\Projects\src\frtest\src\FRTest\Units\duCommands.pas=C:\Projects\src\frtest\src\FRTest\Units\duAcceptance.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.796,=C:\Projects\src\frtest\src\FRTest\Units\duAcceptance.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.652,C:\Projects\src\frtest\src\FRTest\FRTest.dproj=C:\Projects\src\frtest\src\FRTest\DrvFRTest.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.036,C:\Projects\src\frtest\src\FRTest\Units\DriverTester.pas=C:\Projects\src\frtest\src\FRTest\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.236,C:\Projects\src\fptester\src\fptester\FRTest.dproj=C:\Projects\src\fptester\src\fptester\fptester.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.036,C:\Projects\src\frtest\src\FRTest\Unit1.pas=C:\Projects\src\frtest\src\FRTest\Units\DriverTester.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.854,=C:\Projects\src\frtest\src\FRTest\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.652,C:\Projects\src\frtest\src\FRTest\DrvFRTest.dproj=C:\Projects\src\frtest\src\FRTest\FRTest.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.236,C:\Projects\src\fptester\src\fptester\fptester.dproj=C:\Projects\src\fptester\src\fptester\FRTest.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.890,=C:\Projects\src\frtest\src\FRTest\Units\FileUtils.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.585,C:\Projects\src\frtest\src\FRTest\Units\duAcceptance.pas=C:\Projects\src\frtest\src\FRTest\Units\duCommands.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.796,=C:\Projects\src\frtest\src\FRTest\Units\duAcceptance.pas</Transaction>
   </Transactions>
 </BorlandProject>
