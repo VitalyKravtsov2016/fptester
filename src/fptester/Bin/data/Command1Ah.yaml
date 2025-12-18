@@ -75,3 +75,19 @@ tests:
     ecrmode_before: 4
     ecrmode_after: 4
     
+  - name: "Команда: 1A, номер регистра 0, ошибок нет"
+    testtype: command
+    command: "1A 1E 00 00 00 00"
+    response: "1A 00 1E 00 00 00 00 00 00"
+    resultcode: 00    
+    ecrmode_before: 4
+    ecrmode_after: 4
+   
+  - name: "Команда: 1A, номер регистра 0, ошибок нет"
+    testtype: command
+    command: "1A 1E 00 00 00 00"
+    response: "1A 00 1E 00 00 00 00 00 00"
+    resultcode: 00    
+    ecrmode_before: 4
+    ecrmode_after: 4
+
