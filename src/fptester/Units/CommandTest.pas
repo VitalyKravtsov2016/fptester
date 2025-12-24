@@ -82,7 +82,7 @@ begin
   try
     if Options.Verbose then
     begin
-      WriteLn('-> ' + Command);
+      Context.Debug('-> ' + Command);
     end;
     Driver.BinaryConversion := BINARY_CONVERSION_HEX;
     Driver.TransferBytes := Command;
@@ -92,7 +92,7 @@ begin
       Context.Check(ResCode);
       if Options.Verbose then
       begin
-        WriteLn('<- ' + Driver.TransferBytes);
+        Context.Debug('<- ' + Driver.TransferBytes);
       end;
 
       Result.IsSucceeded := CompareResponse(Driver.TransferBytes, response);
@@ -102,11 +102,9 @@ begin
           Trim(response), Trim(Driver.TransferBytes)]);
         if Options.Verbose then
         begin
-          Context.SetErrorColor;
-          WriteLn('Ошибка: ответы не совпадают');
-          WriteLn(Format('Ожидается ответ : "%s"', [Trim(response)]));
-          WriteLn(Format('Получен ответ   : "%s"', [Trim(Driver.TransferBytes)]));
-          Context.SetNormalColor;
+          Context.Error('Ошибка: ответы не совпадают');
+          Context.Error(Format('Ожидается ответ : "%s"', [Trim(response)]));
+          Context.Error(Format('Получен ответ   : "%s"', [Trim(Driver.TransferBytes)]));
         end;
         Exit;
       end;
@@ -143,11 +141,9 @@ begin
         Result.Text := Format('ожидается: %d, получен: %d', [ResultCode, ResCode]);
         if Options.Verbose then
         begin
-          Context.SetErrorColor;
-          WriteLn('Ошибка: код отшибки не совпадает');
-          WriteLn(Format('Ожидается код ошибки: %d.', [ResultCode]));
-          WriteLn(Format('Получен код ошибки: %d.', [ResCode]));
-          Context.SetNormalColor;
+          Context.Error('Ошибка: код отшибки не совпадает');
+          Context.Error(Format('Ожидается код ошибки: %d.', [ResultCode]));
+          Context.Error(Format('Получен код ошибки: %d.', [ResCode]));
         end;
       end;
     end;
@@ -157,7 +153,7 @@ begin
       Result.Text := E.Message;
       if Options.Verbose then
       begin
-        WriteLn('Ошибка: ' + E.Message);
+        Context.Debug('Ошибка: ' + E.Message);
       end;
     end;
   end;

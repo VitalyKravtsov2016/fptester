@@ -177,9 +177,7 @@ begin
   except
     on E: Exception do
     begin
-      Context.SetErrorColor;
-      WriteLn('ERROR: ' + E.Message);
-      Context.SetNormalColor;
+      Context.Error(E.Message);
     end;
   end;
   WriteLn('Для завершения нажмите любую клавишу');
@@ -253,21 +251,16 @@ begin
     if Result.IsSucceeded then
     begin
       Context.CheckEcrMode2(Test.ecrmode_after);
-      Context.SetNormalColor;
       Inc(FReport.SuccessCount);
-      WriteLn('[+] ' + Test.name);
+      Context.Debug('[+] ' + Test.name);
     end else
     begin
-      Context.SetErrorColor;
-      WriteLn('[-] ' + Test.name + ', ' + Result.Text);
-      Context.SetNormalColor;
+      Context.Error('[-] ' + Test.name + ', ' + Result.Text);
     end;
   except
     on E: Exception do
     begin
-      Context.SetErrorColor;
-      WriteLn('[-] ' + Test.name + ', ' + E.Message);
-      Context.SetNormalColor;
+      Context.Error('[-] ' + Test.name + ', ' + E.Message);
     end;
   end;
 end;

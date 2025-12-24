@@ -13,16 +13,311 @@ tests:
     testtype: receipt_test
     # 2. Открытая смена, 24 часа не кончились
     ecrmode_before: 2
-    ecrmode_after: 8
+    ecrmode_after: 2
     
-    operations:
+    commands:
+    - type: "save_state"
+      state_name: "state"
+      
     - type: "open_receipt"
-      rectype: "sale"
+      check_type: 0
       
-    operation_registers:
-    - number: 152
-      name: "Сквозной номер документа"    
-      delta: 1
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 123.45
+      summ1: 123.45
+      tax_value: 0.00
+      tax: 0
+      department: 1
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 1"
+    
+    - type: "compare_state"
+      name: "compare_state1"
+      state_name: "state"
+      update_state: true
+      operation_registers:
+        - number: 0
+          name: "Количество продаж в 1 отдел в чеке"    
+          delta: 1
+          
+      cash_registers:
+        - number: 0
+          name: "Накопление продаж в 1 отдел в чеке"    
+          delta: 123.45
+       
+        - number: 100
+          name: "Оборот по налогу Г с продаж в чеке"    
+          delta: 123.45
+          
+    
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 123.45
+      summ1: 123.45
+      tax_value: 0.00
+      tax: 0
+      department: 1
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 1"
       
+    - type: "compare_state"
+      state_name: "state"
+      name: "compare_state2"
+      update_state: true
+      operation_registers:
+        - number: 0
+          name: "Количество продаж в 1 отдел в чеке"    
+          delta: 1
+          
+      cash_registers:
+        - number: 0
+          name: "Накопление продаж в 1 отдел в чеке"    
+          delta: 123.45
+          
+        - number: 100
+          name: "Оборот по налогу Г с продаж в чеке"    
+          delta: 123.45
+          
+        
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 2
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
       
+    - type: "compare_state"
+      state_name: "state"
+      name: "compare_state3"
+      update_state: true
+      operation_registers:
+        - number: 4
+          name: "Количество продаж в 2 отдел в чеке"    
+          delta: 1
+      
+      cash_registers:
+        - number: 4
+          name: "Накопление продаж в 2 отдел в чеке"    
+          delta: 0.45
+      
+        - number: 100
+          name: "Оборот по налогу Г с продаж в чеке"    
+          delta: 0.45
+      
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 3
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
+      
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 4
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
+      
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 5
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
+     
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 6
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
+      
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 7
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
+      
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 8
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
+      
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 9
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
+      
+    - type: "fnoperation"
+      check_type: 0
+      quantity: 1.00
+      price: 0.45
+      summ1: 0.45
+      tax_value: 0.00
+      tax: 0
+      department: 10
+      payment_type_sign: 0
+      payment_item_sign: 0
+      text: "Item 2"
+      
+    - type: "compare_state"
+      state_name: "state"
+      name: "compare_state4"
+      update_state: true
+      operation_registers:
+          - number: 8
+            name: "Количество продаж в 3 отдел в чеке"    
+            delta: 1
+            
+          - number: 12
+            name: "Количество продаж в 4 отдел в чеке"    
+            delta: 1
+            
+          - number: 16
+            name: "Количество продаж в 5 отдел в чеке"    
+            delta: 1
+            
+          - number: 20
+            name: "Количество продаж в 6 отдел в чеке"    
+            delta: 1
+            
+          - number: 24
+            name: "Количество продаж в 7 отдел в чеке"    
+            delta: 1
+            
+          - number: 28
+            name: "Количество продаж в 8 отдел в чеке"    
+            delta: 1
+            
+          - number: 32
+            name: "Количество продаж в 9 отдел в чеке"    
+            delta: 1
+            
+          - number: 36
+            name: "Количество продаж в 10 отдел в чеке"    
+            delta: 1
+            
+      cash_registers:
+            - number: 8
+              name: "Накопление продаж в 3 отдел в чеке"    
+              delta: 0.45
+                
+            - number: 12
+              name: "Накопление продаж в 4 отдел в чеке"    
+              delta: 0.45
+                
+            - number: 16
+              name: "Накопление продаж в 5 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 20
+              name: "Накопление продаж в 6 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 24
+              name: "Накопление продаж в 7 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 28
+              name: "Накопление продаж в 8 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 32
+              name: "Накопление продаж в 9 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 36
+              name: "Накопление продаж в 10 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 100
+              name: "Оборот по налогу Г с продаж в чеке"    
+              delta: 3.60
+              
+    - type: "close_receipt3"
+      summ1: 100000.00
+      summ2: 0.00
+      summ3: 0.00
+      summ4: 0.00
+      summ5: 0.00
+      summ6: 0.00
+      summ7: 0.00
+      summ8: 0.00
+      summ9: 0.00
+      summ10: 0.00
+      summ11: 0.00
+      summ12: 0.00
+      summ13: 0.00
+      summ14: 0.00
+      summ15: 0.00
+      summ16: 0.00
+      round_summ: 0
+      tax_value1: 0.00
+      tax_value2: 0.00
+      tax_value3: 0.00
+      tax_value4: 0.00
+      tax_value5: 0.00
+      tax_value6: 0.00
+      tax_value7: 0.00
+      tax_value8: 0.00
+      tax_value9: 0.00
+      tax_value10: 0.00
+      tax_type: 0
+      text: ""
 
+    - type: "compare_state"
+      state_name: "state"
+      name: "compare_state5"
+      update_state: false
+
+              

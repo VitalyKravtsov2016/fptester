@@ -8,7 +8,10 @@ uses
   ReceiptTest in 'Units\ReceiptTest.pas',
   DriverTest in 'Units\DriverTest.pas',
   CommandTest in 'Units\CommandTest.pas',
-  CashRegistersTest in 'Units\CashRegistersTest.pas';
+  CashRegistersTest in 'Units\CashRegistersTest.pas',
+  FptrTypes in 'Units\FptrTypes.pas',
+  BinUtils in 'Units\BinUtils.pas',
+  gnugettext in 'Units\gnugettext.pas';
 
 {$R *.RES}
 

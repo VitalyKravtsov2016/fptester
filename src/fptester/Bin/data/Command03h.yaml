@@ -32,21 +32,21 @@ tests:
     testtype: command
     command: "03 00 00 00 00"
     ecrmode_before: 4
-    ecrmode_after: 1
+    ecrmode_after: 4
     resultcode: 115
     
   - name: "Команда не поддерживается в состоянии 8, Открытый чек"
     testtype: command
     command: "03 00 00 00 00"
     ecrmode_before: 8
-    ecrmode_after: 1
+    ecrmode_after: 8
     resultcode: 115
     
   - name: "Команда не поддерживается в состоянии 10, Тестовый прогон"
     testtype: command
     command: "03 00 00 00 00"
     ecrmode_before: 10
-    ecrmode_after: 1
+    ecrmode_after: 10
     resultcode: 115
    
   - name: "Неверная длина команды 1"

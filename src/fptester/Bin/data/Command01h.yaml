@@ -66,17 +66,18 @@ tests:
   - name: "Команда не поддерживается в состоянии 8, openrec"
     command: "01 00 00 00 00 06"
     ecrmode_before: 8
-    ecrmode_after: 1
+    ecrmode_after: 8
     resultcode: 115
     
   - name: "Команда не поддерживается в состоянии 10, test"
     command: "01 00 00 00 00 06"
     ecrmode_before: 10
-    ecrmode_after: 1
+    ecrmode_after: 10
     resultcode: 115
     
   - name: "Неверный код устройства 00"
     command: "01 00 00 00 00 00"
+    ecrmode_before: 4
     resultcode: 51
     
   - name: "Неверный код устройства 01"

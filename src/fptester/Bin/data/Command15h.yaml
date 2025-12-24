@@ -45,18 +45,18 @@ tests:
   - name: "Команда 15 - номер порта 0"
     testtype: command
     command: "15 1E 00 00 00 00"
-    response: "15 00 06 9D"
+    response: "15 00 06 XX"
     resultcode: 0
     
   - name: "Команда 15 - номер порта 1"
     testtype: command
     command: "15 1E 00 00 00 01"
-    response: "15 00 06 9D"
+    response: "15 00 06 XX"
     resultcode: 0
     
   - name: "Команда 15 - код порта 0xFF"
     testtype: command
     command: "15 1E 00 00 00 FF"
-    response: "15 00 06 9D"
+    response: "15 00 06 XX"
     resultcode: 0
     

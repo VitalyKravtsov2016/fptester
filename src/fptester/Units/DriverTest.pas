@@ -31,21 +31,24 @@ const
   Separator = '--------------------------------------------------------';
 
 type
-  TCashRegister = record
+  TCashReg = record
     Number:  Integer;
     Name: string;
     Value: Currency;
   end;
+  TCashRegs = array of TCashReg;
 
-  TOperationRegister = record
+  TOperReg = record
     Number:  Integer;
     Name: string;
     Value: Int64;
   end;
+  TOperRegs = array of TOperReg;
 
   TFiscalPrinterState = record
-    CashRegisters: array of TCashRegister;
-    OperationRegisters: array of TOperationRegister;
+    Name: string;
+    CashRegs: TCashRegs;
+    OperRegs: TOperRegs;
   end;
 
   { TTesterOptions }
@@ -69,20 +72,29 @@ type
     FDriver: TDrvFR;
     FOptions: TTesterOptions;
     FConsoleInfo: TConsoleScreenBufferInfo;
+    FStates: TDictionary<string, TFiscalPrinterState>;
+
+    procedure SetErrorColor;
+    procedure SetNormalColor;
     function GetDriver: TDrvFR;
+    function IsEquals(Item1, Item2: TFiscalPrinterState): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure ResetEcr;
-    procedure SetErrorColor;
-    procedure SetNormalColor;
+    procedure Error(const s: string);
+    procedure Debug(const s: string);
     procedure TestConnection;
     procedure SetEcrMode(ecrmode: Integer);
+    procedure SaveState(const Name: string);
     procedure Check(ResultCode: Integer);
     procedure CheckEcrMode(EcrMode: Integer);
     procedure CheckEcrMode2(EcrMode: Integer);
+    procedure SetPrinterState(const Name: string; const V: TFiscalPrinterState);
+
     function ReadPrinterState: TFiscalPrinterState;
+    function GetPrinterState(const Name: string; var V: TFiscalPrinterState): Boolean;
 
     property Driver: TDrvFR read GetDriver;
     property Options: TTesterOptions read FOptions write FOptions;
@@ -133,64 +145,7 @@ type
   end;
   TModifiedOperRegs = array of TModifiedOperReg;
 
-function IsEquals(Item1, Item2: TFiscalPrinterState): Boolean;
-
 implementation
-
-function IsEquals(Item1, Item2: TFiscalPrinterState): Boolean;
-var
-  i: Integer;
-begin
-  Result := True;
-  // Денежные регистры
-  for i := 0 to Length(Item1.CashRegisters)-1 do
-  begin
-    Result := Item1.CashRegisters[i].Number = Item2.CashRegisters[i].Number;
-    if not Result then
-    begin
-      WriteLn('Не совпадают номера денежных регистров');
-      WriteLn(Format('Ожидается: %d, получено: %d', [
-        Item1.CashRegisters[i].Number,
-        Item2.CashRegisters[i].Number]));
-      Exit;
-    end;
-    Result := Item1.CashRegisters[i].Value = Item2.CashRegisters[i].Value;
-    if not Result then
-    begin
-      WriteLn('Не совпадают значения денежных регистров');
-      WriteLn(Format('Ожидается: %.2f, получено: %.2f', [
-        Item1.CashRegisters[i].Value,
-        Item2.CashRegisters[i].Value]));
-      Exit;
-    end;
-  end;
-  // Операционные регистры
-  for i := 0 to Length(Item1.OperationRegisters)-1 do
-  begin
-    Result := Item1.OperationRegisters[i].Number = Item2.OperationRegisters[i].Number;
-    if not Result then
-    begin
-      WriteLn('Не совпадают номера операционных регистров');
-      WriteLn(Format('Ожидается: %d, получено: %d', [
-        Item1.OperationRegisters[i].Number,
-        Item2.OperationRegisters[i].Number]));
-      Exit;
-    end;
-    Result := Item1.OperationRegisters[i].Value = Item2.OperationRegisters[i].Value;
-    if not Result then
-    begin
-      WriteLn(Format('Не совпадают значения операционного регистра %d, %s', [
-        Item1.OperationRegisters[i].Number,
-        Item1.OperationRegisters[i].Name]));
-
-      WriteLn(Format('Ожидается: %d, получено: %d', [
-        Item1.OperationRegisters[i].Value,
-        Item2.OperationRegisters[i].Value]));
-      Exit;
-    end;
-  end;
-end;
-
 
 { TDriverTest }
 
@@ -301,13 +256,28 @@ end;
 constructor TDriverContext.Create;
 begin
   inherited Create;
+  FStates := TDictionary<string, TFiscalPrinterState>.Create;
   GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), FConsoleInfo);
 end;
 
 destructor TDriverContext.Destroy;
 begin
+  FStates.Free;
+  inherited Destroy;
+end;
 
-  inherited;
+procedure TDriverContext.Debug(const s: string);
+begin
+  SetNormalColor;
+  //WriteLn('DEBUG ' + s);
+  WriteLn(s);
+end;
+
+procedure TDriverContext.Error(const s: string);
+begin
+  SetErrorColor;
+  //WriteLn('ERROR ' + s);
+  WriteLn(s);
 end;
 
 function TDriverContext.GetDriver: TDrvFR;
@@ -318,6 +288,18 @@ begin
     FDriver := TDrvFR.Create(nil);
   end;
   Result := FDriver;
+end;
+
+function TDriverContext.GetPrinterState(const Name: string;
+  var V: TFiscalPrinterState): Boolean;
+begin
+  Result := FStates.TryGetValue(Name, V);
+end;
+
+procedure TDriverContext.SetPrinterState(const Name: string;
+  const V: TFiscalPrinterState);
+begin
+  FStates.AddOrSetValue(Name, V);
 end;
 
 procedure TDriverContext.SetErrorColor;
@@ -361,6 +343,61 @@ begin
         WriteLn(Format('Получено состояние  : %d.', [Driver.ECRMode]));
         SetNormalColor;
       end;
+      raise Exception.CreateFmt('Ожидается состояние : %d, получено: %d', [
+        ecrmode, Driver.ECRMode]);
+    end;
+  end;
+end;
+
+function TDriverContext.IsEquals(Item1, Item2: TFiscalPrinterState): Boolean;
+var
+  i: Integer;
+begin
+  Result := True;
+  // Денежные регистры
+  for i := 0 to Length(Item1.CashRegs)-1 do
+  begin
+    Result := Item1.CashRegs[i].Number = Item2.CashRegs[i].Number;
+    if not Result then
+    begin
+      Error('Не совпадают номера денежных регистров');
+      Error(Format('Ожидается: %d, получено: %d', [
+        Item1.CashRegs[i].Number,
+        Item2.CashRegs[i].Number]));
+      Exit;
+    end;
+    Result := Item1.CashRegs[i].Value = Item2.CashRegs[i].Value;
+    if not Result then
+    begin
+      Error('Не совпадают значения денежных регистров');
+      Error(Format('Ожидается: %.2f, получено: %.2f', [
+        Item1.CashRegs[i].Value,
+        Item2.CashRegs[i].Value]));
+      Exit;
+    end;
+  end;
+  // Операционные регистры
+  for i := 0 to Length(Item1.OperRegs)-1 do
+  begin
+    Result := Item1.OperRegs[i].Number = Item2.OperRegs[i].Number;
+    if not Result then
+    begin
+      Error('Не совпадают номера операционных регистров');
+      Error(Format('Ожидается: %d, получено: %d', [
+        Item1.OperRegs[i].Number,
+        Item2.OperRegs[i].Number]));
+      Exit;
+    end;
+    Result := Item1.OperRegs[i].Value = Item2.OperRegs[i].Value;
+    if not Result then
+    begin
+      Error(Format('Не совпадают значения операционного регистра %d, %s', [
+        Item1.OperRegs[i].Number,
+        Item1.OperRegs[i].Name]));
+
+      Error(Format('Ожидается: %d, получено: %d', [
+        Item1.OperRegs[i].Value,
+        Item2.OperRegs[i].Value]));
       Exit;
     end;
   end;
@@ -380,16 +417,16 @@ var
   Index: Integer;
 begin
   Count := (MaxCashReg - MinCashReg + 1) + (MaxCashReg2 - MinCashReg2 + 1);
-  SetLength(Result.CashRegisters, Count);
+  SetLength(Result.CashRegs, Count);
   Index := 0;
   // Денежные регистры
   for i := MinCashReg to MaxCashReg do
   begin
     Driver.RegisterNumber := i;
     Check(Driver.GetCashReg);
-    Result.CashRegisters[Index].Number := i;
-    Result.CashRegisters[Index].Name := Driver.NameCashReg;
-    Result.CashRegisters[Index].Value := Driver.ContentsOfCashRegister;
+    Result.CashRegs[Index].Number := i;
+    Result.CashRegs[Index].Name := Driver.NameCashReg;
+    Result.CashRegs[Index].Value := Driver.ContentsOfCashRegister;
     Inc(Index);
   end;
   // Расширенные денежные регистры
@@ -397,22 +434,22 @@ begin
   begin
     Driver.RegisterNumber := i;
     Check(Driver.GetCashRegEx);
-    Result.CashRegisters[Index].Number := i;
-    Result.CashRegisters[Index].Name := Driver.NameCashRegEx;
-    Result.CashRegisters[Index].Value := Driver.ContentsOfCashRegister;
+    Result.CashRegs[Index].Number := i;
+    Result.CashRegs[Index].Name := Driver.NameCashRegEx;
+    Result.CashRegs[Index].Value := Driver.ContentsOfCashRegister;
     Inc(Index);
   end;
   // Операционные регистры
   Index := 0;
   Count := MaxOperationReg - MinOperationReg + 1;
-  SetLength(Result.OperationRegisters, Count);
+  SetLength(Result.OperRegs, Count);
   for i := MinOperationReg to MaxOperationReg do
   begin
     Driver.RegisterNumber := i;
     Check(Driver.GetOperationReg);
-    Result.OperationRegisters[Index].Number := i;
-    Result.OperationRegisters[Index].Name := Driver.NameOperationReg;
-    Result.OperationRegisters[Index].Value := Driver.ContentsOfOperationRegister;
+    Result.OperRegs[Index].Number := i;
+    Result.OperRegs[Index].Name := Driver.NameOperationReg;
+    Result.OperRegs[Index].Value := Driver.ContentsOfOperationRegister;
     Inc(Index);
   end;
 end;
@@ -464,5 +501,9 @@ begin
   end;
 end;
 
+procedure TDriverContext.SaveState(const Name: string);
+begin
+  FStates.Add(Name, ReadPrinterState);
+end;
 
 end.
