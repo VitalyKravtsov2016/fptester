@@ -8,7 +8,7 @@ uses
   // 3'd
   VSoft.YAML,
   // This
-  DrvFRLib_TLB;
+  DrvFRLib_TLB, LogFile;
 
 const
   FPTR_MODE_DUMP   			  = $01; // Dump mode
@@ -78,6 +78,9 @@ type
     procedure SetNormalColor;
     function GetDriver: TDrvFR;
     function IsEquals(Item1, Item2: TFiscalPrinterState): Boolean;
+    procedure ReadCashRegsExRange(var CashRegs: TCashRegs; Min, Max: Integer);
+    procedure ReadCashRegsRange(var CashRegs: TCashRegs; Min, Max: Integer);
+    procedure ReadOperRegsRange(var OperRegs: TOperRegs; Min, Max: Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -95,6 +98,14 @@ type
 
     function ReadPrinterState: TFiscalPrinterState;
     function GetPrinterState(const Name: string; var V: TFiscalPrinterState): Boolean;
+
+    procedure CheckDayOperRegsZero;
+    procedure CheckDayCashRegsZero;
+
+    procedure CheckReceiptOperRegsZero;
+    procedure CheckReceiptCashRegsZero;
+
+    function FNReadLastReceipt: string;
 
     property Driver: TDrvFR read GetDriver;
     property Options: TTesterOptions read FOptions write FOptions;
@@ -269,14 +280,12 @@ end;
 procedure TDriverContext.Debug(const s: string);
 begin
   SetNormalColor;
-  //WriteLn('DEBUG ' + s);
   WriteLn(s);
 end;
 
 procedure TDriverContext.Error(const s: string);
 begin
   SetErrorColor;
-  //WriteLn('ERROR ' + s);
   WriteLn(s);
 end;
 
@@ -337,11 +346,9 @@ begin
     begin
       if Options.Verbose then
       begin
-        SetErrorColor;
-        WriteLn('Ошибка: не совпадает состояние');
-        WriteLn(Format('Ожидается состояние : %d.', [ecrmode]));
-        WriteLn(Format('Получено состояние  : %d.', [Driver.ECRMode]));
-        SetNormalColor;
+        Error('Ошибка: не совпадает состояние');
+        Error(Format('Ожидается состояние : %d.', [ecrmode]));
+        Error(Format('Получено состояние  : %d.', [Driver.ECRMode]));
       end;
       raise Exception.CreateFmt('Ожидается состояние : %d, получено: %d', [
         ecrmode, Driver.ECRMode]);
@@ -505,5 +512,155 @@ procedure TDriverContext.SaveState(const Name: string);
 begin
   FStates.Add(Name, ReadPrinterState);
 end;
+
+// Денежные регистры чека
+procedure TDriverContext.CheckReceiptCashRegsZero;
+var
+  CashReg: TCashReg;
+  CashRegs: TCashRegs;
+begin
+  ReadCashRegsRange(CashRegs, 0, 119);
+  ReadCashRegsExRange(CashRegs, 4096, 4143);
+  ReadCashRegsExRange(CashRegs, 4192, 4207);
+  ReadCashRegsExRange(CashRegs, 4427, 4458);
+
+  for CashReg in CashRegs do
+  begin
+    if CashReg.Value <> 0 then
+    begin
+      raise Exception.CreateFmt('Ненулевое значение денежного регистра %d, %s', [
+        CashReg.Number, CashReg.Name]);
+    end;
+  end;
+end;
+
+// Денежные регистры смены
+procedure TDriverContext.CheckDayCashRegsZero;
+var
+  CashReg: TCashReg;
+  CashRegs: TCashRegs;
+begin
+  ReadCashRegsRange(CashRegs, 121, 240);
+  ReadCashRegsRange(CashRegs, 242, 243);
+  ReadCashRegsRange(CashRegs, 249, 252);
+  ReadCashRegsExRange(CashRegs, 4144, 4191);
+  ReadCashRegsExRange(CashRegs, 4208, 4223);
+  ReadCashRegsExRange(CashRegs, 4363, 4426);
+  ReadCashRegsExRange(CashRegs, 4459, 4490);
+
+  for CashReg in CashRegs do
+  begin
+    if CashReg.Value <> 0 then
+    begin
+      raise Exception.CreateFmt('Ненулевое значение денежного регистра %d, %s', [
+        CashReg.Number, CashReg.Name]);
+    end;
+  end;
+end;
+
+procedure TDriverContext.ReadCashRegsRange(var CashRegs: TCashRegs;
+  Min, Max: Integer);
+var
+  i: Integer;
+  Index: Integer;
+begin
+  Index := Length(CashRegs);
+  SetLength(CashRegs, Length(CashRegs) + (Max - Min + 1));
+  for i := Min to Max do
+  begin
+    Driver.RegisterNumber := i;
+    Check(Driver.GetCashReg);
+    CashRegs[Index].Number := i;
+    CashRegs[Index].Name := Driver.NameCashReg;
+    CashRegs[Index].Value := Driver.ContentsOfCashRegister;
+    Inc(Index);
+  end;
+end;
+
+procedure TDriverContext.ReadCashRegsExRange(var CashRegs: TCashRegs;
+  Min, Max: Integer);
+var
+  i: Integer;
+  Index: Integer;
+begin
+  Index := Length(CashRegs);
+  SetLength(CashRegs, Length(CashRegs) + (Max - Min + 1));
+  for i := Min to Max do
+  begin
+    Driver.RegisterNumber := i;
+    Check(Driver.GetCashRegEx);
+    CashRegs[Index].Number := i;
+    CashRegs[Index].Name := Driver.NameCashRegEx;
+    CashRegs[Index].Value := Driver.ContentsOfCashRegister;
+    Inc(Index);
+  end;
+end;
+
+procedure TDriverContext.CheckReceiptOperRegsZero;
+var
+  OperReg: TOperReg;
+  OperRegs: TOperRegs;
+begin
+  // Операционные регистры
+  ReadOperRegsRange(OperRegs, 0, 71);
+  for OperReg in OperRegs do
+  begin
+    if OperReg.Value <> 0 then
+    begin
+      raise Exception.CreateFmt('Ненулевое значение операционного регистра %d, %s', [
+        OperReg.Number, OperReg.Name]);
+    end;
+  end;
+end;
+
+procedure TDriverContext.CheckDayOperRegsZero;
+var
+  OperReg: TOperReg;
+  OperRegs: TOperRegs;
+begin
+  // Операционные регистры
+  ReadOperRegsRange(OperRegs, 72, 147);
+  for OperReg in OperRegs do
+  begin
+    if OperReg.Value <> 0 then
+    begin
+      raise Exception.CreateFmt('Ненулевое значение операционного регистра %d, %s', [
+        OperReg.Number, OperReg.Name]);
+    end;
+  end;
+end;
+
+procedure TDriverContext.ReadOperRegsRange(var OperRegs: TOperRegs;
+  Min, Max: Integer);
+var
+  i: Integer;
+  Index: Integer;
+begin
+  Index := Length(OperRegs);
+  SetLength(OperRegs, Length(OperRegs) + (Max - Min + 1));
+  for i := Min to Max do
+  begin
+    Driver.RegisterNumber := i;
+    Check(Driver.GetOperationReg);
+    OperRegs[Index].Number := i;
+    OperRegs[Index].Name := Driver.NameOperationReg;
+    OperRegs[Index].Value := Driver.ContentsOfOperationRegister;
+    Inc(Index);
+  end;
+end;
+
+function TDriverContext.FNReadLastReceipt: string;
+begin
+  Logger.Debug('FNReadLastReceipt');
+  Check(Driver.FNGetStatus);
+  Driver.RequestDocumentType := 0;
+  Driver.ShowTagNumber := True;
+  Check(Driver.FNGetDocumentAsString);
+  Result := Driver.StringForPrinting;
+  Logger.Debug('FNReadLastReceipt=' + Result);
+end;
+
+
+
 
 end.

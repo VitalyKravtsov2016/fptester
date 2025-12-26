@@ -4,11 +4,11 @@ interface
 
 uses
   // VCL
-  SysUtils, System.Generics.Collections,
+  Classes, SysUtils, System.Generics.Collections, Math,
   // 3'd
   VSoft.YAML,
   // This
-  DriverTest, FptrTypes;
+  DriverTest, FptrTypes, LogFile;
 
 type
   TTestCommand = class
@@ -113,6 +113,25 @@ type
     property CashRegs: TModifiedCashRegs read FCashRegs;
   end;
 
+  // Проверка, что чековые регистры обнулены
+
+  { TCheckZeroReceiptRegsCommand }
+
+  TCheckZeroReceiptRegsCommand = class(TTestCommand)
+  public
+    procedure Execute(Context: TDriverContext); override;
+  end;
+
+  { TFNReadLastReceiptCommand }
+
+  TFNReadLastReceiptCommand = class(TTestCommand)
+  public
+    FileName: string;
+    procedure Load(node: IYAMLValue); override;
+    procedure Execute(Context: TDriverContext); override;
+  end;
+
+
   { TReceiptTest }
 
   TReceiptTest = class(TDriverTest)
@@ -128,6 +147,36 @@ type
   end;
 
 implementation
+
+function ReadFileData(const FileName: string): string;
+var
+  Buffer: TBytes;
+  Stream: TFileStream;
+begin
+  Stream := TFileStream.Create(FileName, fmOpenRead);
+  try
+    SetLength(Buffer, Stream.Size);
+    Stream.Read(Buffer, 0, Stream.Size);
+    Result := TEncoding.UTF8.GetString(Buffer, 0, Length(Buffer));
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure WriteFileData(const FileName, Data: string);
+var
+  Buffer: TBytes;
+  Stream: TFileStream;
+begin
+  Stream := TFileStream.Create(FileName, fmCreate);
+  try
+    Buffer := TEncoding.UTF8.GetBytes(Data);
+    Stream.WriteBuffer(Buffer, Length(Buffer));
+  finally
+    Stream.Free;
+  end;
+end;
+
 
 function StrToCheckType(RecType: string): Integer;
 begin
@@ -178,6 +227,10 @@ begin
         begin
           Command := TOpenReceiptCommand.Create;
         end;
+        if Operation = 'close_receipt3' then
+        begin
+          Command := TFNCloseCheckEx3Command.Create;
+        end;
         if Operation = 'fnoperation' then
         begin
           Command := TFNOperationCommand.Create;
@@ -189,6 +242,14 @@ begin
         if Operation = 'compare_state' then
         begin
           Command := TCompareStateCommand.Create;
+        end;
+        if Operation = 'check_zero_receipt_regs' then
+        begin
+          Command := TCheckZeroReceiptRegsCommand.Create;
+        end;
+        if Operation = 'fn_read_last_receipt' then
+        begin
+          Command := TFNReadLastReceiptCommand.Create;
         end;
 
 
@@ -551,16 +612,16 @@ begin
   Summ15 := node.GetValue('summ15').AsFloat;
   Summ16 := node.GetValue('summ16').AsFloat;
   RoundingSumm := node.GetValue('round_summ').AsInteger;
-  TaxValue1 := node.GetValue('tax_value1').AsInteger;
-  TaxValue2 := node.GetValue('tax_value2').AsInteger;
-  TaxValue3 := node.GetValue('tax_value3').AsInteger;
-  TaxValue4 := node.GetValue('tax_value4').AsInteger;
-  TaxValue5 := node.GetValue('tax_value5').AsInteger;
-  TaxValue6 := node.GetValue('tax_value6').AsInteger;
-  TaxValue7 := node.GetValue('tax_value7').AsInteger;
-  TaxValue8 := node.GetValue('tax_value8').AsInteger;
-  TaxValue9 := node.GetValue('tax_value9').AsInteger;
-  TaxValue10 := node.GetValue('tax_value10').AsInteger;
+  TaxValue1 := node.GetValue('tax_value1').AsFloat;
+  TaxValue2 := node.GetValue('tax_value2').AsFloat;
+  TaxValue3 := node.GetValue('tax_value3').AsFloat;
+  TaxValue4 := node.GetValue('tax_value4').AsFloat;
+  TaxValue5 := node.GetValue('tax_value5').AsFloat;
+  TaxValue6 := node.GetValue('tax_value6').AsFloat;
+  TaxValue7 := node.GetValue('tax_value7').AsFloat;
+  TaxValue8 := node.GetValue('tax_value8').AsFloat;
+  TaxValue9 := node.GetValue('tax_value9').AsFloat;
+  TaxValue10 := node.GetValue('tax_value10').AsFloat;
   TaxType := node.GetValue('tax_type').AsInteger;
   StringForPrinting := node.GetValue('text').AsString;
 end;
@@ -602,5 +663,87 @@ begin
     Check(Driver.WaitForPrinting);
   end;
 end;
+
+{ TCheckZeroReceiptRegsCommand }
+
+procedure TCheckZeroReceiptRegsCommand.Execute(Context: TDriverContext);
+begin
+  Context.CheckReceiptOperRegsZero;
+  Context.CheckReceiptCashRegsZero;
+end;
+
+{ TFNReadLastReceiptCommand }
+
+procedure TFNReadLastReceiptCommand.Load(node: IYAMLValue);
+begin
+  inherited Load(node);
+  FileName := node.GetValue('file_name').AsString;
+end;
+
+(*
+*)
+
+function IsEqualFNDoc(const Doc1, Doc2: string): Boolean;
+
+  function IsIgnoredTag(const Line: string): Boolean;
+  const
+    TagsToIgnore: array [0..3] of Integer = (1040, 1012, 1077, 1038);
+  var
+    Tag: Integer;
+  begin
+    Result := False;
+    for Tag in TagsToIgnore do
+    begin
+      Result := Pos(IntToStr(Tag), Line) <> 0;
+      if Result then Break;
+    end;
+  end;
+
+
+var
+  i: Integer;
+  Count: Integer;
+  Lines1: TStrings;
+  Lines2: TStrings;
+begin
+  Result := True;
+  Lines1 := TStringList.Create;
+  Lines2 := TStringList.Create;
+  try
+    Lines1.Text := Doc1;
+    Lines2.Text := Doc2;
+    Count := Min(Lines1.Count, Lines2.Count);
+    for i := 0 to Count-1 do
+    begin
+      if IsIgnoredTag(Lines1[i]) then Continue;
+      Result := Trim(Lines1[i]) = Trim(Lines2[i]);
+      if not Result then Exit;
+    end;
+  finally
+    Lines1.Free;
+    Lines2.Free;
+  end;
+end;
+
+procedure TFNReadLastReceiptCommand.Execute(Context: TDriverContext);
+var
+  Doc1: string;
+  Doc2: string;
+  FileName2: string;
+begin
+  Doc1 := ReadFileData(Context.Options.FilesPath + FileName);
+  Doc2 := Context.FNReadLastReceipt;
+  if not IsEqualFNDoc(Doc1, Doc2) then
+  begin
+    FileName2 := ExtractFileName(FileName) + '2' + ExtractFileExt(FileName);
+    FileName2 := Context.Options.FilesPath + FileName2;
+    WriteFileData(FileName2, Doc2);
+
+    Logger.Debug('Ожидается документ:' + Doc1);
+    Logger.Debug('Получен документ:' + Doc2);
+    raise Exception.Create('Текст документов отличается');
+  end;
+end;
+
 
 end.

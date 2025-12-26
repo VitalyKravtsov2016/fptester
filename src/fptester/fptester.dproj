@@ -216,6 +216,7 @@
         <DCCReference Include="Units\FptrTypes.pas"/>
         <DCCReference Include="Units\BinUtils.pas"/>
         <DCCReference Include="Units\gnugettext.pas"/>
+        <DCCReference Include="Units\LogFile.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

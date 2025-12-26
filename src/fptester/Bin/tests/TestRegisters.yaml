@@ -315,9 +315,13 @@ tests:
       tax_type: 0
       text: ""
 
-    - type: "compare_state"
-      state_name: "state"
-      name: "compare_state5"
-      update_state: false
+################################################    
+#
+# Регистры чека должны обнулиться
+#
+################################################    
 
-              
+    - type: "check_zero_receipt_regs"
+      
+    - type: "fn_read_last_receipt"
+      file_name: sales_receipt.txt
