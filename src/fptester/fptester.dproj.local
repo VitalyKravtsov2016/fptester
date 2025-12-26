@@ -1,29 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.723,C:\Projects\src\fptester\src\fptester\Unit1.pas=C:\Projects\src\fptester\src\fptester\Units\DriverTest.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.881,C:\Projects\src\fptester\src\fptester\Unit1.pas=C:\Projects\src\fptester\src\fptester\Units\CashRegistersTest.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.076,C:\Projects\src\fptester\src\fptester\Unit1.pas=C:\Projects\src\fptester\src\fptester\Units\CommandTest.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.025,=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.157,=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.234,=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.236,C:\Projects\src\fptester\src\fptester\FRTest.dproj=C:\Projects\src\fptester\src\fptester\fptester.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.890,=C:\Projects\src\frtest\src\FRTest\Units\FileUtils.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.585,C:\Projects\src\frtest\src\FRTest\Units\duCommands.pas=C:\Projects\src\frtest\src\FRTest\Units\duAcceptance.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.919,C:\Projects\src\fptester\src\fptester\Unit1.pas=C:\Projects\src\fptester\src\fptester\Units\ReceiptCommand.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.360,=C:\Projects\src\fptester\src\fptester\Units\BinUtils.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.854,=C:\Projects\src\frtest\src\FRTest\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.206,C:\Projects\src\fptester\src\fptester\Units\ReceiptCommand.pas=C:\Projects\src\fptester\src\fptester\Units\ReceiptTest.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.796,=C:\Projects\src\frtest\src\FRTest\Units\duAcceptance.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.610,=C:\Projects\src\fptester\src\fptester\Units\gnugettext.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.036,C:\Projects\src\frtest\src\FRTest\Units\DriverTester.pas=C:\Projects\src\frtest\src\FRTest\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.652,C:\Projects\src\frtest\src\FRTest\FRTest.dproj=C:\Projects\src\frtest\src\FRTest\DrvFRTest.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.081,=C:\Projects\src\frtest\src\FRTest\Units\DrvFRLib_TLB.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.237,C:\Projects\src\fptester\src\fptester\Units\LangUtils.pas=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.492,=C:\Projects\src\fptester\src\fptester\Units\FptrTypes.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.670,=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.487,=C:\Projects\src\fptester\src\fptester\Units\LangUtils.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.492,=C:\Projects\src\fptester\src\fptester\Units\FptrTypes.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.025,=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.890,=C:\Projects\src\frtest\src\FRTest\Units\FileUtils.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.652,C:\Projects\src\frtest\src\FRTest\DrvFRTest.dproj=C:\Projects\src\frtest\src\FRTest\FRTest.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.723,C:\Projects\src\fptester\src\fptester\Units\DriverTest.pas=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.360,=C:\Projects\src\fptester\src\fptester\Units\BinUtils.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.854,=C:\Projects\src\frtest\src\FRTest\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.036,C:\Projects\src\frtest\src\FRTest\Unit1.pas=C:\Projects\src\frtest\src\FRTest\Units\DriverTester.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.236,C:\Projects\src\fptester\src\fptester\fptester.dproj=C:\Projects\src\fptester\src\fptester\FRTest.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.585,C:\Projects\src\frtest\src\FRTest\Units\duAcceptance.pas=C:\Projects\src\frtest\src\FRTest\Units\duCommands.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.796,=C:\Projects\src\frtest\src\FRTest\Units\duAcceptance.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.610,=C:\Projects\src\fptester\src\fptester\Units\gnugettext.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.076,C:\Projects\src\fptester\src\fptester\Units\CommandTest.pas=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.881,C:\Projects\src\fptester\src\fptester\Units\CashRegistersTest.pas=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.197,=C:\Projects\src\frtest\src\FRTest\Units\DrvFRLib_TLB.pas</Transaction>
-    <Transaction>2025.12.26 14:41:10.186,=C:\Projects\src\fptester\src\fptester\Units\LogFile.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.206,C:\Projects\src\fptester\src\fptester\Units\ReceiptTest.pas=C:\Projects\src\fptester\src\fptester\Units\ReceiptCommand.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.237,C:\Projects\src\fptester\src\fptester\Units\LangUtils.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.186,=C:\Projects\src\fptester\src\fptester\Units\LogFile.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.919,C:\Projects\src\fptester\src\fptester\Units\ReceiptCommand.pas=C:\Projects\src\fptester\src\fptester\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.081,=C:\Projects\src\frtest\src\FRTest\Units\DrvFRLib_TLB.pas</Transaction>
   </Transactions>
 </BorlandProject>

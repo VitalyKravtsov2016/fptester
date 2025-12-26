@@ -106,6 +106,7 @@ type
     procedure CheckReceiptCashRegsZero;
 
     function FNReadLastReceipt: string;
+    procedure CheckTextPrinted(const Text: string);
 
     property Driver: TDrvFR read GetDriver;
     property Options: TTesterOptions read FOptions write FOptions;
@@ -124,6 +125,8 @@ type
     testtype: string;
     ecrmode_before: Integer;
     ecrmode_after: Integer;
+    text_printed: string;
+    graphics_file_name: string;
   public
     constructor CreateTest(AContext: TDriverContext); virtual;
     function Execute: TTestResult; virtual;
@@ -199,6 +202,13 @@ begin
   ecrmode_after := 0;
   if node.TryGetValue('ecrmode_after', value) then
     ecrmode_after := value.AsInteger;
+
+  if node.TryGetValue('graphics_file_name', value) then
+    graphics_file_name := value.AsString;
+
+  text_printed := '';
+  if node.TryGetValue('text_printed', value) then
+    text_printed := value.AsString;
 end;
 
 { TDriverContext }
@@ -611,6 +621,17 @@ begin
         OperReg.Number, OperReg.Name]);
     end;
   end;
+end;
+
+procedure TDriverContext.CheckTextPrinted(const Text: string);
+begin
+(*
+  if FTextServer.Text <> Text then
+  begin
+    Logger.Debug('Ожидается текст: ' + Text);
+    Logger.Debug('Получен текст: ' + FTextServer.Text);
+  end;
+*)
 end;
 
 procedure TDriverContext.CheckDayOperRegsZero;
