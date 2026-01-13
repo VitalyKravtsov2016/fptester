@@ -126,7 +126,8 @@ type
 
   TFNReadLastReceiptCommand = class(TTestCommand)
   public
-    FileName: string;
+    ErrorFile: string;
+    ReceiptFile: string;
     procedure Load(node: IYAMLValue); override;
     procedure Execute(Context: TDriverContext); override;
   end;
@@ -677,7 +678,8 @@ end;
 procedure TFNReadLastReceiptCommand.Load(node: IYAMLValue);
 begin
   inherited Load(node);
-  FileName := node.GetValue('file_name').AsString;
+  ReceiptFile := node.GetValue('receipt_file').AsString;
+  ErrorFile := node.GetValue('error_file').AsString;
 end;
 
 (*
@@ -729,15 +731,12 @@ procedure TFNReadLastReceiptCommand.Execute(Context: TDriverContext);
 var
   Doc1: string;
   Doc2: string;
-  FileName2: string;
 begin
-  Doc1 := ReadFileData(Context.Options.FilesPath + FileName);
+  Doc1 := ReadFileData(Context.Options.FilesPath + ReceiptFile);
   Doc2 := Context.FNReadLastReceipt;
   if not IsEqualFNDoc(Doc1, Doc2) then
   begin
-    FileName2 := ExtractFileName(FileName) + '2' + ExtractFileExt(FileName);
-    FileName2 := Context.Options.FilesPath + FileName2;
-    WriteFileData(FileName2, Doc2);
+    WriteFileData(Context.Options.FilesPath + ErrorFile, Doc2);
 
     Logger.Debug('Ожидается документ:' + Doc1);
     Logger.Debug('Получен документ:' + Doc2);

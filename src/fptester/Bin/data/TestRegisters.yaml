@@ -13,11 +13,11 @@ tests:
     testtype: receipt_test
     # 2. Открытая смена, 24 часа не кончились
     ecrmode_before: 2
-    ecrmode_after: 8
+    ecrmode_after: 2
     
     commands:
     - type: "save_state"
-      name: "state"
+      state_name: "state"
       
     - type: "open_receipt"
       check_type: 0
@@ -35,7 +35,9 @@ tests:
       text: "Item 1"
     
     - type: "compare_state"
-      name: "state"
+      name: "compare_state1"
+      state_name: "state"
+      update_state: true
       operation_registers:
         - number: 0
           name: "Количество продаж в 1 отдел в чеке"    
@@ -46,6 +48,10 @@ tests:
           name: "Накопление продаж в 1 отдел в чеке"    
           delta: 123.45
        
+        - number: 100
+          name: "Оборот по налогу Г с продаж в чеке"    
+          delta: 123.45
+          
     
     - type: "fnoperation"
       check_type: 0
@@ -60,7 +66,9 @@ tests:
       text: "Item 1"
       
     - type: "compare_state"
-      name: "state"
+      state_name: "state"
+      name: "compare_state2"
+      update_state: true
       operation_registers:
         - number: 0
           name: "Количество продаж в 1 отдел в чеке"    
@@ -69,6 +77,10 @@ tests:
       cash_registers:
         - number: 0
           name: "Накопление продаж в 1 отдел в чеке"    
+          delta: 123.45
+          
+        - number: 100
+          name: "Оборот по налогу Г с продаж в чеке"    
           delta: 123.45
           
         
@@ -85,15 +97,21 @@ tests:
       text: "Item 2"
       
     - type: "compare_state"
-      name: "state"
+      state_name: "state"
+      name: "compare_state3"
+      update_state: true
       operation_registers:
         - number: 4
           name: "Количество продаж в 2 отдел в чеке"    
           delta: 1
       
       cash_registers:
-        - number: 2
+        - number: 4
           name: "Накопление продаж в 2 отдел в чеке"    
+          delta: 0.45
+      
+        - number: 100
+          name: "Оборот по налогу Г с продаж в чеке"    
           delta: 0.45
       
     - type: "fnoperation"
@@ -193,7 +211,9 @@ tests:
       text: "Item 2"
       
     - type: "compare_state"
-      name: "state"
+      state_name: "state"
+      name: "compare_state4"
+      update_state: true
       operation_registers:
           - number: 8
             name: "Количество продаж в 3 отдел в чеке"    
@@ -228,35 +248,84 @@ tests:
             delta: 1
             
       cash_registers:
-        - number: 8
-          name: "Накопление продаж в 3 отдел в чеке"    
-          delta: 0.45
-            
-        - number: 12
-          name: "Накопление продаж в 4 отдел в чеке"    
-          delta: 0.45
-            
-        - number: 16
-          name: "Накопление продаж в 5 отдел в чеке"    
-          delta: 0.45
-          
-        - number: 20
-          name: "Накопление продаж в 6 отдел в чеке"    
-          delta: 0.45
-          
-        - number: 24
-          name: "Накопление продаж в 7 отдел в чеке"    
-          delta: 0.45
-          
-        - number: 28
-          name: "Накопление продаж в 8 отдел в чеке"    
-          delta: 0.45
-          
-        - number: 32
-          name: "Накопление продаж в 9 отдел в чеке"    
-          delta: 0.45
-          
-          
-          
-          
-          
+            - number: 8
+              name: "Накопление продаж в 3 отдел в чеке"    
+              delta: 0.45
+                
+            - number: 12
+              name: "Накопление продаж в 4 отдел в чеке"    
+              delta: 0.45
+                
+            - number: 16
+              name: "Накопление продаж в 5 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 20
+              name: "Накопление продаж в 6 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 24
+              name: "Накопление продаж в 7 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 28
+              name: "Накопление продаж в 8 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 32
+              name: "Накопление продаж в 9 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 36
+              name: "Накопление продаж в 10 отдел в чеке"    
+              delta: 0.45
+              
+            - number: 100
+              name: "Оборот по налогу Г с продаж в чеке"    
+              delta: 3.60
+              
+    - type: "close_receipt3"
+      summ1: 100000.00
+      summ2: 0.00
+      summ3: 0.00
+      summ4: 0.00
+      summ5: 0.00
+      summ6: 0.00
+      summ7: 0.00
+      summ8: 0.00
+      summ9: 0.00
+      summ10: 0.00
+      summ11: 0.00
+      summ12: 0.00
+      summ13: 0.00
+      summ14: 0.00
+      summ15: 0.00
+      summ16: 0.00
+      round_summ: 0
+      tax_value1: 0.00
+      tax_value2: 0.00
+      tax_value3: 0.00
+      tax_value4: 0.00
+      tax_value5: 0.00
+      tax_value6: 0.00
+      tax_value7: 0.00
+      tax_value8: 0.00
+      tax_value9: 0.00
+      tax_value10: 0.00
+      tax_type: 0
+      text: ""
+
+################################################    
+#
+# Регистры чека должны обнулиться
+#
+################################################    
+
+    - type: "check_zero_receipt_regs"
+      
+    # Читаем документ из ФН и сравниваем с документом из файла
+    # Если документы не равны, то документ из ФН сохранится с именем 
+
+    - type: "fn_read_last_receipt"
+      receipt_file: receipt_file.txt
+      error_file: error_file.txt

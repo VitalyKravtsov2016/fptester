@@ -323,5 +323,9 @@ tests:
 
     - type: "check_zero_receipt_regs"
       
+    # Читаем документ из ФН и сравниваем с документом из файла
+    # Если документы не равны, то документ из ФН сохранится с именем 
+
     - type: "fn_read_last_receipt"
-      file_name: sales_receipt.txt
+      receipt_file: receipt_file.txt
+      error_file: error_file.txt
