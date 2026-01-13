@@ -5,6 +5,8 @@ interface
 uses
   // VCL
   Windows, Classes, SysUtils, ComObj, ActiveX, System.Generics.Collections,
+  // Indy
+  IdContext, IdTcpServer,
   // 3'd
   VSoft.YAML,
   // This
@@ -29,6 +31,8 @@ const
 
 const
   Separator = '--------------------------------------------------------';
+
+  TextServerPort = 12345; // !!!
 
 type
   TCashReg = record
@@ -70,6 +74,8 @@ type
   TDriverContext = class
   private
     FDriver: TDrvFR;
+    FLines: TStrings;
+    FTextServer: TIdTCPServer;
     FOptions: TTesterOptions;
     FConsoleInfo: TConsoleScreenBufferInfo;
     FStates: TDictionary<string, TFiscalPrinterState>;
@@ -81,11 +87,13 @@ type
     procedure ReadCashRegsExRange(var CashRegs: TCashRegs; Min, Max: Integer);
     procedure ReadCashRegsRange(var CashRegs: TCashRegs; Min, Max: Integer);
     procedure ReadOperRegsRange(var OperRegs: TOperRegs; Min, Max: Integer);
+    procedure TextServerExecute(AContext: TIdContext);
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure ResetEcr;
+    procedure StartTest;
     procedure Error(const s: string);
     procedure Debug(const s: string);
     procedure TestConnection;
@@ -106,6 +114,9 @@ type
     procedure CheckReceiptCashRegsZero;
 
     function FNReadLastReceipt: string;
+
+    procedure StopTextServer;
+    procedure StartTextServer(Port: Integer);
     procedure CheckTextPrinted(const Text: string);
 
     property Driver: TDrvFR read GetDriver;
@@ -279,11 +290,15 @@ begin
   inherited Create;
   FStates := TDictionary<string, TFiscalPrinterState>.Create;
   GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), FConsoleInfo);
+  FTextServer := TIdTCPServer.Create(nil);
+  FLines := TStringList.Create;
 end;
 
 destructor TDriverContext.Destroy;
 begin
+  FLines.Free;
   FStates.Free;
+  FTextServer.Free;
   inherited Destroy;
 end;
 
@@ -623,17 +638,6 @@ begin
   end;
 end;
 
-procedure TDriverContext.CheckTextPrinted(const Text: string);
-begin
-(*
-  if FTextServer.Text <> Text then
-  begin
-    Logger.Debug('Ожидается текст: ' + Text);
-    Logger.Debug('Получен текст: ' + FTextServer.Text);
-  end;
-*)
-end;
-
 procedure TDriverContext.CheckDayOperRegsZero;
 var
   OperReg: TOperReg;
@@ -680,6 +684,68 @@ begin
   Result := Driver.StringForPrinting;
   Logger.Debug('FNReadLastReceipt=' + Result);
 end;
+
+procedure TDriverContext.StartTextServer(Port: Integer);
+begin
+  FLines.Clear;
+  FTextServer.DefaultPort := Port;
+  FTextServer.Active := True;
+  FTextServer.OnExecute := TextServerExecute;
+end;
+
+procedure TDriverContext.TextServerExecute(AContext: TIdContext);
+begin
+  FLines.Add(AContext.Connection.IOHandler.ReadLn);
+end;
+
+procedure TDriverContext.StopTextServer;
+begin
+  FTextServer.Active := False;
+end;
+
+procedure TDriverContext.CheckTextPrinted(const Text: string);
+var
+  i: Integer;
+  ALines: TStrings;
+  Line1, Line2: string;
+begin
+  if Text = '' then Exit;
+
+  if Text <> FLines.Text then
+  begin
+
+    ALines := TStringList.Create;
+    try
+      ALines.Text := Text;
+      if FLines.Count <> ALines.Count then
+      begin
+        Logger.Debug('Количество строк не совпадает.');
+        Logger.Debug(Format('Ожидается строк: %d, получено: %d', [
+          ALines.Count, FLines.Count]));
+      end;
+      for i := 0 to FLines.Count-1 do
+      begin
+        if ALines[i] <> FLines[i] then
+        begin
+          Logger.Debug(Format('Строки не совпадают, индекс: %d.', [i]));
+          Logger.Debug(Format('Ожидается строка: "%s", получена: "%s"', [
+            ALines[i], FLines[i]]));
+        end;
+      end;
+      raise Exception.CreateFmt('Текст не совпадает. Ожидается: "%s", получен: "%s"',
+        [Text, FLines.Text]);
+    finally
+      ALines.Free;
+    end;
+  end;
+end;
+
+procedure TDriverContext.StartTest;
+begin
+  StartTextServer(TextServerPort);
+end;
+
+
 
 
 

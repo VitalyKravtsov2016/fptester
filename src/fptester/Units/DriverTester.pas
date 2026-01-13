@@ -245,12 +245,15 @@ var
   Result: TTestResult;
 begin
   try
+    Context.StartTest;
     Context.ResetEcr;
     Context.SetEcrMode(Test.ecrmode_before);
     Result := Test.Execute;
     if Result.IsSucceeded then
     begin
       Context.CheckEcrMode2(Test.ecrmode_after);
+      Context.CheckTextPrinted(Test.text_printed);
+
       Inc(FReport.SuccessCount);
       Context.Debug('[+] ' + Test.name);
     end else

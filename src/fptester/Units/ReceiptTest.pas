@@ -132,6 +132,30 @@ type
     procedure Execute(Context: TDriverContext); override;
   end;
 
+  { TStartTextServerCommand }
+
+  TStartTextServerCommand = class(TTestCommand)
+  public
+    Port: Integer;
+    procedure Load(node: IYAMLValue); override;
+    procedure Execute(Context: TDriverContext); override;
+  end;
+
+  { TStopTextServerCommand }
+
+  TStopTextServerCommand = class(TTestCommand)
+  public
+    procedure Execute(Context: TDriverContext); override;
+  end;
+
+  { TCheckTextCommand }
+
+  TCheckTextCommand = class(TTestCommand)
+  public
+    Text: string;
+    procedure Load(node: IYAMLValue); override;
+    procedure Execute(Context: TDriverContext); override;
+  end;
 
   { TReceiptTest }
 
@@ -744,5 +768,38 @@ begin
   end;
 end;
 
+
+{ TStartTextServerCommand }
+
+procedure TStartTextServerCommand.Load(node: IYAMLValue);
+begin
+  inherited Load(node);
+  Port := node.GetValue('port').AsInteger;
+end;
+
+procedure TStartTextServerCommand.Execute(Context: TDriverContext);
+begin
+  Context.StartTextServer(Port);
+end;
+
+{ TStopTextServerCommand }
+
+procedure TStopTextServerCommand.Execute(Context: TDriverContext);
+begin
+  Context.StopTextServer;
+end;
+
+{ TCheckTextCommand }
+
+procedure TCheckTextCommand.Load(node: IYAMLValue);
+begin
+  inherited Load(node);
+  Text := node.GetValue('text').AsString;
+end;
+
+procedure TCheckTextCommand.Execute(Context: TDriverContext);
+begin
+  Context.CheckTextPrinted(Text);
+end;
 
 end.
