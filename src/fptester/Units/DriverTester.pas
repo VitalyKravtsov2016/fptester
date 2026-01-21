@@ -253,6 +253,7 @@ begin
     begin
       Context.CheckEcrMode2(Test.ecrmode_after);
       Context.CheckTextPrinted(Test.text_printed);
+      Context.CheckGraphicsPrinted(Test.graphics_file_name);
 
       Inc(FReport.SuccessCount);
       Context.Debug('[+] ' + Test.name);

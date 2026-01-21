@@ -6,7 +6,7 @@ uses
   // VCL
   Windows, Classes, SysUtils, ComObj, ActiveX, System.Generics.Collections,
   // Indy
-  IdContext, IdTcpServer,
+  IdGlobal, IdContext, IdTcpServer,
   // 3'd
   VSoft.YAML,
   // This
@@ -32,7 +32,8 @@ const
 const
   Separator = '--------------------------------------------------------';
 
-  TextServerPort = 12345; // !!!
+  TextServerPort      = 12345; // !!!
+  GraphicsServerPort  = 12356;
 
 type
   TCashReg = record
@@ -75,7 +76,9 @@ type
   private
     FDriver: TDrvFR;
     FLines: TStrings;
+    FGraphics: TIdBytes;
     FTextServer: TIdTCPServer;
+    FGraphicsServer: TIdTCPServer;
     FOptions: TTesterOptions;
     FConsoleInfo: TConsoleScreenBufferInfo;
     FStates: TDictionary<string, TFiscalPrinterState>;
@@ -88,6 +91,9 @@ type
     procedure ReadCashRegsRange(var CashRegs: TCashRegs; Min, Max: Integer);
     procedure ReadOperRegsRange(var OperRegs: TOperRegs; Min, Max: Integer);
     procedure TextServerExecute(AContext: TIdContext);
+    procedure GraphicsServerExecute(AContext: TIdContext);
+    procedure StartGraphicsServer;
+    procedure StopGraphicsServer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -118,6 +124,7 @@ type
     procedure StopTextServer;
     procedure StartTextServer(Port: Integer);
     procedure CheckTextPrinted(const Text: string);
+    procedure CheckGraphicsPrinted(const FileName: string);
 
     property Driver: TDrvFR read GetDriver;
     property Options: TTesterOptions read FOptions write FOptions;
@@ -171,6 +178,19 @@ type
   TModifiedOperRegs = array of TModifiedOperReg;
 
 implementation
+
+function ReadFileToBytes(const FileName: string): TBytes;
+var
+  Stream: TFileStream;
+begin
+  Stream := TFileStream.Create(FileName, fmOpenRead);
+  try
+    SetLength(Result, Stream.Size);
+    Stream.Read(Result, 0, Stream.Size);
+  finally
+    Stream.Free;
+  end;
+end;
 
 { TDriverTest }
 
@@ -291,6 +311,7 @@ begin
   FStates := TDictionary<string, TFiscalPrinterState>.Create;
   GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), FConsoleInfo);
   FTextServer := TIdTCPServer.Create(nil);
+  FGraphicsServer := TIdTCPServer.Create(nil);
   FLines := TStringList.Create;
 end;
 
@@ -299,6 +320,7 @@ begin
   FLines.Free;
   FStates.Free;
   FTextServer.Free;
+  FGraphicsServer.Free;
   inherited Destroy;
 end;
 
@@ -693,14 +715,37 @@ begin
   FTextServer.OnExecute := TextServerExecute;
 end;
 
+procedure TDriverContext.StartGraphicsServer;
+begin
+  FGraphicsServer.DefaultPort := GraphicsServerPort;
+  FGraphicsServer.Active := True;
+  FGraphicsServer.OnExecute := GraphicsServerExecute;
+end;
+
 procedure TDriverContext.TextServerExecute(AContext: TIdContext);
 begin
   FLines.Add(AContext.Connection.IOHandler.ReadLn);
 end;
 
+procedure TDriverContext.GraphicsServerExecute(AContext: TIdContext);
+var
+  Count: Integer;
+begin
+  Count := AContext.Connection.IOHandler.InputBuffer.Size;
+  if Count > 0 then
+  begin
+    AContext.Connection.IOHandler.InputBuffer.ExtractToBytes(FGraphics, Count);
+  end;
+end;
+
 procedure TDriverContext.StopTextServer;
 begin
   FTextServer.Active := False;
+end;
+
+procedure TDriverContext.StopGraphicsServer;
+begin
+  FGraphicsServer.Active := False;
 end;
 
 procedure TDriverContext.CheckTextPrinted(const Text: string);
@@ -742,7 +787,26 @@ end;
 
 procedure TDriverContext.StartTest;
 begin
+  StartGraphicsServer;
+  SetLength(FGraphics, 0);
   StartTextServer(TextServerPort);
+end;
+
+procedure TDriverContext.CheckGraphicsPrinted(const FileName: string);
+var
+  i: Integer;
+  Bytes: TBytes;
+begin
+  Bytes := ReadFileToBytes(FileName);
+  if Length(Bytes) <> Length(FGraphics) then
+    raise Exception.CreateFmt('Длина данных отличается. Ожидается %d, получено %d',
+    [Length(Bytes), Length(FGraphics)]);
+
+  for i := 0 to Length(Bytes)-1  do
+  begin
+    if Bytes[i] <> FGraphics[i] then
+      raise Exception.Create('Данные отличаются');
+  end;
 end;
 
 
