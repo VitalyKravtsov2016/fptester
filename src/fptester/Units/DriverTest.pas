@@ -92,8 +92,6 @@ type
     procedure ReadOperRegsRange(var OperRegs: TOperRegs; Min, Max: Integer);
     procedure TextServerExecute(AContext: TIdContext);
     procedure GraphicsServerExecute(AContext: TIdContext);
-    procedure StartGraphicsServer;
-    procedure StopGraphicsServer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -124,6 +122,9 @@ type
     procedure StopTextServer;
     procedure StartTextServer(Port: Integer);
     procedure CheckTextPrinted(const Text: string);
+
+    procedure StopGraphicsServer;
+    procedure StartGraphicsServer(Port: Integer);
     procedure CheckGraphicsPrinted(const FileName: string);
 
     property Driver: TDrvFR read GetDriver;
@@ -715,9 +716,9 @@ begin
   FTextServer.OnExecute := TextServerExecute;
 end;
 
-procedure TDriverContext.StartGraphicsServer;
+procedure TDriverContext.StartGraphicsServer(Port: Integer);
 begin
-  FGraphicsServer.DefaultPort := GraphicsServerPort;
+  FGraphicsServer.DefaultPort := Port;
   FGraphicsServer.Active := True;
   FGraphicsServer.OnExecute := GraphicsServerExecute;
 end;
@@ -787,9 +788,9 @@ end;
 
 procedure TDriverContext.StartTest;
 begin
-  StartGraphicsServer;
   SetLength(FGraphics, 0);
   StartTextServer(TextServerPort);
+  StartGraphicsServer(GraphicsServerPort);
 end;
 
 procedure TDriverContext.CheckGraphicsPrinted(const FileName: string);

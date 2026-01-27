@@ -157,6 +157,31 @@ type
     procedure Execute(Context: TDriverContext); override;
   end;
 
+  { TStartGraphicsServerCommand }
+
+  TStartGraphicsServerCommand = class(TTestCommand)
+  public
+    Port: Integer;
+    procedure Load(node: IYAMLValue); override;
+    procedure Execute(Context: TDriverContext); override;
+  end;
+
+  { TStopGraphicsServerCommand }
+
+  TStopGraphicsServerCommand = class(TTestCommand)
+  public
+    procedure Execute(Context: TDriverContext); override;
+  end;
+
+  { TCheckGraphicsCommand }
+
+  TCheckGraphicsCommand = class(TTestCommand)
+  public
+    FileName: string;
+    procedure Load(node: IYAMLValue); override;
+    procedure Execute(Context: TDriverContext); override;
+  end;
+
   { TReceiptTest }
 
   TReceiptTest = class(TDriverTest)
@@ -768,7 +793,6 @@ begin
   end;
 end;
 
-
 { TStartTextServerCommand }
 
 procedure TStartTextServerCommand.Load(node: IYAMLValue);
@@ -800,6 +824,39 @@ end;
 procedure TCheckTextCommand.Execute(Context: TDriverContext);
 begin
   Context.CheckTextPrinted(Text);
+end;
+
+{ TStartGraphicsServerCommand }
+
+procedure TStartGraphicsServerCommand.Load(node: IYAMLValue);
+begin
+  inherited Load(node);
+  Port := node.GetValue('port').AsInteger;
+end;
+
+procedure TStartGraphicsServerCommand.Execute(Context: TDriverContext);
+begin
+  Context.StartGraphicsServer(Port);
+end;
+
+{ TStopGraphicsServerCommand }
+
+procedure TStopGraphicsServerCommand.Execute(Context: TDriverContext);
+begin
+  Context.StopGraphicsServer;
+end;
+
+{ TCheckGraphicsCommand }
+
+procedure TCheckGraphicsCommand.Load(node: IYAMLValue);
+begin
+  inherited Load(node);
+  FileName := node.GetValue('FileName').AsString;
+end;
+
+procedure TCheckGraphicsCommand.Execute(Context: TDriverContext);
+begin
+  Context.CheckGraphicsPrinted(FileName);
 end;
 
 end.
