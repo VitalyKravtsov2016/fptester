@@ -6,6 +6,12 @@
         <Projects Include="fptester.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\..\test\FPTesterTest\FPTesterTest.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Ofd\OFDApiExample.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -23,14 +29,32 @@
     <Target Name="fptester:Make">
         <MSBuild Projects="fptester.dproj" Targets="Make"/>
     </Target>
+    <Target Name="FPTesterTest">
+        <MSBuild Projects="..\..\test\FPTesterTest\FPTesterTest.dproj"/>
+    </Target>
+    <Target Name="FPTesterTest:Clean">
+        <MSBuild Projects="..\..\test\FPTesterTest\FPTesterTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FPTesterTest:Make">
+        <MSBuild Projects="..\..\test\FPTesterTest\FPTesterTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="OFDApiExample">
+        <MSBuild Projects="Ofd\OFDApiExample.dproj"/>
+    </Target>
+    <Target Name="OFDApiExample:Clean">
+        <MSBuild Projects="Ofd\OFDApiExample.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="OFDApiExample:Make">
+        <MSBuild Projects="Ofd\OFDApiExample.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="fptester"/>
+        <CallTarget Targets="fptester;FPTesterTest;OFDApiExample"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="fptester:Clean"/>
+        <CallTarget Targets="fptester:Clean;FPTesterTest:Clean;OFDApiExample:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="fptester:Make"/>
+        <CallTarget Targets="fptester:Make;FPTesterTest:Make;OFDApiExample:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

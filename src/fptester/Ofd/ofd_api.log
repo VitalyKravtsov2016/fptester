@@ -1,0 +1,24 @@
+2026-02-11 15:18:59.538 [INFO] TOFDApiClient created. BaseUrl: https://universal-api.1-ofd-test.ru
+2026-02-11 15:18:59.538 [DEBUG] Authorize called
+2026-02-11 15:19:00.061 [INFO] Authorization completed
+2026-02-11 15:19:00.061 [INFO] GetOrganisations: page=1, pageSize=10
+2026-02-11 15:19:00.061 [DEBUG] HTTP GET: https://universal-api.1-ofd-test.ru/api/rent/v3/organisations?page=1&pageSize=10
+2026-02-11 15:19:00.095 [DEBUG] Response status: 200
+2026-02-11 15:19:00.095 [DEBUG] Organisations loaded: 1 items, total: 1
+2026-02-11 15:19:00.095 [INFO] GetPermissions: organisationKey=9706048530.770601001
+2026-02-11 15:19:00.095 [DEBUG] HTTP GET: https://universal-api.1-ofd-test.ru/api/rent/v2/9706048530.770601001/permissions
+2026-02-11 15:19:00.128 [DEBUG] Response status: 200
+2026-02-11 15:19:00.128 [DEBUG] Permissions loaded, capabilities: universal-api.revenue, universal-api.shifts, universal-api.ndsInfo, universal-api.user-property-search, universal-api.operatorInnInfo, universal-api.virtual.nomenclature, universal-api.transactions, universal-api.nomenclature, universal-api.virtual.transactions, universal-api.buyerInfo
+2026-02-11 15:19:00.128 [INFO] GetRetailPlaces: organisationKey=9706048530.770601001
+2026-02-11 15:19:00.128 [DEBUG] HTTP GET: https://universal-api.1-ofd-test.ru/api/rent/v2/organisations/9706048530.770601001/retailPlaces
+2026-02-11 15:19:00.145 [DEBUG] Response status: 200
+2026-02-11 15:19:00.145 [DEBUG] Retail places loaded: 11 items
+2026-02-11 15:19:00.157 [INFO] GetShifts: organisationKey=9706048530.770601001, kkmRegId=0000000000044665
+2026-02-11 15:19:00.157 [DEBUG] HTTP GET: https://universal-api.1-ofd-test.ru/api/rent/v2/organisations/9706048530.770601001/shifts?kkmRegId=0000000000044665&dateFrom=2026-02-10T15%3A19%3A00.157&dateTo=2026-02-11T15%3A19%3A00.157
+2026-02-11 15:19:00.475 [DEBUG] Response status: 200
+2026-02-11 15:19:00.475 [DEBUG] Shifts loaded: 8 items
+2026-02-11 15:19:00.475 [INFO] GetDocuments: organisationKey=9706048530.770601001, kkmRegId=0000000000044665
+2026-02-11 15:19:00.475 [DEBUG] HTTP GET: https://universal-api.1-ofd-test.ru/api/rent/v2/organisations/9706048530.770601001/documents?kkmRegId=0000000000044665&fsFactoryNumber=9999078902019097&shiftNum=3&dateFrom=2026-02-11T15%3A14%3A00.475&dateTo=2026-02-11T15%3A19%3A00.475&transactionTypes=TICKET
+2026-02-11 15:19:00.842 [DEBUG] Response status: 200
+2026-02-11 15:19:00.842 [DEBUG] Documents loaded: 2 items
+2026-02-11 15:19:00.842 [INFO] TOFDApiClient destroyed

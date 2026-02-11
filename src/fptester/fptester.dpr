@@ -14,7 +14,8 @@ uses
   FptrTypes in 'Units\FptrTypes.pas',
   BinUtils in 'Units\BinUtils.pas',
   gnugettext in 'Units\gnugettext.pas',
-  LogFile in 'Units\LogFile.pas';
+  LogFile in 'Units\LogFile.pas',
+  OFDAPI in 'Units\OFDAPI.pas';
 
 {$R *.RES}
 
