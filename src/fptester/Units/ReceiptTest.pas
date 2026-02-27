@@ -778,8 +778,8 @@ begin
   begin
     WriteFileData(Context.Options.FilesPath + ErrorFile, Doc2);
 
-    Logger.Debug('Ожидается документ:' + Doc1);
-    Logger.Debug('Получен документ:' + Doc2);
+    //Logger.Debug('Ожидается документ:' + Doc1);
+    //Logger.Debug('Получен документ:' + Doc2);
     raise Exception.Create('Текст документов отличается');
   end;
 end;

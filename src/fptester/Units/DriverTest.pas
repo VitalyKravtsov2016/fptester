@@ -335,6 +335,7 @@ procedure TDriverContext.Error(const s: string);
 begin
   SetErrorColor;
   Logger.Error(s);
+  SetNormalColor;
 end;
 
 function TDriverContext.GetDriver: TDrvFR;
@@ -699,13 +700,11 @@ end;
 
 function TDriverContext.FNReadLastReceipt: string;
 begin
-  Logger.Debug('FNReadLastReceipt');
   Check(Driver.FNGetStatus);
   Driver.RequestDocumentType := 0;
   Driver.ShowTagNumber := True;
   Check(Driver.FNGetDocumentAsString);
   Result := Driver.StringForPrinting;
-  Logger.Debug('FNReadLastReceipt=' + Result);
 end;
 
 procedure TDriverContext.StartTextServer(Port: Integer);
