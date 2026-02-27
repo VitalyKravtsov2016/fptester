@@ -2,6 +2,6 @@
 <BorlandProject>
 	<Transactions/>
 	<Default.Personality>
-		<Projects ActiveProject="C:\Projects\src\fptester\src\fptester\Ofd\OFDApiExample.dproj"/>
+		<Projects ActiveProject="C:\Projects\src\fptester\src\fptester\fptester.dproj"/>
 	</Default.Personality>
 </BorlandProject>

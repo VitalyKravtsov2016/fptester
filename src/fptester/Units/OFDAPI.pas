@@ -13,6 +13,7 @@ type
     FApiKey: string;
     FHttpClient: THTTPClient;
     FOnError: TProc<string>;
+  public
     function GetAuthorizationHeader: TNetHeader;
     function HandleResponse(AResponse: IHTTPResponse): TJSONValue;
     function BuildURL(const AEndpoint: string): string;
@@ -419,8 +420,6 @@ var
   LResponse: IHTTPResponse;
   LURL: string;
 begin
-  Result := False;
-
   LURL := BuildURL('v2/ping'); // или другой эндпоинт для проверки
 
   try

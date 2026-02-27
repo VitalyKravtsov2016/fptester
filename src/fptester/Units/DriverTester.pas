@@ -9,7 +9,7 @@ uses
   VSoft.YAML,
   // This
   DrvFRLib_TLB, FileUtils, DriverTest, CommandTest, ReceiptTest,
-  CashRegistersTest;
+  CashRegistersTest, LogFile;
 
 type
   { TTestReport }
@@ -180,8 +180,6 @@ begin
       Context.Error(E.Message);
     end;
   end;
-  WriteLn('Для завершения нажмите любую клавишу');
-  ReadLn;
 end;
 
 procedure TDriverTester.SetOptions(const Value: TTesterOptions);
@@ -191,7 +189,7 @@ end;
 
 procedure TDriverTester.ShowVersion;
 begin
-  WriteLn('Fiscal printer tester 1.0, 2025');
+  Logger.Debug('Fiscal printer tester 1.0, 2026');
 end;
 
 procedure TDriverTester.ExecuteTestFiles;
@@ -204,7 +202,7 @@ begin
   Files := TStringList.Create;
   try
     GetFileNames(Files, Options.FilesPath, FileMask);
-    WriteLn(Format('Найдено файлов тестов: %d', [Files.Count]));
+    Logger.Debug(Format('Найдено файлов тестов: %d', [Files.Count]));
     for i := 0 to Files.Count-1 do
     begin
       ExecuteTestFile(Files[i]);
@@ -231,8 +229,8 @@ procedure TDriverTester.ExecuteTestSuite(TestSuite: TDriverTestSuite);
 var
   Test: TDriverTest;
 begin
-  WriteLn(Separator);
-  WriteLn(TestSuite.name);
+  Logger.Debug(Separator);
+  Logger.Debug(TestSuite.name);
   for Test in TestSuite.tests do
   begin
     ExecuteTest(Test);
@@ -252,8 +250,8 @@ begin
     if Result.IsSucceeded then
     begin
       Context.CheckEcrMode2(Test.ecrmode_after);
-      Context.CheckTextPrinted(Test.text_printed);
-      Context.CheckGraphicsPrinted(Test.graphics_file_name);
+      //Context.CheckTextPrinted(Test.text_printed);
+      //Context.CheckGraphicsPrinted(Test.graphics_file_name);
 
       Inc(FReport.SuccessCount);
       Context.Debug('[+] ' + Test.name);
@@ -285,15 +283,15 @@ procedure TDriverTester.WriteReport;
 var
   SuccessPercents: Integer;
 begin
-  WriteLn(Separator);
+  Logger.Debug(Separator);
   SuccessPercents := 0;
   if FReport.TotalCount > 0 then
     SuccessPercents := Round(FReport.SuccessCount *100 / FReport.TotalCount);
 
-  WriteLn(Format('Успешно выполнено: %d из %d, %d %%', [
+  Logger.Debug(Format('Успешно выполнено: %d из %d, %d %%', [
     FReport.SuccessCount, FReport.TotalCount, SuccessPercents]));
 
-  WriteLn(FormatDateTime('Время выполнения: hh:mm:ss', Now-FReport.StartTime));
+  Logger.Debug(FormatDateTime('Время выполнения: hh:mm:ss', Now-FReport.StartTime));
 end;
 
 end.

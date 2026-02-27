@@ -1,0 +1,105 @@
+﻿################################################
+#
+# Установка параметров обмена
+# Код команды: 14h. Длина сообщения: 8 байт.
+#   Пароль системного администратора (4 байта)
+#   Номер порта (1 байт) 0…2551
+#   Код скорости обмена (1 байт) 0…91,2 или номер TCP порта3 (1 байт) 0…255
+#   Тайм-аут приема байта4,5 (1 байт) 0…255
+# Ответ: 14h. Длина сообщения: 2 байта.
+#   Код ошибки (1 байт)
+#   Порядковый номер оператора (1 байт) 1…30
+#
+################################################
+#
+#  Команда доступна в любом состоянии
+#  Команда не меняет состояние ФР
+#
+################################################
+
+name: "Команда 14h"
+description: "Установка параметров обмена"
+
+tests:
+  - name: "Команда 14 - ошибка 126"
+    testtype: command
+    command: "14"
+    resultcode: 126
+    
+  - name: "Установка скорости 115200"
+    testtype: command
+    command: "14 1E 00 00 00 00 06 80"
+    response: "14 00"
+    resultcode: 00
+    baudrate_after: 6
+    
+  - name: "Установка скорости 4800"
+    testtype: command
+    command: "14 1E 00 00 00 00 01 80"
+    response: "14 00"
+    resultcode: 00
+    baudrate_after: 1
+
+  - name: "Установка скорости 9600"
+    testtype: command
+    command: "14 1E 00 00 00 00 02 80"
+    response: "14 00"
+    resultcode: 00
+    baudrate_after: 2
+
+  - name: "Установка скорости 19200"
+    testtype: command
+    command: "14 1E 00 00 00 00 03 80"
+    response: "14 00"
+    resultcode: 00
+    baudrate_after: 3
+    
+  - name: "Установка скорости 38400"
+    testtype: command
+    command: "14 1E 00 00 00 00 04 80"
+    response: "14 00"
+    resultcode: 00
+    baudrate_after: 4
+
+  - name: "Установка скорости 57600"
+    testtype: command
+    command: "14 1E 00 00 00 00 05 80"
+    response: "14 00"
+    resultcode: 00
+    baudrate_after: 5
+    
+  - name: "Установка скорости 115200"
+    testtype: command
+    command: "14 1E 00 00 00 00 06 80"
+    response: "14 00"
+    resultcode: 00
+    baudrate_after: 6
+    
+  - name: "Установка скорости 230400"
+    testtype: command
+    command: "14 1E 00 00 00 00 07 80"
+    response: "14 00"
+    resultcode: 51
+    baudrate_after: 6
+    
+  - name: "Установка скорости 460800"
+    testtype: command
+    command: "14 1E 00 00 00 00 08 80"
+    response: "14 00"
+    resultcode: 51
+    baudrate_after: 6
+    
+  - name: "Установка скорости 921600"
+    testtype: command
+    command: "14 1E 00 00 00 00 09 80"
+    response: "14 00"
+    resultcode: 51
+    baudrate_after: 6
+    
+  - name: "Установка скорости с кодом 0xFF"
+    testtype: command
+    command: "14 1E 00 00 00 00 FF 80"
+    response: "14 00"
+    resultcode: 51
+    baudrate_after: 6
+

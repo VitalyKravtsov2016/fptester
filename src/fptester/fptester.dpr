@@ -1,9 +1,9 @@
 program fptester;
 
 uses
-  Windows,
   SysUtils,
   Classes,
+  Windows,
   DriverTester in 'Units\DriverTester.pas',
   DrvFRLib_TLB in 'Units\DrvFRLib_TLB.pas',
   FileUtils in 'Units\FileUtils.pas',
@@ -24,6 +24,7 @@ var
   Options: TTesterOptions;
 begin
   Logger.FileName := ChangeFileExt(ParamStr(0), '.log');
+  Logger.WriteConsole := True;
   Logger.Enabled := True;
 
   Tester := TDriverTester.Create;
@@ -32,6 +33,10 @@ begin
     Options.FilesPath := GetModulePath + 'tests\';
     Tester.Options := Options;
     Tester.Run;
+
+    Tester.Context.SetNormalColor;
+    WriteLn('Для завершения нажмите любую клавишу');
+    ReadLn;
   finally
     Tester.Free;
   end;

@@ -1,4 +1,4 @@
-unit LogFile;
+п»їunit LogFile;
 
 interface
 
@@ -6,6 +6,9 @@ uses
   // VCL
   Windows, Classes, SysUtils, SyncObjs, SysConst, Variants, DateUtils,
   AnsiStrings;
+
+const
+  Separator     = '------------------------------------------------------------';
 
 type
   TVariantArray = array of Variant;
@@ -21,6 +24,7 @@ type
     FMaxFileCount: Integer;
     FLock: TCriticalSection;
     FEncoding: TEncoding;
+    FWriteConsole: Boolean;
 
     procedure Lock;
     procedure Unlock;
@@ -29,7 +33,7 @@ type
     procedure CloseFile;
     procedure Write(const Data: string);
     procedure SetEnabled(Value: Boolean);
-    procedure AddLine(const Data: string);
+    procedure AddLine(const Tag, Data: string);
     procedure SetFileName(const Value: string);
 
     function GetOpened: Boolean;
@@ -63,6 +67,7 @@ type
     property FileName: string read FFileName write SetFileName;
     property MaxFileSize: Integer read FMaxFileSize write FMaxFileSize;
     property MaxFileCount: Integer read FMaxFileCount write FMaxFileCount;
+    property WriteConsole: Boolean read FWriteConsole write FWriteConsole;
   end;
 
 function Logger: TLogFile;
@@ -71,8 +76,6 @@ function GlobalLogger: TLogFile;
 implementation
 
 const
-  S_SEPARATOR   = '------------------------------------------------------------';
-
   TagInfo         = '[ INFO] ';
   TagTrace        = '[TRACE] ';
   TagDebug        = '[DEBUG] ';
@@ -327,34 +330,37 @@ begin
   Result := Format('[%s] [%.8d] ', [GetTimeStamp, GetCurrentThreadID]);
 end;
 
-procedure TLogFile.AddLine(const Data: string);
+procedure TLogFile.AddLine(const Tag, Data: string);
 begin
-  Write(GetLineHeader + Data + #13#10);
+  if WriteConsole then
+    WriteLn(Data);
+
+  Write(GetLineHeader + Tag + Data + #13#10);
 end;
 
 procedure TLogFile.Trace(const Data: string);
 begin
-  AddLine(TagTrace + Data);
+  AddLine(TagTrace, Data);
 end;
 
 procedure TLogFile.Info(const Data: string);
 begin
-  AddLine(TagInfo + Data);
+  AddLine(TagInfo, Data);
 end;
 
 procedure TLogFile.Error(const Data: string);
 begin
-  AddLine(TagError + Data);
+  AddLine(TagError, Data);
 end;
 
 procedure TLogFile.Error(const Data: string; E: Exception);
 begin
-  AddLine(TagError + Data + ' ' + E.Message);
+  AddLine(TagError, Data + ' ' + E.Message);
 end;
 
 procedure TLogFile.Debug(const Data: string);
 begin
-  AddLine(TagDebug + Data);
+  AddLine(TagDebug, Data);
 end;
 
 class function TLogFile.ParamsToStr(const Params: array of const): string;
@@ -393,7 +399,7 @@ begin
   Trace(Data + ParamsToStr(Params));
 end;
 
-{ Преобразование строки в текст, чтобы увидеть все символы }
+{ РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё РІ С‚РµРєСЃС‚, С‡С‚РѕР±С‹ СѓРІРёРґРµС‚СЊ РІСЃРµ СЃРёРјРІРѕР»С‹ }
 
 class function TLogFile.StrToText(const Text: string): string;
 var

@@ -1,0 +1,32 @@
+﻿################################################    
+#  Сменные регистры обнуляются при снятии отчета с гашением
+#  В состоянии ФР 4, "смена закрыта", сменные регистры должны быть 0
+################################################    
+
+
+name: "RegisterTest"
+description: "Проверка изменения регистров"
+
+tests:
+  - name: "RegisterTestOpenReceipt"
+    text: "Проверка изменения регистров после открытия чека"
+    testtype: register_test
+    
+    operation_registers:
+    - number: 0
+      delta: 1
+      text: "Количество продаж в 1 отдел в чеке"
+      
+    cash_registers:
+    - number: 0
+      delta: 0.01
+      text: "Накопление продаж в 1 отдел в чеке"
+      
+    operations:
+    - type: "open_receipt"
+    - type: "sale"
+      amount: 0.01
+      department: 1
+    - type: "close_receipt"
+      
+

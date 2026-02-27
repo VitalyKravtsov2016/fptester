@@ -82,9 +82,7 @@ type
     FOptions: TTesterOptions;
     FConsoleInfo: TConsoleScreenBufferInfo;
     FStates: TDictionary<string, TFiscalPrinterState>;
-
-    procedure SetErrorColor;
-    procedure SetNormalColor;
+  public
     function GetDriver: TDrvFR;
     function IsEquals(Item1, Item2: TFiscalPrinterState): Boolean;
     procedure ReadCashRegsExRange(var CashRegs: TCashRegs; Min, Max: Integer);
@@ -98,6 +96,8 @@ type
 
     procedure ResetEcr;
     procedure StartTest;
+    procedure SetErrorColor;
+    procedure SetNormalColor;
     procedure Error(const s: string);
     procedure Debug(const s: string);
     procedure TestConnection;
@@ -328,13 +328,13 @@ end;
 procedure TDriverContext.Debug(const s: string);
 begin
   SetNormalColor;
-  WriteLn(s);
+  Logger.Debug(s);
 end;
 
 procedure TDriverContext.Error(const s: string);
 begin
   SetErrorColor;
-  WriteLn(s);
+  Logger.Error(s);
 end;
 
 function TDriverContext.GetDriver: TDrvFR;
@@ -515,12 +515,12 @@ begin
   Check(Driver.GetECRStatus);
   Check(Driver.GetDeviceMetrics);
 
-  WriteLn(Separator);
-  WriteLn('Успешно подключен к ФР');
-  WriteLn(Format('Модель ФР : %d, %s', [Driver.UModel, Driver.UDescription]));
-  WriteLn(Format('Режим ФР  : %d, %s', [Driver.ECRMode, Driver.ECRModeDescription]));
-  WriteLn(Format('Версия ПО : %s, %d, %s', [Driver.ECRSoftVersion, Driver.ECRBuild, DateToStr(Driver.ECRSoftDate)]));
-  WriteLn(Separator);
+  Logger.Debug(Separator);
+  Logger.Debug('Успешно подключен к ФР');
+  Logger.Debug(Format('Модель ФР : %d, %s', [Driver.UModel, Driver.UDescription]));
+  Logger.Debug(Format('Режим ФР  : %d, %s', [Driver.ECRMode, Driver.ECRModeDescription]));
+  Logger.Debug(Format('Версия ПО : %s, %d, %s', [Driver.ECRSoftVersion, Driver.ECRBuild, DateToStr(Driver.ECRSoftDate)]));
+  Logger.Debug(Separator);
 end;
 
 
@@ -712,15 +712,15 @@ procedure TDriverContext.StartTextServer(Port: Integer);
 begin
   FLines.Clear;
   FTextServer.DefaultPort := Port;
-  FTextServer.Active := True;
   FTextServer.OnExecute := TextServerExecute;
+  FTextServer.Active := True;
 end;
 
 procedure TDriverContext.StartGraphicsServer(Port: Integer);
 begin
   FGraphicsServer.DefaultPort := Port;
-  FGraphicsServer.Active := True;
   FGraphicsServer.OnExecute := GraphicsServerExecute;
+  FGraphicsServer.Active := True;
 end;
 
 procedure TDriverContext.TextServerExecute(AContext: TIdContext);
@@ -753,7 +753,6 @@ procedure TDriverContext.CheckTextPrinted(const Text: string);
 var
   i: Integer;
   ALines: TStrings;
-  Line1, Line2: string;
 begin
   if Text = '' then Exit;
 

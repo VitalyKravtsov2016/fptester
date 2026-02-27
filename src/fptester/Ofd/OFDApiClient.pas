@@ -275,6 +275,7 @@ begin
     raise Exception.CreateFmt('Неподдерживаемый HTTP метод: %s', [Method]);
   
   Logger.Debug('Response status: %d', [Result.StatusCode]);
+  Logger.Debug(Result.ContentAsString());
   CheckResponse(Result);
 end;
 
