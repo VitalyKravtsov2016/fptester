@@ -1,0 +1,107 @@
+﻿################################################
+#
+# Программирование времени
+#
+# Код команды: 21h. Длина сообщения: 8 байт.
+#   Пароль системного администратора (4 байта)
+#   Время (3 байта) ЧЧ-ММ-СС
+#
+# Ответ: 21h. Длина сообщения: 2 байта.
+#   Код ошибки (1 байт)
+#
+################################################
+#
+# Команда доступна в состояниях:
+# 2. Открытая смена, 24 часа не кончились
+# 3. Открытая смена, 24 часа кончились
+# 4. Закрытая смена
+# 6. Ожидание подтверждения ввода даты
+# 8. Открытый документ
+#
+# Команда не меняет состояние ФР
+#
+################################################
+
+name: "Команда 21h"
+description: "Программирование времени"
+
+tests:
+  - name: "Установка времени 12:30:45"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    response: "21 00"
+    ecrmode_before: 4
+    ecrmode_after: 4
+    
+  - name: "Установка времени 00:00:00"
+    testtype: command
+    command: "21 1E 00 00 00 00 00 00"
+    response: "21 00"
+    
+  - name: "Установка времени 23:59:59"
+    testtype: command
+    command: "21 1E 00 00 00 17 3B 3B"
+    response: "21 00"
+    
+  - name: "Команда доступна в состоянии 2 (открытая смена)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    response: "21 00"
+    ecrmode_before: 2
+    ecrmode_after: 2
+    
+  - name: "Команда доступна в состоянии 6 (ожидание даты)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    response: "21 00"
+    ecrmode_before: 6
+    ecrmode_after: 6
+    
+  - name: "Команда доступна в состоянии 8 (открытый чек)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    response: "21 00"
+    ecrmode_before: 8
+    ecrmode_after: 8
+    
+  - name: "Команда недоступна в состоянии 1 (выдача данных)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    ecrmode_before: 1
+    ecrmode_after: 1
+    resultcode: 115
+    
+  - name: "Неверное время: часы 24"
+    testtype: command
+    command: "21 1E 00 00 00 18 00 00"
+    resultcode: 51
+    
+  - name: "Неверное время: минуты 60"
+    testtype: command
+    command: "21 1E 00 00 00 0C 3C 00"
+    resultcode: 51
+    
+  - name: "Неверное время: секунды 60"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 3C"
+    resultcode: 51
+    
+  - name: "Неверный пароль"
+    testtype: command
+    command: "21 FF FF FF FF 0C 1E 2D"
+    resultcode: 79
+    
+  - name: "Неверная длина команды (слишком короткая)"
+    testtype: command
+    command: "21"
+    resultcode: 126
+    
+  - name: "Неверная длина команды (7 байт)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E"
+    resultcode: 126
+    
+  - name: "Неверная длина команды (9 байт)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D 00"
+    resultcode: 126
