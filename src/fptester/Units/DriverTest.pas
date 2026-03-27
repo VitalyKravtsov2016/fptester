@@ -82,6 +82,8 @@ type
     FOptions: TTesterOptions;
     FConsoleInfo: TConsoleScreenBufferInfo;
     FStates: TDictionary<string, TFiscalPrinterState>;
+    procedure DebugVerbose(const s: string);
+    procedure ErrorVerbose(const s: string);
   public
     function GetDriver: TDrvFR;
     function IsEquals(Item1, Item2: TFiscalPrinterState): Boolean;
@@ -251,6 +253,7 @@ var
 begin
   if ecrmode = 0 then Exit;
 
+  DebugVerbose('SetEcrMode...');
   case ecrmode of
     FPTR_MODE_DUMP:
     begin
@@ -304,6 +307,7 @@ begin
       raise Exception.CreateFmt('Нельзя перевести ФР в состояние, %d', [ecrmode]);
     end;
   end;
+  DebugVerbose('SetEcrMode: OK');
 end;
 
 constructor TDriverContext.Create;
@@ -323,6 +327,22 @@ begin
   FTextServer.Free;
   FGraphicsServer.Free;
   inherited Destroy;
+end;
+
+procedure TDriverContext.DebugVerbose(const s: string);
+begin
+  if Options.Verbose then
+  begin
+    Debug(s);
+  end;
+end;
+
+procedure TDriverContext.ErrorVerbose(const s: string);
+begin
+  if Options.Verbose then
+  begin
+    Error(s);
+  end;
 end;
 
 procedure TDriverContext.Debug(const s: string);
@@ -393,12 +413,10 @@ begin
     Check(Driver.GetShortECRStatus);
     if ecrmode <> Driver.ECRMode then
     begin
-      if Options.Verbose then
-      begin
-        Error('Ошибка: не совпадает состояние');
-        Error(Format('Ожидается состояние : %d.', [ecrmode]));
-        Error(Format('Получено состояние  : %d.', [Driver.ECRMode]));
-      end;
+      ErrorVerbose('Ошибка: не совпадает состояние');
+      ErrorVerbose(Format('Ожидается состояние : %d.', [ecrmode]));
+      ErrorVerbose(Format('Получено состояние  : %d.', [Driver.ECRMode]));
+
       raise Exception.CreateFmt('Ожидается состояние : %d, получено: %d', [
         ecrmode, Driver.ECRMode]);
     end;
@@ -532,6 +550,7 @@ var
   i: Integer;
   Password: Integer;
 begin
+  DebugVerbose('ResetEcr...');
   for i := 0 to RepCount - 1 do
   begin
     Check(Driver.WaitForPrinting);
@@ -545,16 +564,26 @@ begin
       end;
       FPTR_MODE_24NOTOVER,
       FPTR_MODE_24OVER: Check(Driver.PrintReportWithCleaning);
-      FPTR_MODE_WAITDATE: Check(Driver.ConfirmDate);
+      FPTR_MODE_WAITDATE:
+      begin
+        // Confirm any date
+        Check(Driver.GetECRStatus);
+        Check(Driver.ConfirmDate);
+        // Set current datetime
+        Driver.ECRDate := Now;
+        Check(Driver.SetDate);
+        Check(Driver.ConfirmDate);
+      end;
       FPTR_MODE_REC: Check(Driver.CancelCheck);
       FPTR_MODE_TEST: Check(Driver.InterruptTest);
       FPTR_MODE_FULLREPORT,
       FPTR_MODE_EKLZREPORT,
       FPTR_MODE_SLPPRINT: ;
     else
-      Exit;
+      Break;
     end;
   end;
+  DebugVerbose('ResetEcr: OK');
 end;
 
 procedure TDriverContext.SaveState(const Name: string);

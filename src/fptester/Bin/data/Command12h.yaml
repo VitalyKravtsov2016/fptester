@@ -35,12 +35,12 @@ name: "Команда 12h"
 description: "Печать жирной строки"
 
 tests:
-  - name: "Корректная команда"
+  - name: "12h-01: Корректная команда (без текста)"
     testtype: command
     command: "12 1E 00 00 00 01"
     response: "12 00 1E"
     
-  - name: "Корректная команда"
+  - name: "12h-02: Корректная команда (с текстом)"
     testtype: command
     command: "12 1E 00 00 00 01 30 31 32 33 34 35 36 37 38 39"
     printed_text: "0123456789"
@@ -50,31 +50,31 @@ tests:
     # Для ФР ШТРИХ-М-10Ф допускаются только биты 0 и 1
     # Контрольная лента не поддерживается, но ФР это не проверяет
     
-  - name: "Значение флагов 0x01h"
+  - name: "12h-03: Значение флагов 0x01h"
     testtype: command
     command: "12 1E 00 00 00 01"
     response: "12 00 1E"
     resultcode: 00
     
-  - name: "Значение флагов 0x02h"
+  - name: "12h-04: Значение флагов 0x02h"
     testtype: command
     command: "12 1E 00 00 00 02"
     response: "12 00 1E"
     resultcode: 00
     
-  - name: "Значение флагов 0x03h"
+  - name: "12h-05: Значение флагов 0x03h"
     testtype: command
     command: "12 1E 00 00 00 03"
     response: "12 00 1E"
     resultcode: 00
     
-  - name: "Значение флагов 0xF1h"
+  - name: "12h-06: Значение флагов 0xF1h"
     testtype: command
     command: "12 1E 00 00 00 F1"
     response: "12 00 1E"
     resultcode: 00
     
-  - name: "Значение флагов 0xF2h"
+  - name: "12h-07: Значение флагов 0xF2h"
     testtype: command
     command: "12 1E 00 00 00 F2"
     response: "12 00 1E"
@@ -83,7 +83,7 @@ tests:
     #################################################
     # ФР не проверяет длину команды - это ошибка
     # 79, Неверный пароль - этой ошибки не должно быть
-  - name: "Команда: 12 - код ошибки 79"
+  - name: "12h-08: Команда: 12 - код ошибки 79"
     testtype: command
     command: "12"
     resultcode: 79    
@@ -91,73 +91,72 @@ tests:
     #################################################
     # ФР не проверяет длину команды - это ошибка
     # 51, Неверные параметры команды - этой ошибки не должно быть
-  - name: "Команда 12 1E 00 00 00 - код ошибки 51"
+  - name: "12h-09: Команда 12 1E 00 00 00 - код ошибки 51"
     testtype: command
     command: "12 1E 00 00 00"
     resultcode: 51  
     
-  - name: "Неверный пароль 0x00000000 - ошибка 79"
+  - name: "12h-10: Неверный пароль 0x00000000 - ошибка 79"
     testtype: command
     command: "12 00 00 00 00 01"
     resultcode: 79      
     
-  - name: "Неверный пароль 0x12345678 - ошибка 79"
+  - name: "12h-11: Неверный пароль 0x12345678 - ошибка 79"
     testtype: command
     command: "12 12 34 56 78 01"
     resultcode: 79          
     
-  - name: "Значение флагов 0x00h - ошибка 51"
+  - name: "12h-12: Значение флагов 0x00h - ошибка 51"
     testtype: command
     command: "12 1E 00 00 00 00"
     resultcode: 51              
     
     # Если биты 0 и 1 не установлены - значение некорректное
     
-  - name: "Значение флагов 0x04h - ошибка 51"
+  - name: "12h-13: Значение флагов 0x04h - ошибка 51"
     testtype: command
     command: "12 1E 00 00 00 04"
     resultcode: 51
     
-  - name: "Значение флагов 0x08h - ошибка 51"
+  - name: "12h-14: Значение флагов 0x08h - ошибка 51"
     testtype: command
     command: "12 1E 00 00 00 08"
     resultcode: 51
     
-  - name: "Значение флагов 0x10h - ошибка 51"
+  - name: "12h-15: Значение флагов 0x10h - ошибка 51"
     testtype: command
     command: "12 1E 00 00 00 10"
     resultcode: 51
     
-  - name: "Значение флагов 0x20h - ошибка 51"
+  - name: "12h-16: Значение флагов 0x20h - ошибка 51"
     testtype: command
     command: "12 1E 00 00 00 20"
     resultcode: 51
     
-  - name: "Значение флагов 0x40h - ошибка 51"
+  - name: "12h-17: Значение флагов 0x40h - ошибка 51"
     testtype: command
     command: "12 1E 00 00 00 40"
     resultcode: 51
     
-  - name: "Значение флагов 0x80h - ошибка 51"
+  - name: "12h-18: Значение флагов 0x80h - ошибка 51"
     testtype: command
     command: "12 1E 00 00 00 80"
     resultcode: 51
     
-  - name: "Значение флагов FF"
+  - name: "12h-19: Значение флагов FF"
     testtype: command
     command: "12 1E 00 00 00 FF"
     resultcode: 00                  
     
     # Максимальная длина строки - 72 символа
-  - name: "Длина данных 72 символа"
+  - name: "12h-20: Длина данных 72 символа"
     testtype: command
     command: "12 1E 00 00 00 03 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF"
     response: "12 00 1E"
     resultcode: 00
     
     # Максимальная длина строки - 72 символа
-  - name: "Длина данных 73 символа - ошибка 126"
+  - name: "12h-21: Длина данных 73 символа - ошибка 126"
     testtype: command
     command: "12 1E 00 00 00 03 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF"
     resultcode: 126
-    

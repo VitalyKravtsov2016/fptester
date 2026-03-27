@@ -27,93 +27,93 @@ name: "Команда 1Bh"
 description: "Запрос операционного регистра"
 
 tests:
-  - name: "Корректный запрос регистра 0"
+  - name: "1Bh-01: Корректный запрос регистра 0"
     testtype: command
     command: "1B 1E 00 00 00 00"
     response: "1B 00 1E XX XX"
     ecrmode_before: 4
     ecrmode_after: 4
     
-  - name: "Корректный запрос регистра 1"
+  - name: "1Bh-02: Корректный запрос регистра 1"
     testtype: command
     command: "1B 1E 00 00 00 01"
     response: "1B 00 1E XX XX"
     ecrmode_before: 4
     ecrmode_after: 4
     
-  - name: "Корректный запрос регистра 100"
+  - name: "1Bh-03: Корректный запрос регистра 100"
     testtype: command
     command: "1B 1E 00 00 00 64"
     response: "1B 00 1E XX XX"
     ecrmode_before: 4
     ecrmode_after: 4
     
-  - name: "Корректный запрос регистра 249"
+  - name: "1Bh-04: Корректный запрос регистра 249"
     testtype: command
     command: "1B 1E 00 00 00 F9"
     response: "1B 00 1E XX XX"
     ecrmode_before: 4
     ecrmode_after: 4
     
-  - name: "Команда доступна в состоянии 2 (открытая смена)"
+  - name: "1Bh-05: Команда доступна в состоянии 2 (открытая смена)"
     testtype: command
     command: "1B 1E 00 00 00 00"
     response: "1B 00 1E XX XX"
     ecrmode_before: 2
     ecrmode_after: 2
     
-  - name: "Команда доступна в состоянии 8 (открытый чек)"
+  - name: "1Bh-06: Команда доступна в состоянии 8 (открытый чек)"
     testtype: command
     command: "1B 1E 00 00 00 00"
     response: "1B 00 1E XX XX"
     ecrmode_before: 8
     ecrmode_after: 8
     
-  - name: "Команда недоступна в состоянии 1 (выдача данных)"
+  - name: "1Bh-07: Команда недоступна в состоянии 1 (выдача данных)"
     testtype: command
     command: "1B 1E 00 00 00 00"
     ecrmode_before: 1
     ecrmode_after: 1
     resultcode: 115
     
-  - name: "Команда недоступна в состоянии 6 (ожидание даты)"
+  - name: "1Bh-08: Команда недоступна в состоянии 6 (ожидание даты)"
     testtype: command
     command: "1B 1E 00 00 00 00"
     ecrmode_before: 6
     ecrmode_after: 6
     resultcode: 115
     
-  - name: "Неверная длина команды (слишком короткая)"
+  - name: "1Bh-09: Неверная длина команды (слишком короткая)"
     testtype: command
     command: "1B"
     resultcode: 126
 
-  - name: "Неверная длина команды (5 байт)"
+  - name: "1Bh-10: Неверная длина команды (5 байт)"
     testtype: command
     command: "1B 1E 00 00 00"
     resultcode: 126
    
-  - name: "Неверная длина команды (слишком длинная)"
+  - name: "1Bh-11: Неверная длина команды (слишком длинная)"
     testtype: command
     command: "1B 1E 00 00 00 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F"
     resultcode: 126
     
-  - name: "Неверный пароль (все FF)"
+  - name: "1Bh-12: Неверный пароль (все FF)"
     testtype: command
     command: "1B FF FF FF FF 00"
     resultcode: 79
     
-  - name: "Неверный пароль (00000000)"
+  - name: "1Bh-13: Неверный пароль (00000000)"
     testtype: command
     command: "1B 00 00 00 00 00"
     resultcode: 79
     
-  - name: "Неверный пароль (12345678)"
+  - name: "1Bh-14: Неверный пароль (12345678)"
     testtype: command
     command: "1B 12 34 56 78 00"
     resultcode: 79
     
-  - name: "Неверный номер регистра (250)"
+  - name: "1Bh-15: Неверный номер регистра (250)"
     testtype: command
     command: "1B 1E 00 00 00 FA"
     resultcode: 51

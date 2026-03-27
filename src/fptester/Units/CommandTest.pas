@@ -138,7 +138,8 @@ begin
         Result.IsSucceeded := True;
       end else
       begin
-        Result.Text := Format('ожидается: %d, получен: %d', [ResultCode, ResCode]);
+        Result.Text := Format('ожидается: %d, получен: %d, %s', [
+          ResultCode, ResCode, Driver.ResultCodeDescription]);
         if Options.Verbose then
         begin
           Context.Error('Ошибка: код отшибки не совпадает');

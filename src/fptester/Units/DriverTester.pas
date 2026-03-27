@@ -229,6 +229,7 @@ procedure TDriverTester.ExecuteTestSuite(TestSuite: TDriverTestSuite);
 var
   Test: TDriverTest;
 begin
+  Context.ResetEcr;
   Logger.Debug(Separator);
   Logger.Debug(TestSuite.name);
   for Test in TestSuite.tests do
@@ -244,7 +245,7 @@ var
 begin
   try
     Context.StartTest;
-    Context.ResetEcr;
+    //Context.ResetEcr; !!!
     Context.SetEcrMode(Test.ecrmode_before);
     Result := Test.Execute;
     if Result.IsSucceeded then

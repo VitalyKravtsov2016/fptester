@@ -21,50 +21,50 @@ name: "Команда 03h"
 description: "Прерывание выдачи данных"
 
 tests:
-  - name: "Корректная команда"
+  - name: "03h-01: Корректная команда"
     testtype: command
     command: "03 00 00 00 00"
     response: "03 00"
     ecrmode_before: 1
     ecrmode_after: 4
     
-  - name: "Команда не поддерживается в состоянии 4, Закрытая смена"
+  - name: "03h-02: Команда не поддерживается в состоянии 4, Закрытая смена"
     testtype: command
     command: "03 00 00 00 00"
     ecrmode_before: 4
     ecrmode_after: 4
     resultcode: 115
     
-  - name: "Команда не поддерживается в состоянии 8, Открытый чек"
+  - name: "03h-03: Команда не поддерживается в состоянии 8, Открытый чек"
     testtype: command
     command: "03 00 00 00 00"
     ecrmode_before: 8
     ecrmode_after: 8
     resultcode: 115
     
-  - name: "Команда не поддерживается в состоянии 10, Тестовый прогон"
+  - name: "03h-04: Команда не поддерживается в состоянии 10, Тестовый прогон"
     testtype: command
     command: "03 00 00 00 00"
     ecrmode_before: 10
     ecrmode_after: 10
     resultcode: 115
    
-  - name: "Неверная длина команды 1"
+  - name: "03h-05: Неверная длина команды 1"
     testtype: command
     command: "03"
     resultcode: 126
 
-  - name: "Неверная длина команды 2"
+  - name: "03h-06: Неверная длина команды 2"
     testtype: command
     command: "03 1E"
     resultcode: 126
    
-  - name: "Неверная длина команды 3"
+  - name: "03h-07: Неверная длина команды 3"
     testtype: command
     command: "03 00 00 00 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF"
     resultcode: 126
     
-  - name: "Неверный пароль"
+  - name: "03h-08: Неверный пароль"
     testtype: command
     command: "03 FF FF FF FF"
     resultcode: 79

@@ -1,0 +1,143 @@
+﻿################################################
+#
+# Программирование времени
+#
+# Код команды: 21h. Длина сообщения: 8 байт.
+#   Пароль системного администратора (4 байта)
+#   Время (3 байта) ЧЧ-ММ-СС
+#
+# Ответ: 21h. Длина сообщения: 2 байта.
+#   Код ошибки (1 байт)
+#
+################################################
+#
+# Команда доступна в состояниях:
+# 2. Открытая смена, 24 часа не кончились
+# 3. Открытая смена, 24 часа кончились
+# 4. Закрытая смена
+# 6. Ожидание подтверждения ввода даты
+# 8. Открытый документ
+#
+# Команда не меняет состояние ФР
+#
+################################################
+
+name: "Команда 21h"
+description: "Программирование времени"
+
+tests:
+  - name: "21h-01: Установка времени 12:30:45 (корректные данные)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    response: "21 00"
+    ecrmode_before: 4
+    ecrmode_after: 4
+    
+  - name: "21h-02: Установка времени 00:00:00 (минимальное значение)"
+    testtype: command
+    command: "21 1E 00 00 00 00 00 00"
+    response: "21 00"
+    ecrmode_before: 4
+    ecrmode_after: 4
+    
+  - name: "21h-03: Установка времени 23:59:59 (максимальное значение)"
+    testtype: command
+    command: "21 1E 00 00 00 17 3B 3B"
+    response: "21 00"
+    ecrmode_before: 4
+    ecrmode_after: 4
+    
+  - name: "21h-04: Команда доступна в состоянии 2 (открытая смена)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    resultcode: 115
+    ecrmode_before: 2
+    ecrmode_after: 2
+    
+  - name: "21h-06: Команда доступна в состоянии 4 (закрытая смена)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    response: "21 00"
+    ecrmode_before: 4
+    ecrmode_after: 4
+    
+  - name: "21h-07: Команда доступна в состоянии 8 (открытый чек)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    resultcode: 115
+    ecrmode_before: 8
+    ecrmode_after: 8
+    
+  - name: "21h-08: Команда недоступна в состоянии 1 (выдача данных)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    ecrmode_before: 1
+    ecrmode_after: 1
+    resultcode: 115
+    
+  - name: "21h-09: Команда недоступна в состоянии 6 (ожидание подтверждения ввода даты)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D"
+    resultcode: 115
+    ecrmode_before: 6
+    ecrmode_after: 6
+    
+  - name: "21h-10: Неверное время: часы 24 (превышение допустимого диапазона)"
+    testtype: command
+    command: "21 1E 00 00 00 18 00 00"
+    resultcode: 51
+    
+  - name: "21h-11: Неверное время: часы FF (некорректное значение)"
+    testtype: command
+    command: "21 1E 00 00 00 FF 00 00"
+    resultcode: 51
+    
+  - name: "21h-12: Неверное время: минуты 60 (превышение допустимого диапазона)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 3C 00"
+    resultcode: 51
+    
+  - name: "21h-13: Неверное время: минуты FF (некорректное значение)"
+    testtype: command
+    command: "21 1E 00 00 00 0C FF 00"
+    resultcode: 51
+    
+  - name: "21h-14: Неверное время: секунды 60 (превышение допустимого диапазона)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 3C"
+    resultcode: 51
+    
+  - name: "21h-15: Неверное время: секунды FF (некорректное значение)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E FF"
+    resultcode: 51
+    
+  - name: "21h-16: Неверный пароль (все байты FF)"
+    testtype: command
+    command: "21 FF FF FF FF 0C 1E 2D"
+    resultcode: 79
+    
+  - name: "21h-17: Неверный пароль (случайное значение)"
+    testtype: command
+    command: "21 12 34 56 78 0C 1E 2D"
+    resultcode: 79
+    
+  - name: "21h-18: Неверная длина команды (слишком короткая, только код команды)"
+    testtype: command
+    command: "21"
+    resultcode: 79
+    
+  - name: "21h-19: Неверная длина команды (7 байт, не хватает 1 байта)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E"
+    resultcode: 126
+    
+  - name: "21h-20: Неверная длина команды (9 байт, лишний байт)"
+    testtype: command
+    command: "21 1E 00 00 00 0C 1E 2D 00"
+    resultcode: 51
+    
+  - name: "21h-21: Пустая команда (отсутствуют данные)"
+    testtype: command
+    command: ""
+    resultcode: 126

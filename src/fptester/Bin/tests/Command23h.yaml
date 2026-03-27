@@ -1,0 +1,90 @@
+﻿################################################
+#
+# Подтверждение программирования даты
+#
+# Код команды: 23h. Длина сообщения: 8 байт.
+#   Пароль системного администратора (4 байта)
+#   Дата (3 байта) ДД-ММ-ГГ
+#
+# Ответ: 23h. Длина сообщения: 2 байта.
+#   Код ошибки (1 байт)
+#
+################################################
+#
+# Команда доступна в состоянии:
+# 6. Ожидание подтверждения ввода даты
+#
+# После команды ФР переходит в предыдущее состояние
+#
+################################################
+
+name: "Команда 23h"
+description: "Подтверждение программирования даты"
+
+tests:
+  - name: "23h-01: Установка даты 25.12.24 (корректные данные)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18"
+    response: "22 00"
+    ecrmode_before: 4
+    ecrmode_after: 6
+    
+  - name: "23h-02: Подтверждение даты 25.12.24"
+    testtype: command
+    command: "23 1E 00 00 00 19 0C 18"
+    response: "23 00"
+    ecrmode_before: 6
+    ecrmode_after: 4  # Возврат в предыдущее состояние
+    
+  - name: "23h-03: Установка даты 25.12.24 (корректные данные)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18"
+    response: "22 00"
+    ecrmode_before: 4
+    ecrmode_after: 6
+    
+    # 124, Не совпадает дата
+  - name: "23h-04: Подтверждение даты 01.01.00"
+    testtype: command
+    command: "23 1E 00 00 00 01 01 00"
+    resultcode: 124
+    ecrmode_before: 6
+    ecrmode_after: 6
+    
+  - name: "23h-05: Команда недоступна в состоянии 4 (закрытая смена)"
+    testtype: command
+    command: "23 1E 00 00 00 19 0C 18"
+    ecrmode_before: 4
+    ecrmode_after: 4
+    resultcode: 115
+    
+  - name: "23h-06: Команда недоступна в состоянии 2 (открытая смена)"
+    testtype: command
+    command: "23 1E 00 00 00 19 0C 18"
+    ecrmode_before: 2
+    ecrmode_after: 2
+    resultcode: 115
+    
+  - name: "23h-07: Команда недоступна в состоянии 8 (открытый чек)"
+    testtype: command
+    command: "23 1E 00 00 00 19 0C 18"
+    ecrmode_before: 8
+    ecrmode_after: 8
+    resultcode: 115
+    
+  - name: "23h-08: Неверная дата"
+    testtype: command
+    command: "23 1E 00 00 00 20 0C 18"
+    ecrmode_before: 6
+    resultcode: 125 # 125, Неверный формат даты
+    
+  - name: "23h-09: Неверный пароль"
+    testtype: command
+    command: "23 FF FF FF FF 19 0C 18"
+    ecrmode_before: 6
+    resultcode: 79
+    
+  - name: "23h-10: Неверная длина команды"
+    testtype: command
+    command: "23 1E 00 00 00 19 0C"
+    resultcode: 126
