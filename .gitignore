@@ -5,3 +5,7 @@
 *.map
 *.dll
 *.exe
+src/fptester/Bin/fptester.ini
+test/FPTesterTest/Bin/FPTesterTest.ini
+src/fptester/Bin/setupc-*.txt
+test/FPTesterTest/Bin/setupc-*.txt

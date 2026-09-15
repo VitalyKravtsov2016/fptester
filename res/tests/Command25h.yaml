@@ -1,0 +1,82 @@
+﻿################################################
+#
+# Отрезка чека
+#
+# Код команды: 25h. Длина сообщения: 6 байт.
+#   Пароль оператора (4 байта)
+#   Тип отрезки (1 байт): 0 – полная, 1 – неполная
+#
+# Ответ: 25h. Длина сообщения: 3 байта.
+#   Код ошибки (1 байт)
+#   Порядковый номер оператора (1 байт) 1…30
+#
+################################################
+#
+# Команда доступна в состояниях:
+# 2. Открытая смена
+# 4. Закрытая смена
+# 8. Открытый документ
+#
+# Команда не меняет состояние ФР
+#
+################################################
+
+name: "Команда 25h"
+description: "Отрезка чека"
+
+tests:
+  - name: "25h-01: Полная отрезка"
+    testtype: command
+    command: "25 1E 00 00 00 00"
+    response: "25 00 1E"
+    ecrmode_before: 4
+    ecrmode_after: 4
+    
+  - name: "25h-02: Неполная отрезка"
+    testtype: command
+    command: "25 1E 00 00 00 01"
+    response: "25 00 1E"
+    ecrmode_before: 4
+    ecrmode_after: 4
+    
+  - name: "25h-03: Команда доступна в состоянии 2 (открытая смена)"
+    testtype: command
+    command: "25 1E 00 00 00 00"
+    response: "25 00 1E"
+    ecrmode_before: 2
+    ecrmode_after: 2
+    
+    # зависиит от параметра "отрезка в открытом чеке"
+  - name: "25h-04: Команда доступна в состоянии 8 (открытый чек)"
+    testtype: command
+    command: "25 1E 00 00 00 00"
+    resultcode: 74
+    ecrmode_before: 8
+    ecrmode_after: 8
+    
+  - name: "25h-05: Команда недоступна в состоянии 1 (выдача данных)"
+    testtype: command
+    command: "25 1E 00 00 00 00"
+    ecrmode_before: 1
+    ecrmode_after: 1
+    resultcode: 115
+    
+  - name: "25h-06: Неверный тип отрезки 2"
+    testtype: command
+    command: "25 1E 00 00 00 02"
+    resultcode: 51
+    
+  - name: "25h-07: Неверный тип отрезки FF"
+    testtype: command
+    command: "25 1E 00 00 00 FF"
+    resultcode: 51
+    
+  - name: "25h-08: Неверный пароль"
+    testtype: command
+    command: "25 FF FF FF FF 00"
+    resultcode: 79
+    
+  - name: "25h-09: Неверная длина команды"
+    testtype: command
+    command: "25 1E 00 00 00"
+    resultcode: 126

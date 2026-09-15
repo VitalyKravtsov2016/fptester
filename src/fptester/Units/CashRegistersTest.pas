@@ -1,4 +1,4 @@
-unit CashRegistersTest;
+п»їunit CashRegistersTest;
 
 interface
 
@@ -74,7 +74,7 @@ begin
       Check(Driver.GetCashRegEx);
 
     Result.IsSucceeded := Driver.ContentsOfCashRegister = expected_value;
-    Result.Text := Format('Регистр: %d, Ожидается: %.2f, получено: %.2f', [
+    Result.Text := Format('Р РµРіРёСЃС‚СЂ: %d, РћР¶РёРґР°РµС‚СЃСЏ: %.2f, РїРѕР»СѓС‡РµРЅРѕ: %.2f', [
       CashReg.number, expected_value, Driver.ContentsOfCashRegister]);
     if not Result.IsSucceeded then Break;
   end;

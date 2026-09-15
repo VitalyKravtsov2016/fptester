@@ -1,4 +1,4 @@
-unit DriverTester;
+п»їunit DriverTester;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   VSoft.YAML,
   // This
   DrvFRLib_TLB, FileUtils, DriverTest, CommandTest, ReceiptTest,
-  CashRegistersTest, LogFile;
+  CashRegistersTest, TableTest, LogFile;
 
 type
   { TTestReport }
@@ -54,6 +54,7 @@ type
     function GetContext: TDriverContext;
     procedure ExecuteTest(Test: TDriverTest);
   public
+    destructor Destroy; override;
     procedure Run;
     property Context: TDriverContext read GetContext;
     property Options: TTesterOptions read GetOptions write SetOptions;
@@ -107,60 +108,163 @@ var
   doc: IYAMLDocument;
   testType: string;
   Test: TDriverTest;
+  Unknown: TUnknownTest;
+  Loaded: Integer;
+  Skipped: Integer;
 begin
+  Loaded := 0;
+  Skipped := 0;
   doc := TYAML.LoadFromFile(FileName);
 
-  FName := doc.Root.GetValue('name').AsString;
-  FText := doc.Root.GetValue('text').AsString;
-  tests := doc.Root.GetValue('tests');
-  if (not tests.IsNull)and(tests.IsSequence) then
+  FName := ExtractFileName(FileName);
+  if doc.Root.TryGetValue('name', value) then
+    FName := value.AsString;
+  FText := '';
+  if doc.Root.TryGetValue('text', value) then
+    FText := value.AsString
+  else if doc.Root.TryGetValue('description', value) then
+    FText := value.AsString;
+
+  tests := nil;
+  if doc.Root.TryGetValue('tests', value) then
+    tests := value;
+  if (tests <> nil) and (not tests.IsNull) and tests.IsSequence then
   begin
     Sequence := tests.AsSequence;
-    if Sequence.Count > 0 then
+    for i := 0 to Sequence.Count-1 do
     begin
-      for i := 0 to Sequence.Count-1 do
-      begin
-        testNode := Sequence.Items[i];
+      testNode := Sequence.Items[i];
+      Test := nil;
+      testtype := 'command';
+      if testNode.TryGetValue('testtype', value) then
+        testtype := LowerCase(Trim(value.AsString));
 
-        testtype := 'command';
-        if testNode.TryGetValue('testtype', value) then
-          testtype := value.AsString;
-
-        if testtype = 'command' then
+      try
+        if (testtype = 'command') or (testtype = '') then
         begin
           Test := TCommandTest.CreateTest(Context);
-          Test.Load(testNode);
-          FTests.Add(Test);
-        end;
-
-        (*
-        if testtype = 'read_cash_register' then
+        end
+        else if testtype = 'commands' then
         begin
-          //Test := TCashRegisterTest.Create;
-          Test.Load(testNode);
-          FTests.Add(Test);
-        end;
-        *)
-
-        if testtype = 'read_cash_registers' then
+          Test := TCommandsTest.CreateTest(Context);
+        end
+        else if testtype = 'read_cash_registers' then
         begin
           Test := TCashRegistersTest.CreateTest(Context);
-          Test.Load(testNode);
-          FTests.Add(Test);
-        end;
-
-        if testtype = 'receipt_test' then
+        end
+        else if (testtype = 'receipt_test') or (testtype = 'receipt') then
         begin
           Test := TReceiptTest.CreateTest(Context);
-          Test.Load(testNode);
-          FTests.Add(Test);
+        end
+        else if (testtype = 'table_field') or (testtype = 'table') then
+        begin
+          Test := TTableFieldTest.CreateTest(Context);
+        end
+        else if (testtype = 'all_table_fields') or (testtype = 'all_tables') then
+        begin
+          Test := TAllTableFieldsTest.CreateTest(Context);
+        end
+        else if (testtype = 'table_cash_zero') or (testtype = 'auto_zero_cash') then
+        begin
+          Test := TAutoZeroCashTest.CreateTest(Context);
+        end
+        else if (testtype = 'table_ad_text') or (testtype = 'ad_text') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfAdText;
+        end
+        else if (testtype = 'table_z_grand_total') or (testtype = 'grand_total') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfGrandTotal;
+        end
+        else if (testtype = 'table_drawer') or (testtype = 'drawer') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfDrawer;
+        end
+        else if (testtype = 'table_cut') or (testtype = 'cut') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfCut;
+        end
+        else if (testtype = 'table_frac_qty') or (testtype = 'frac_qty') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfFracQty;
+        end
+        else if (testtype = 'table_drawer_level') or (testtype = 'drawer_level') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfDrawerLevel;
+        end
+        else if (testtype = 'table_drawer_pulse') or (testtype = 'drawer_pulse') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfDrawerPulse;
+        end
+        else if (testtype = 'table_near_end') or (testtype = 'near_end') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfNearEnd;
+        end
+        else if (testtype = 'table_tax_mode') or (testtype = 'tax_mode') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfTaxMode;
+        end
+        else if (testtype = 'table_auto_time') or (testtype = 'auto_time') then
+        begin
+          Test := TTableFlagTest.CreateTest(Context);
+          TTableFlagTest(Test).Kind := tfAutoTime;
+        end
+        else
+        begin
+          Unknown := TUnknownTest.CreateTest(Context);
+          Unknown.UnknownType := testtype;
+          Test := Unknown;
+        end;
+
+        Test.Load(testNode);
+        if Test.name = '' then
+          Test.name := Format('%s #%d', [ExtractFileName(FileName), i + 1]);
+        FTests.Add(Test);
+        Test := nil;
+        Inc(Loaded);
+      except
+        on E: Exception do
+        begin
+          Test.Free;
+          Inc(Skipped);
+          Logger.Error(Format('Load error %s test %d: %s',
+            [ExtractFileName(FileName), i + 1, E.Message]));
+          Unknown := TUnknownTest.CreateTest(Context);
+          Unknown.UnknownType := testtype;
+          Unknown.name := Format('%s #%d: %s',
+            [ExtractFileName(FileName), i + 1, E.Message]);
+          FTests.Add(Unknown);
         end;
       end;
     end;
   end;
+  Logger.Debug(Format('  %s: %d tests', [ExtractFileName(FileName), Loaded]));
+  if Skipped > 0 then
+    Logger.Error(Format('  %s: %d tests failed to parse',
+      [ExtractFileName(FileName), Skipped]));
 end;
 
 { TDriverTester }
+
+destructor TDriverTester.Destroy;
+begin
+  if FContext <> nil then
+  begin
+    FContext.StopEmulator;
+    FContext.Free;
+    FContext := nil;
+  end;
+  inherited Destroy;
+end;
 
 procedure TDriverTester.Run;
 begin
@@ -168,17 +272,26 @@ begin
   FReport.SuccessCount := 0;
   FReport.StartTime := Now;
 
-
   ShowVersion;
+  if Options.UseEmulator then
+    Logger.Debug('Mode: QEMU emulator (FrEmu.Printer)')
+  else
+    Logger.Debug('Mode: real fiscal printer');
   try
-    Context.TestConnection;
-    ExecuteTestFiles;
-    WriteReport;
-  except
-    on E: Exception do
-    begin
-      Context.Error(E.Message);
+    try
+      Context.StartEmulator;
+      Context.ConfigureDriver;
+      Context.TestConnection;
+      ExecuteTestFiles;
+      WriteReport;
+    except
+      on E: Exception do
+      begin
+        Context.Error(E.Message);
+      end;
     end;
+  finally
+    Context.StopEmulator;
   end;
 end;
 
@@ -192,21 +305,60 @@ begin
   Logger.Debug('Fiscal printer tester 1.0, 2026');
 end;
 
+procedure AddYamlFromDir(Files: TStrings; const Dir: string);
+var
+  i, j: Integer;
+  Found: TStringList;
+  FullName, ShortName: string;
+  Exists: Boolean;
+begin
+  if (Dir = '') or not DirectoryExists(ExcludeTrailingPathDelimiter(Dir)) then
+    Exit;
+  Found := TStringList.Create;
+  try
+    GetFileNames(Found, IncludeTrailingPathDelimiter(Dir), '*.yaml');
+    for i := 0 to Found.Count - 1 do
+    begin
+      FullName := Found[i];
+      ShortName := ExtractFileName(FullName);
+      Exists := False;
+      for j := 0 to Files.Count - 1 do
+      begin
+        if SameText(ExtractFileName(Files[j]), ShortName) then
+        begin
+          Exists := True;
+          Break;
+        end;
+      end;
+      if not Exists then
+        Files.Add(FullName);
+    end;
+  finally
+    Found.Free;
+  end;
+end;
+
 procedure TDriverTester.ExecuteTestFiles;
 var
   i: Integer;
   Files: TStrings;
-const
-  FileMask = '\*.yaml';
 begin
   Files := TStringList.Create;
   try
-    GetFileNames(Files, Options.FilesPath, FileMask);
-    Logger.Debug(Format('Найдено файлов тестов: %d', [Files.Count]));
-    for i := 0 to Files.Count-1 do
+    AddYamlFromDir(Files, Options.FilesPath);
+    if not Options.TestsPathSpecified then
     begin
-      ExecuteTestFile(Files[i]);
+      AddYamlFromDir(Files, GetModulePath + 'data\');
+      AddYamlFromDir(Files, GetModulePath + 'tests\');
+      AddYamlFromDir(Files, ExpandFileName(GetModulePath + '..\..\res\tests\'));
+      AddYamlFromDir(Files, ExpandFileName(GetModulePath + '..\res\tests\'));
     end;
+    TStringList(Files).Sort;
+    Logger.Debug(Format('Test files: %d', [Files.Count]));
+    if Files.Count = 0 then
+      Logger.Error('No YAML tests found in ' + Options.FilesPath);
+    for i := 0 to Files.Count - 1 do
+      ExecuteTestFile(Files[i]);
   finally
     Files.Free;
   end;
@@ -218,7 +370,17 @@ var
 begin
   TestSuite := TDriverTestSuite.Create;
   try
-    TestSuite.LoadFromFile(FileName, Context);
+    try
+      TestSuite.LoadFromFile(FileName, Context);
+    except
+      on E: Exception do
+      begin
+        Context.Error(Format('File %s: %s', [ExtractFileName(FileName), E.Message]));
+        Exit;
+      end;
+    end;
+    if TestSuite.Tests.Count = 0 then
+      Logger.Error('No tests loaded from ' + ExtractFileName(FileName));
     ExecuteTestSuite(TestSuite);
   finally
     TestSuite.Free;
@@ -229,7 +391,12 @@ procedure TDriverTester.ExecuteTestSuite(TestSuite: TDriverTestSuite);
 var
   Test: TDriverTest;
 begin
-  Context.ResetEcr;
+  try
+    Context.ResetEcr;
+  except
+    on E: Exception do
+      Context.Error('ResetEcr: ' + E.Message);
+  end;
   Logger.Debug(Separator);
   Logger.Debug(TestSuite.name);
   for Test in TestSuite.tests do
@@ -244,15 +411,17 @@ var
   Result: TTestResult;
 begin
   try
+    Context.CurrentTestName := Test.name;
     Context.StartTest;
-    //Context.ResetEcr; !!!
     Context.SetEcrMode(Test.ecrmode_before);
     Result := Test.Execute;
     if Result.IsSucceeded then
     begin
       Context.CheckEcrMode2(Test.ecrmode_after);
-      //Context.CheckTextPrinted(Test.text_printed);
-      //Context.CheckGraphicsPrinted(Test.graphics_file_name);
+      if Test.text_printed <> '' then
+        Context.CheckTextPrinted(Test.text_printed);
+      if Test.graphics_file_name <> '' then
+        Context.CheckGraphicsPrinted(Test.graphics_file_name);
 
       Inc(FReport.SuccessCount);
       Context.Debug('[+] ' + Test.name);
@@ -289,10 +458,10 @@ begin
   if FReport.TotalCount > 0 then
     SuccessPercents := Round(FReport.SuccessCount *100 / FReport.TotalCount);
 
-  Logger.Debug(Format('Успешно выполнено: %d из %d, %d %%', [
+  Logger.Debug(Format('РЈСЃРїРµС€РЅРѕ РІС‹РїРѕР»РЅРµРЅРѕ: %d РёР· %d, %d %%', [
     FReport.SuccessCount, FReport.TotalCount, SuccessPercents]));
 
-  Logger.Debug(FormatDateTime('Время выполнения: hh:mm:ss', Now-FReport.StartTime));
+  Logger.Debug(FormatDateTime('Р’СЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ: hh:mm:ss', Now-FReport.StartTime));
 end;
 
 end.

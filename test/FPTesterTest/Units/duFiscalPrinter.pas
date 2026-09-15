@@ -8,7 +8,7 @@ uses
   // DUnit
   TestFramework,
   // This
-  DrvFRLib_TLB;
+  DrvFRLib_TLB, FrEmuPrinter, ComPortPair;
 
 const
   FPTR_MODE_DUMP   			  = $01; // Dump mode
@@ -34,6 +34,8 @@ type
   TFiscalPrinterTest = class(TTestCase)
   private
     Driver: TDrvFR;
+    FEmu: TFrEmuPrinter;
+    FUseEmu: Boolean;
     procedure Check(ResultCode: Integer);
     procedure ResetEcr;
   public
@@ -97,14 +99,56 @@ begin
 end;
 
 procedure TFiscalPrinterTest.SetUp;
+var
+  EmuPort: string;
+  DriverNumber: Integer;
+  i, P: Integer;
+  S, Key, Val: string;
 begin
   OleCheck(CoInitialize(nil));
+  FUseEmu := FindCmdLineSwitch('EMU', ['-', '/'], True);
+  EmuPort := '';
+  DriverNumber := 0;
+  for i := 1 to ParamCount do
+  begin
+    S := ParamStr(i);
+    if (Length(S) > 0) and ((S[1] = '-') or (S[1] = '/')) then
+      Delete(S, 1, 1);
+    P := Pos(':', S);
+    if P > 0 then
+    begin
+      Key := UpperCase(Copy(S, 1, P - 1));
+      Val := Copy(S, P + 1, MaxInt);
+    end else
+    begin
+      Key := UpperCase(S);
+      Val := '';
+    end;
+    if Key = 'COM' then
+      DriverNumber := StrToIntDef(Val, 0)
+    else if Key = 'EMUCOM' then
+      EmuPort := Val;
+  end;
+  if FUseEmu then
+  begin
+    ResolveEmulatorComPair(EmuPort, DriverNumber);
+    FEmu := TFrEmuPrinter.Create;
+    FEmu.Start(EmuPort, '');
+  end;
   Driver := TDrvFR.Create(nil);
+  if FUseEmu then
+  begin
+    Driver.ConnectionType := 0;
+    Driver.ComNumber := DriverNumber;
+    Driver.BaudRate := 6;
+  end;
 end;
 
 procedure TFiscalPrinterTest.TearDown;
 begin
   Driver.Free;
+  Driver := nil;
+  FreeAndNil(FEmu);
 end;
 
 procedure TFiscalPrinterTest.TestConfirmDate;

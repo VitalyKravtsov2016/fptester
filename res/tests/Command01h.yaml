@@ -33,101 +33,101 @@ name: "Команда 01h"
 description: "Запрос дампа"
 
 tests:
-  - name: "Корректный код устройства 6"
+  - name: "01h-01: Корректный код устройства 6"
     command: "01 00 00 00 00 06"
     response: "01 00 00 XX"
     ecrmode_before: 4
     ecrmode_after: 1
     
-  - name: "Корректный код устройства 7"
+  - name: "01h-02: Корректный код устройства 7"
     command: "01 00 00 00 00 07"
     response: "01 00 00 XX"
     ecrmode_before: 4
     ecrmode_after: 1
     
-  - name: "Команда поддерживается в состоянии 2, Открытая смена"
+  - name: "01h-03: Команда поддерживается в состоянии 2, Открытая смена"
     command: "01 00 00 00 00 06"
     response: "01 00 00 XX"
     ecrmode_before: 2
     ecrmode_after: 1
     
-  - name: "Команда поддерживается в состоянии 6, confirmDate"
+  - name: "01h-04: Команда поддерживается в состоянии 6, confirmDate"
     command: "01 00 00 00 00 06"
     response: "01 00 00 XX"
     ecrmode_before: 6
     ecrmode_after: 1
     
-  - name: "Команда не поддерживается в состоянии 1, Выдача данных"
+  - name: "01h-05: Команда не поддерживается в состоянии 1, Выдача данных"
     command: "01 00 00 00 00 06"
     ecrmode_before: 1
     ecrmode_after: 1
     resultcode: 115
     
-  - name: "Команда не поддерживается в состоянии 8, openrec"
+  - name: "01h-06: Команда не поддерживается в состоянии 8, openrec"
     command: "01 00 00 00 00 06"
     ecrmode_before: 8
     ecrmode_after: 8
     resultcode: 115
     
-  - name: "Команда не поддерживается в состоянии 10, test"
+  - name: "01h-07: Команда не поддерживается в состоянии 10, test"
     command: "01 00 00 00 00 06"
     ecrmode_before: 10
     ecrmode_after: 10
     resultcode: 115
     
-  - name: "Неверный код устройства 00"
+  - name: "01h-08: Неверный код устройства 00"
     command: "01 00 00 00 00 00"
     ecrmode_before: 4
     resultcode: 51
     
-  - name: "Неверный код устройства 01"
+  - name: "01h-09: Неверный код устройства 01"
     command: "01 00 00 00 00 01"
     resultcode: 51
     
-  - name: "Неверный код устройства 02"
+  - name: "01h-10: Неверный код устройства 02"
     command: "01 00 00 00 00 02"
     resultcode: 51
     
-  - name: "Неверный код устройства 03"
+  - name: "01h-11: Неверный код устройства 03"
     command: "01 00 00 00 00 03"
     resultcode: 51
     
-  - name: "Неверный код устройства 04"
+  - name: "01h-12: Неверный код устройства 04"
     command: "01 00 00 00 00 04"
     resultcode: 51
     
-  - name: "Неверный код устройства 05"
+  - name: "01h-13: Неверный код устройства 05"
     command: "01 00 00 00 00 05"
     resultcode: 51
 
-  - name: "Неверный код устройства 08"
+  - name: "01h-14: Неверный код устройства 08"
     command: "01 00 00 00 00 08"
     resultcode: 51
     
-  - name: "Неверный код устройства 09"
+  - name: "01h-15: Неверный код устройства 09"
     command: "01 00 00 00 00 09"
     resultcode: 51
     
-  - name: "Неверный код устройства 0A"
+  - name: "01h-16: Неверный код устройства 0A"
     command: "01 00 00 00 00 0A"
     resultcode: 51
     
-  - name: "Неверный код устройства 86"
+  - name: "01h-17: Неверный код устройства 86"
     command: "01 00 00 00 00 86"
     resultcode: 51
     
-  - name: "Неверная длина команды"
+  - name: "01h-18: Неверная длина команды"
     command: "01"
     resultcode: 126
 
-  - name: "Неверная длина команды 2"
+  - name: "01h-19: Неверная длина команды 2"
     command: "01 1E"
     resultcode: 126
    
-  - name: "Неверная длина команды 3"
+  - name: "01h-20: Неверная длина команды 3"
     command: "01 1E 00 00 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF"
     resultcode: 126
     
-  - name: "Неверный пароль"
+  - name: "01h-21: Неверный пароль"
     command: "01 FF FF FF FF 03"
     resultcode: 79

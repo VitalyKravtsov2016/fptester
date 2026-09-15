@@ -21,85 +21,84 @@ name: "Команда 14h"
 description: "Установка параметров обмена"
 
 tests:
-  - name: "Команда 14 - ошибка 126"
+  - name: "14h-01: Команда 14 - ошибка 126"
     testtype: command
     command: "14"
     resultcode: 126
     
-  - name: "Установка скорости 115200"
+  - name: "14h-02: Установка скорости 115200"
     testtype: command
     command: "14 1E 00 00 00 00 06 80"
     response: "14 00"
     resultcode: 00
     baudrate_after: 6
     
-  - name: "Установка скорости 4800"
+  - name: "14h-03: Установка скорости 4800"
     testtype: command
     command: "14 1E 00 00 00 00 01 80"
     response: "14 00"
     resultcode: 00
     baudrate_after: 1
 
-  - name: "Установка скорости 9600"
+  - name: "14h-04: Установка скорости 9600"
     testtype: command
     command: "14 1E 00 00 00 00 02 80"
     response: "14 00"
     resultcode: 00
     baudrate_after: 2
 
-  - name: "Установка скорости 19200"
+  - name: "14h-05: Установка скорости 19200"
     testtype: command
     command: "14 1E 00 00 00 00 03 80"
     response: "14 00"
     resultcode: 00
     baudrate_after: 3
     
-  - name: "Установка скорости 38400"
+  - name: "14h-06: Установка скорости 38400"
     testtype: command
     command: "14 1E 00 00 00 00 04 80"
     response: "14 00"
     resultcode: 00
     baudrate_after: 4
 
-  - name: "Установка скорости 57600"
+  - name: "14h-07: Установка скорости 57600"
     testtype: command
     command: "14 1E 00 00 00 00 05 80"
     response: "14 00"
     resultcode: 00
     baudrate_after: 5
     
-  - name: "Установка скорости 115200"
+  - name: "14h-08: Установка скорости 115200"
     testtype: command
     command: "14 1E 00 00 00 00 06 80"
     response: "14 00"
     resultcode: 00
     baudrate_after: 6
     
-  - name: "Установка скорости 230400"
+  - name: "14h-09: Установка скорости 230400"
     testtype: command
     command: "14 1E 00 00 00 00 07 80"
     response: "14 00"
     resultcode: 51
     baudrate_after: 6
     
-  - name: "Установка скорости 460800"
+  - name: "14h-10: Установка скорости 460800"
     testtype: command
     command: "14 1E 00 00 00 00 08 80"
     response: "14 00"
     resultcode: 51
     baudrate_after: 6
     
-  - name: "Установка скорости 921600"
+  - name: "14h-11: Установка скорости 921600"
     testtype: command
     command: "14 1E 00 00 00 00 09 80"
     response: "14 00"
     resultcode: 51
     baudrate_after: 6
     
-  - name: "Установка скорости с кодом 0xFF"
+  - name: "14h-12: Установка скорости с кодом 0xFF"
     testtype: command
     command: "14 1E 00 00 00 00 FF 80"
     response: "14 00"
     resultcode: 51
     baudrate_after: 6
-

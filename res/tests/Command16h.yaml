@@ -16,15 +16,14 @@ name: "Команда 16h"
 description: "Технологическое обнуление"
 
 tests:
-  - name: "Команда 16, в закрытой смене не выполняется"
+  - name: "16h-01: Команда 16, в закрытой смене не выполняется"
     testtype: command
     command: "16"
     ecrmode_before: 4
     ecrmode_after: 4
     resultcode: 115
     
-  - name: "Команда 16 - неверная длина команды"
+  - name: "16h-02: Команда 16 - неверная длина команды"
     testtype: command
     command: "16 00"
     resultcode: 126
-    

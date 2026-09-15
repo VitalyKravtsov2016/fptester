@@ -1,4 +1,4 @@
-unit DriverTest;
+п»їunit DriverTest;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   // 3'd
   VSoft.YAML,
   // This
-  DrvFRLib_TLB, LogFile;
+  DrvFRLib_TLB, LogFile, FrEmuPrinter, FileUtils;
 
 const
   FPTR_MODE_DUMP   			  = $01; // Dump mode
@@ -61,6 +61,11 @@ type
   TTesterOptions = record
     FilesPath: string;
     Verbose: Boolean;
+    UseEmulator: Boolean;
+    EmuComPort: string;
+    FlashPath: string;
+    DriverComNumber: Integer;
+    TestsPathSpecified: Boolean;
   end;
 
   { TTestResult }
@@ -75,6 +80,7 @@ type
   TDriverContext = class
   private
     FDriver: TDrvFR;
+    FEmu: TFrEmuPrinter;
     FLines: TStrings;
     FGraphics: TIdBytes;
     FTextServer: TIdTCPServer;
@@ -82,8 +88,11 @@ type
     FOptions: TTesterOptions;
     FConsoleInfo: TConsoleScreenBufferInfo;
     FStates: TDictionary<string, TFiscalPrinterState>;
+    FCurrentTestName: string;
+    FReceiptSeq: Integer;
     procedure DebugVerbose(const s: string);
     procedure ErrorVerbose(const s: string);
+    procedure ComparePrintedText(const Expected, Actual: string);
   public
     function GetDriver: TDrvFR;
     function IsEquals(Item1, Item2: TFiscalPrinterState): Boolean;
@@ -129,8 +138,22 @@ type
     procedure StartGraphicsServer(Port: Integer);
     procedure CheckGraphicsPrinted(const FileName: string);
 
+    procedure StartEmulator;
+    procedure StopEmulator;
+    procedure ConfigureDriver;
+
+    procedure ClearPrintedText;
+    function WaitPrintedText: string;
+    procedure SaveReceiptSnapshot;
+    procedure EnsureShiftOpen;
+    procedure PrintSimpleSaleReceipt; overload;
+    procedure PrintSimpleSaleReceipt(Department, PaymentIndex: Integer); overload;
+    procedure PrintSimpleSaleReceipt(Department, PaymentIndex, TaxIndex: Integer); overload;
+
     property Driver: TDrvFR read GetDriver;
+    property Emu: TFrEmuPrinter read FEmu;
     property Options: TTesterOptions read FOptions write FOptions;
+    property CurrentTestName: string read FCurrentTestName write FCurrentTestName;
   end;
 
   { TDriverTest }
@@ -159,6 +182,14 @@ type
     property Options: TTesterOptions read GetOptions;
   end;
   TDriverTests = TObjectList<TDriverTest>;
+
+  { TUnknownTest }
+
+  TUnknownTest = class(TDriverTest)
+  public
+    UnknownType: string;
+    function Execute: TTestResult; override;
+  end;
 
   { TModifiedCashReg }
 
@@ -227,7 +258,9 @@ procedure TDriverTest.Load(node: IYAMLValue);
 var
   value : IYAMLValue;
 begin
-  Name := node.GetValue('name').AsString;
+  Name := '';
+  if node.TryGetValue('name', value) then
+    Name := value.AsString;
 
   ecrmode_before := 0;
   if node.TryGetValue('ecrmode_before', value) then
@@ -245,6 +278,14 @@ begin
     text_printed := value.AsString;
 end;
 
+{ TUnknownTest }
+
+function TUnknownTest.Execute: TTestResult;
+begin
+  Result.IsSucceeded := False;
+  Result.Text := Format('unknown testtype "%s"', [UnknownType]);
+end;
+
 { TDriverContext }
 
 procedure TDriverContext.SetEcrMode(ecrmode: Integer);
@@ -254,6 +295,12 @@ begin
   if ecrmode = 0 then Exit;
 
   DebugVerbose('SetEcrMode...');
+  Check(Driver.GetShortECRStatus);
+  if Driver.ECRMode = ecrmode then
+  begin
+    DebugVerbose('SetEcrMode: OK');
+    Exit;
+  end;
   case ecrmode of
     FPTR_MODE_DUMP:
     begin
@@ -272,8 +319,28 @@ begin
     end;
     FPTR_MODE_24NOTOVER:
     begin
-      Check(Driver.OpenSession);
-      Check(Driver.WaitForPrinting);
+      if Driver.ECRMode = FPTR_MODE_REC then
+        Check(Driver.SysAdminCancelCheck);
+      if Driver.ECRMode = FPTR_MODE_24OVER then
+      begin
+        Check(Driver.PrintReportWithCleaning);
+        Check(Driver.WaitForPrinting);
+        Check(Driver.GetShortECRStatus);
+      end;
+      if Driver.ECRMode <> FPTR_MODE_24NOTOVER then
+      begin
+        Check(Driver.OpenSession);
+        Check(Driver.WaitForPrinting);
+        Check(Driver.GetShortECRStatus);
+      end;
+      if Driver.ECRMode = FPTR_MODE_24OVER then
+      begin
+        Check(Driver.PrintReportWithCleaning);
+        Check(Driver.WaitForPrinting);
+        Check(Driver.OpenSession);
+        Check(Driver.WaitForPrinting);
+        Check(Driver.GetShortECRStatus);
+      end;
       CheckEcrMode(FPTR_MODE_24NOTOVER);
     end;
     FPTR_MODE_TEST:
@@ -304,7 +371,7 @@ begin
     FPTR_MODE_SLPPRINT,
     FPTR_MODE_SLPREADY:
     begin
-      raise Exception.CreateFmt('Нельзя перевести ФР в состояние, %d', [ecrmode]);
+      raise Exception.CreateFmt('РќРµР»СЊР·СЏ РїРµСЂРµРІРµСЃС‚Рё Р¤Р  РІ СЃРѕСЃС‚РѕСЏРЅРёРµ, %d', [ecrmode]);
     end;
   end;
   DebugVerbose('SetEcrMode: OK');
@@ -322,6 +389,9 @@ end;
 
 destructor TDriverContext.Destroy;
 begin
+  StopEmulator;
+  FDriver.Free;
+  FDriver := nil;
   FLines.Free;
   FStates.Free;
   FTextServer.Free;
@@ -402,7 +472,7 @@ end;
 procedure TDriverContext.CheckEcrMode(EcrMode: Integer);
 begin
   if EcrMode <> Driver.EcrMode then
-    raise Exception.CreateFmt('Другое состояние ФР, %d <> %d', [
+    raise Exception.CreateFmt('СЂРµР¶РёРј РљРљРў, %d <> %d', [
     EcrMode, Driver.EcrMode]);
 end;
 
@@ -413,11 +483,11 @@ begin
     Check(Driver.GetShortECRStatus);
     if ecrmode <> Driver.ECRMode then
     begin
-      ErrorVerbose('Ошибка: не совпадает состояние');
-      ErrorVerbose(Format('Ожидается состояние : %d.', [ecrmode]));
-      ErrorVerbose(Format('Получено состояние  : %d.', [Driver.ECRMode]));
+      ErrorVerbose('РћС€РёР±РєР°: РЅРµ РґРѕСЃС‚РёРіРЅСѓС‚Рѕ СЃРѕСЃС‚РѕСЏРЅРёРµ');
+      ErrorVerbose(Format('РћР¶РёРґР°РµРјРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ : %d.', [ecrmode]));
+      ErrorVerbose(Format('РўРµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ  : %d.', [Driver.ECRMode]));
 
-      raise Exception.CreateFmt('Ожидается состояние : %d, получено: %d', [
+      raise Exception.CreateFmt('РѕР¶РёРґР°РµРјРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ : %d, С‚РµРєСѓС‰РµРµ: %d', [
         ecrmode, Driver.ECRMode]);
     end;
   end;
@@ -428,14 +498,14 @@ var
   i: Integer;
 begin
   Result := True;
-  // Денежные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   for i := 0 to Length(Item1.CashRegs)-1 do
   begin
     Result := Item1.CashRegs[i].Number = Item2.CashRegs[i].Number;
     if not Result then
     begin
-      Error('Не совпадают номера денежных регистров');
-      Error(Format('Ожидается: %d, получено: %d', [
+      Error('РќРµ СЃРѕРІРїР°РґР°СЋС‚ РЅРѕРјРµСЂР° РґРµРЅРµР¶РЅС‹С… СЂРµРіРёСЃС‚СЂРѕРІ');
+      Error(Format('РћР¶РёРґР°РµС‚СЃСЏ: %d, РїРѕР»СѓС‡РµРЅРѕ: %d', [
         Item1.CashRegs[i].Number,
         Item2.CashRegs[i].Number]));
       Exit;
@@ -443,21 +513,21 @@ begin
     Result := Item1.CashRegs[i].Value = Item2.CashRegs[i].Value;
     if not Result then
     begin
-      Error('Не совпадают значения денежных регистров');
-      Error(Format('Ожидается: %.2f, получено: %.2f', [
+      Error('РќРµ СЃРѕРІРїР°РґР°СЋС‚ Р·РЅР°С‡РµРЅРёСЏ РґРµРЅРµР¶РЅС‹С… СЂРµРіРёСЃС‚СЂРѕРІ');
+      Error(Format('РћР¶РёРґР°РµС‚СЃСЏ: %.2f, РїРѕР»СѓС‡РµРЅРѕ: %.2f', [
         Item1.CashRegs[i].Value,
         Item2.CashRegs[i].Value]));
       Exit;
     end;
   end;
-  // Операционные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   for i := 0 to Length(Item1.OperRegs)-1 do
   begin
     Result := Item1.OperRegs[i].Number = Item2.OperRegs[i].Number;
     if not Result then
     begin
-      Error('Не совпадают номера операционных регистров');
-      Error(Format('Ожидается: %d, получено: %d', [
+      Error('РќРµ СЃРѕРІРїР°РґР°СЋС‚ РЅРѕРјРµСЂР° РѕРїРµСЂР°С†РёРѕРЅРЅС‹С… СЂРµРіРёСЃС‚СЂРѕРІ');
+      Error(Format('РћР¶РёРґР°РµС‚СЃСЏ: %d, РїРѕР»СѓС‡РµРЅРѕ: %d', [
         Item1.OperRegs[i].Number,
         Item2.OperRegs[i].Number]));
       Exit;
@@ -465,11 +535,11 @@ begin
     Result := Item1.OperRegs[i].Value = Item2.OperRegs[i].Value;
     if not Result then
     begin
-      Error(Format('Не совпадают значения операционного регистра %d, %s', [
+      Error(Format('РќРµ СЃРѕРІРїР°РґР°СЋС‚ Р·РЅР°С‡РµРЅРёСЏ РѕРїРµСЂР°С†РёРѕРЅРЅРѕРіРѕ СЂРµРіРёСЃС‚СЂР° %d, %s', [
         Item1.OperRegs[i].Number,
         Item1.OperRegs[i].Name]));
 
-      Error(Format('Ожидается: %d, получено: %d', [
+      Error(Format('РћР¶РёРґР°РµС‚СЃСЏ: %d, РїРѕР»СѓС‡РµРЅРѕ: %d', [
         Item1.OperRegs[i].Value,
         Item2.OperRegs[i].Value]));
       Exit;
@@ -493,7 +563,7 @@ begin
   Count := (MaxCashReg - MinCashReg + 1) + (MaxCashReg2 - MinCashReg2 + 1);
   SetLength(Result.CashRegs, Count);
   Index := 0;
-  // Денежные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   for i := MinCashReg to MaxCashReg do
   begin
     Driver.RegisterNumber := i;
@@ -503,7 +573,7 @@ begin
     Result.CashRegs[Index].Value := Driver.ContentsOfCashRegister;
     Inc(Index);
   end;
-  // Расширенные денежные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   for i := MinCashReg2 to MaxCashReg2 do
   begin
     Driver.RegisterNumber := i;
@@ -513,7 +583,7 @@ begin
     Result.CashRegs[Index].Value := Driver.ContentsOfCashRegister;
     Inc(Index);
   end;
-  // Операционные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   Index := 0;
   Count := MaxOperationReg - MinOperationReg + 1;
   SetLength(Result.OperRegs, Count);
@@ -528,17 +598,63 @@ begin
   end;
 end;
 
-procedure TDriverContext.TestConnection;
+procedure TDriverContext.ConfigureDriver;
 begin
+  if Options.UseEmulator then
+  begin
+    if (Options.DriverComNumber <= 0) or (Options.EmuComPort = '') then
+      raise Exception.Create('Emulator COM pair is not resolved');
+    Driver.ConnectionType := 0;
+    Driver.ComNumber := Options.DriverComNumber;
+    Driver.BaudRate := 6;
+    Debug(Format('Driver: COM%d, 115200 (emulator UART %s)',
+      [Driver.ComNumber, Options.EmuComPort]));
+  end
+  else if Options.DriverComNumber > 0 then
+  begin
+    Driver.ConnectionType := 0;
+    Driver.ComNumber := Options.DriverComNumber;
+  end;
+end;
+
+procedure TDriverContext.StartEmulator;
+begin
+  if not Options.UseEmulator then
+    Exit;
+  if FEmu = nil then
+    FEmu := TFrEmuPrinter.Create;
+  Debug(Format('Starting FrEmu.Printer, port %s', [Options.EmuComPort]));
+  FEmu.Start(Options.EmuComPort, Options.FlashPath);
+end;
+
+procedure TDriverContext.StopEmulator;
+begin
+  FreeAndNil(FEmu);
+end;
+
+procedure TDriverContext.TestConnection;
+var
+  i: Integer;
+begin
+  if Options.UseEmulator then
+  begin
+    for i := 1 to 120 do
+    begin
+      Driver.Connect;
+      if Driver.ResultCode = 0 then
+        Break;
+      Sleep(500);
+    end;
+  end;
   Check(Driver.Connect);
   Check(Driver.GetECRStatus);
   Check(Driver.GetDeviceMetrics);
 
   Logger.Debug(Separator);
-  Logger.Debug('Успешно подключен к ФР');
-  Logger.Debug(Format('Модель ФР : %d, %s', [Driver.UModel, Driver.UDescription]));
-  Logger.Debug(Format('Режим ФР  : %d, %s', [Driver.ECRMode, Driver.ECRModeDescription]));
-  Logger.Debug(Format('Версия ПО : %s, %d, %s', [Driver.ECRSoftVersion, Driver.ECRBuild, DateToStr(Driver.ECRSoftDate)]));
+  Logger.Debug('РўРµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ СЃ Р¤Р ');
+  Logger.Debug(Format('РњРѕРґРµР»СЊ Р¤Р  : %d, %s', [Driver.UModel, Driver.UDescription]));
+  Logger.Debug(Format('Р РµР¶РёРј Р¤Р   : %d, %s', [Driver.ECRMode, Driver.ECRModeDescription]));
+  Logger.Debug(Format('Р’РµСЂСЃРёСЏ Р¤Р  : %s, %d, %s', [Driver.ECRSoftVersion, Driver.ECRBuild, DateToStr(Driver.ECRSoftDate)]));
   Logger.Debug(Separator);
 end;
 
@@ -547,20 +663,27 @@ procedure TDriverContext.ResetEcr;
 const
   RepCount = 10;
 var
-  i: Integer;
-  Password: Integer;
+  i, j, Rc, SavedPassword: Integer;
 begin
   DebugVerbose('ResetEcr...');
   for i := 0 to RepCount - 1 do
   begin
-    Check(Driver.WaitForPrinting);
+    Rc := 0;
+    for j := 1 to 120 do
+    begin
+      Rc := Driver.WaitForPrinting;
+      if (Rc <> 80) and (Rc <> -34) and (Rc <> 30) then
+        Break;
+      Sleep(250);
+    end;
+    Check(Rc);
     case Driver.ECRMode of
       FPTR_MODE_DUMP:
       begin
-        Password := Driver.Password;
+        SavedPassword := Driver.Password;
         Driver.Password := 0;
         Check(Driver.InterruptDataStream);
-        Driver.Password := Password;
+        Driver.Password := SavedPassword;
       end;
       FPTR_MODE_24NOTOVER,
       FPTR_MODE_24OVER: Check(Driver.PrintReportWithCleaning);
@@ -574,7 +697,16 @@ begin
         Check(Driver.SetDate);
         Check(Driver.ConfirmDate);
       end;
-      FPTR_MODE_REC: Check(Driver.CancelCheck);
+      FPTR_MODE_REC:
+      begin
+        Rc := Driver.CancelCheck;
+        if (Rc = 80) or (Rc = -34) or (Rc = 30) then
+        begin
+          Sleep(400);
+          Continue;
+        end;
+        Check(Rc);
+      end;
       FPTR_MODE_TEST: Check(Driver.InterruptTest);
       FPTR_MODE_FULLREPORT,
       FPTR_MODE_EKLZREPORT,
@@ -591,7 +723,7 @@ begin
   FStates.Add(Name, ReadPrinterState);
 end;
 
-// Денежные регистры чека
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 procedure TDriverContext.CheckReceiptCashRegsZero;
 var
   CashReg: TCashReg;
@@ -606,13 +738,13 @@ begin
   begin
     if CashReg.Value <> 0 then
     begin
-      raise Exception.CreateFmt('Ненулевое значение денежного регистра %d, %s', [
+      raise Exception.CreateFmt('РќРµРЅСѓР»РµРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РґРµРЅРµР¶РЅРѕРіРѕ СЂРµРіРёСЃС‚СЂР° %d, %s', [
         CashReg.Number, CashReg.Name]);
     end;
   end;
 end;
 
-// Денежные регистры смены
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 procedure TDriverContext.CheckDayCashRegsZero;
 var
   CashReg: TCashReg;
@@ -630,7 +762,7 @@ begin
   begin
     if CashReg.Value <> 0 then
     begin
-      raise Exception.CreateFmt('Ненулевое значение денежного регистра %d, %s', [
+      raise Exception.CreateFmt('РќРµРЅСѓР»РµРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РґРµРЅРµР¶РЅРѕРіРѕ СЂРµРіРёСЃС‚СЂР° %d, %s', [
         CashReg.Number, CashReg.Name]);
     end;
   end;
@@ -679,13 +811,13 @@ var
   OperReg: TOperReg;
   OperRegs: TOperRegs;
 begin
-  // Операционные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   ReadOperRegsRange(OperRegs, 0, 71);
   for OperReg in OperRegs do
   begin
     if OperReg.Value <> 0 then
     begin
-      raise Exception.CreateFmt('Ненулевое значение операционного регистра %d, %s', [
+      raise Exception.CreateFmt('РќРµРЅСѓР»РµРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РѕРїРµСЂР°С†РёРѕРЅРЅРѕРіРѕ СЂРµРіРёСЃС‚СЂР° %d, %s', [
         OperReg.Number, OperReg.Name]);
     end;
   end;
@@ -696,13 +828,13 @@ var
   OperReg: TOperReg;
   OperRegs: TOperRegs;
 begin
-  // Операционные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   ReadOperRegsRange(OperRegs, 72, 147);
   for OperReg in OperRegs do
   begin
     if OperReg.Value <> 0 then
     begin
-      raise Exception.CreateFmt('Ненулевое значение операционного регистра %d, %s', [
+      raise Exception.CreateFmt('РќРµРЅСѓР»РµРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РѕРїРµСЂР°С†РёРѕРЅРЅРѕРіРѕ СЂРµРіРёСЃС‚СЂР° %d, %s', [
         OperReg.Number, OperReg.Name]);
     end;
   end;
@@ -738,6 +870,12 @@ end;
 
 procedure TDriverContext.StartTextServer(Port: Integer);
 begin
+  if Options.UseEmulator then
+  begin
+    if FEmu <> nil then
+      FEmu.ClearText;
+    Exit;
+  end;
   FLines.Clear;
   FTextServer.DefaultPort := Port;
   FTextServer.OnExecute := TextServerExecute;
@@ -746,6 +884,8 @@ end;
 
 procedure TDriverContext.StartGraphicsServer(Port: Integer);
 begin
+  if Options.UseEmulator then
+    Exit;
   FGraphicsServer.DefaultPort := Port;
   FGraphicsServer.OnExecute := GraphicsServerExecute;
   FGraphicsServer.Active := True;
@@ -769,53 +909,97 @@ end;
 
 procedure TDriverContext.StopTextServer;
 begin
+  if Options.UseEmulator then
+    Exit;
   FTextServer.Active := False;
 end;
 
 procedure TDriverContext.StopGraphicsServer;
 begin
+  if Options.UseEmulator then
+    Exit;
   FGraphicsServer.Active := False;
+end;
+
+procedure TDriverContext.ComparePrintedText(const Expected, Actual: string);
+var
+  i, Count: Integer;
+  ExpLines, ActLines: TStrings;
+begin
+  if Expected = Actual then
+    Exit;
+
+  ExpLines := TStringList.Create;
+  ActLines := TStringList.Create;
+  try
+    ExpLines.Text := Expected;
+    ActLines.Text := Actual;
+    if ExpLines.Count <> ActLines.Count then
+    begin
+      Logger.Debug('Line count mismatch.');
+      Logger.Debug(Format('Expected lines: %d, got: %d', [
+        ExpLines.Count, ActLines.Count]));
+    end;
+    Count := ExpLines.Count;
+    if ActLines.Count < Count then
+      Count := ActLines.Count;
+    for i := 0 to Count - 1 do
+    begin
+      if ExpLines[i] <> ActLines[i] then
+      begin
+        Logger.Debug(Format('Lines differ, index: %d.', [i]));
+        Logger.Debug(Format('Expected: "%s", got: "%s"', [
+          ExpLines[i], ActLines[i]]));
+      end;
+    end;
+    raise Exception.CreateFmt('Text mismatch. Expected: "%s", got: "%s"',
+      [Expected, Actual]);
+  finally
+    ExpLines.Free;
+    ActLines.Free;
+  end;
 end;
 
 procedure TDriverContext.CheckTextPrinted(const Text: string);
 var
   i: Integer;
-  ALines: TStrings;
+  Expected, Actual: string;
 begin
   if Text = '' then Exit;
 
-  if Text <> FLines.Text then
+  if Options.UseEmulator then
   begin
-
-    ALines := TStringList.Create;
-    try
-      ALines.Text := Text;
-      if FLines.Count <> ALines.Count then
+    if FEmu = nil then
+      raise Exception.Create('FR emulator is not started');
+    Expected := NormalizePrintedText(Text);
+    Actual := '';
+    for i := 1 to 25 do
+    begin
+      Actual := NormalizePrintedText(FEmu.ReadText);
+      if Actual = Expected then
       begin
-        Logger.Debug('Количество строк не совпадает.');
-        Logger.Debug(Format('Ожидается строк: %d, получено: %d', [
-          ALines.Count, FLines.Count]));
+        SaveReceiptSnapshot;
+        Exit;
       end;
-      for i := 0 to FLines.Count-1 do
-      begin
-        if ALines[i] <> FLines[i] then
-        begin
-          Logger.Debug(Format('Строки не совпадают, индекс: %d.', [i]));
-          Logger.Debug(Format('Ожидается строка: "%s", получена: "%s"', [
-            ALines[i], FLines[i]]));
-        end;
-      end;
-      raise Exception.CreateFmt('Текст не совпадает. Ожидается: "%s", получен: "%s"',
-        [Text, FLines.Text]);
-    finally
-      ALines.Free;
+      Sleep(200);
     end;
+    SaveReceiptSnapshot;
+    ComparePrintedText(Expected, Actual);
+    Exit;
   end;
+
+  ComparePrintedText(Text, FLines.Text);
 end;
 
 procedure TDriverContext.StartTest;
 begin
   SetLength(FGraphics, 0);
+  if Options.UseEmulator then
+  begin
+    if FEmu <> nil then
+      FEmu.ClearText;
+    Exit;
+  end;
   StartTextServer(TextServerPort);
   StartGraphicsServer(GraphicsServerPort);
 end;
@@ -823,23 +1007,264 @@ end;
 procedure TDriverContext.CheckGraphicsPrinted(const FileName: string);
 var
   i: Integer;
-  Bytes: TBytes;
+  Bytes, Actual: TBytes;
 begin
+  if FileName = '' then Exit;
+
   Bytes := ReadFileToBytes(FileName);
+  if Options.UseEmulator then
+  begin
+    if FEmu = nil then
+      raise Exception.Create('FR emulator is not started');
+    Actual := FEmu.ReadImage;
+    if Length(Bytes) <> Length(Actual) then
+      raise Exception.CreateFmt('Data length differs. Expected %d, got %d',
+        [Length(Bytes), Length(Actual)]);
+    for i := 0 to Length(Bytes) - 1 do
+    begin
+      if Bytes[i] <> Actual[i] then
+        raise Exception.Create('Data differs');
+    end;
+    Exit;
+  end;
+
   if Length(Bytes) <> Length(FGraphics) then
-    raise Exception.CreateFmt('Длина данных отличается. Ожидается %d, получено %d',
+    raise Exception.CreateFmt('Data length differs. Expected %d, got %d',
     [Length(Bytes), Length(FGraphics)]);
 
   for i := 0 to Length(Bytes)-1  do
   begin
     if Bytes[i] <> FGraphics[i] then
-      raise Exception.Create('Данные отличаются');
+      raise Exception.Create('Data differs');
   end;
 end;
 
+procedure TDriverContext.ClearPrintedText;
+begin
+  FLines.Clear;
+  if Options.UseEmulator and (FEmu <> nil) then
+    FEmu.ClearText;
+end;
 
+function SanitizeReceiptName(const S: string): string;
+var
+  i: Integer;
+  C: Char;
+begin
+  Result := '';
+  for i := 1 to Length(S) do
+  begin
+    C := S[i];
+    if CharInSet(C, ['A'..'Z', 'a'..'z', '0'..'9', '-', '_']) or
+      ((Ord(C) >= $0410) and (Ord(C) <= $044F)) or (C = #$0401) or (C = #$0451) then
+      Result := Result + C
+    else
+      Result := Result + '_';
+  end;
+  while (Length(Result) > 0) and (Result[Length(Result)] = '_') do
+    Delete(Result, Length(Result), 1);
+  if Length(Result) > 80 then
+    Result := Copy(Result, 1, 80);
+  if Result = '' then
+    Result := 'receipt';
+end;
 
+procedure TDriverContext.SaveReceiptSnapshot;
+var
+  Dir, Name, Path: string;
+begin
+  if not Options.UseEmulator or (FEmu = nil) then
+    Exit;
+  Dir := GetModulePath + 'logs\receipts\';
+  ForceDirectories(Dir);
+  Inc(FReceiptSeq);
+  Name := Format('%.3d_%s', [FReceiptSeq, SanitizeReceiptName(FCurrentTestName)]);
+  Path := Dir + Name + '.bmp';
+  try
+    FEmu.SaveImage(Path);
+    Debug(Format('Receipt image: %s', [Path]));
+  except
+    on E: Exception do
+      Debug(Format('Receipt image not saved: %s', [E.Message]));
+  end;
+end;
 
+function TDriverContext.WaitPrintedText: string;
+var
+  i, Stable: Integer;
+  Last: string;
+begin
+  Result := '';
+  Last := '';
+  Stable := 0;
+  if Options.UseEmulator then
+  begin
+    if FEmu = nil then
+      raise Exception.Create('FR emulator is not started');
+    for i := 1 to 50 do
+    begin
+      Result := NormalizePrintedText(FEmu.ReadText);
+      if Result = Last then
+      begin
+        Inc(Stable);
+        if (Result <> '') and (Stable >= 3) then
+        begin
+          SaveReceiptSnapshot;
+          Exit;
+        end;
+      end else
+        Stable := 0;
+      Last := Result;
+      Sleep(200);
+    end;
+    Result := NormalizePrintedText(FEmu.ReadText);
+    if Result <> '' then
+      SaveReceiptSnapshot;
+    Exit;
+  end;
+  Sleep(500);
+  Result := NormalizePrintedText(FLines.Text);
+end;
 
+procedure TDriverContext.EnsureShiftOpen;
+begin
+  Check(Driver.GetECRStatus);
+  case Driver.ECRMode of
+    FPTR_MODE_REC:
+    begin
+      Check(Driver.CancelCheck);
+      Check(Driver.WaitForPrinting);
+    end;
+    FPTR_MODE_CLOSED:
+    begin
+      Check(Driver.OpenSession);
+      Check(Driver.WaitForPrinting);
+    end;
+    FPTR_MODE_24OVER:
+    begin
+      Check(Driver.PrintReportWithCleaning);
+      Check(Driver.WaitForPrinting);
+      Check(Driver.OpenSession);
+      Check(Driver.WaitForPrinting);
+    end;
+  end;
+  Check(Driver.GetECRStatus);
+  if Driver.ECRMode <> FPTR_MODE_24NOTOVER then
+    raise Exception.CreateFmt('Need open shift, ECRMode=%d', [Driver.ECRMode]);
+end;
+
+procedure TDriverContext.PrintSimpleSaleReceipt;
+begin
+  PrintSimpleSaleReceipt(1, 1, 6);
+end;
+
+procedure TDriverContext.PrintSimpleSaleReceipt(Department, PaymentIndex: Integer);
+begin
+  PrintSimpleSaleReceipt(Department, PaymentIndex, 6);
+end;
+
+procedure TDriverContext.PrintSimpleSaleReceipt(Department, PaymentIndex, TaxIndex: Integer);
+  function HexUInt(Value: Int64; Size: Integer): string;
+  var
+    i: Integer;
+  begin
+    Result := '';
+    for i := 0 to Size - 1 do
+    begin
+      if Result <> '' then
+        Result := Result + ' ';
+      Result := Result + IntToHex(Byte((Value shr (8 * i)) and $FF), 2);
+    end;
+  end;
+
+  function SendHex(const Hex: string): Integer;
+  begin
+    Driver.BinaryConversion := BINARY_CONVERSION_HEX;
+    Driver.TransferBytes := Hex;
+    Result := Driver.ExchangeBytes;
+    Debug(Format('raw %s -> %d', [Copy(Hex, 1, 24), Result]));
+    Driver.BinaryConversion := BINARY_CONVERSION_NONE;
+  end;
+
+  procedure CheckHex(const Hex: string);
+  begin
+    Check(SendHex(Hex));
+  end;
+
+var
+  TaxRate, Pay: Int64;
+  i, Rc: Integer;
+  Sums, Taxes, Item, CloseCmd: string;
+begin
+  if Department < 1 then
+    Department := 1;
+  if PaymentIndex < 1 then
+    PaymentIndex := 1;
+  if PaymentIndex > 16 then
+    PaymentIndex := 16;
+  if TaxIndex < 1 then
+    TaxIndex := 6;
+
+  EnsureShiftOpen;
+  Driver.BinaryConversion := BINARY_CONVERSION_NONE;
+  Driver.TransferBytes := '';
+  Driver.Password := 30;
+
+  Check(Driver.GetShortECRStatus);
+  if Driver.ECRMode = FPTR_MODE_REC then
+    Driver.SysAdminCancelCheck;
+
+  case TaxIndex of
+    1: TaxRate := $01;
+    2: TaxRate := $02;
+    3: TaxRate := $04;
+    4: TaxRate := $08;
+    5: TaxRate := $10;
+  else
+    TaxRate := $00;
+  end;
+
+  SendHex('8D 1E 00 00 00 00');
+
+  Item := Format(
+    'FF 46 1E 00 00 00 01 %s %s %s %s %s %s 04 01 54 41 42 4C 45 20 54 45 53 54',
+    [HexUInt(1000000, 6),
+     HexUInt(100, 5),
+     HexUInt(100, 5),
+     HexUInt($FFFFFFFFFF, 5),
+     HexUInt(TaxRate, 1),
+     HexUInt(Department, 1)]);
+  CheckHex(Item);
+
+  Sums := '';
+  for i := 1 to 16 do
+  begin
+    if i = PaymentIndex then
+      Pay := 100
+    else
+      Pay := 0;
+    if Sums <> '' then
+      Sums := Sums + ' ';
+    Sums := Sums + HexUInt(Pay, 5);
+  end;
+  Taxes := '';
+  for i := 1 to 6 do
+  begin
+    if Taxes <> '' then
+      Taxes := Taxes + ' ';
+    Taxes := Taxes + HexUInt(0, 5);
+  end;
+  CloseCmd := Format('FF 45 1E 00 00 00 %s 00 %s 01', [Sums, Taxes]);
+  CheckHex(CloseCmd);
+  for i := 1 to 25 do
+  begin
+    Rc := Driver.WaitForPrinting;
+    if Rc <> -34 then
+      Break;
+    Sleep(150);
+  end;
+  if (Rc <> 0) and (Rc <> -34) then
+    Check(Rc);
+end;
 
 end.

@@ -19,7 +19,7 @@ name: "Команда 13h"
 description: "Гудок"
 
 tests:
-  - name: "Команда 13 1E 00 00 00 - ошибок нет"
+  - name: "13h-01: Команда 13 1E 00 00 00 - ошибок нет"
     testtype: command
     command: "13 1E 00 00 00"
     response: "13 00 1E"
@@ -27,13 +27,12 @@ tests:
     ecrmode_before: 4
     ecrmode_after: 4
     
-  - name: "Команда 13 - ошибка 126"
+  - name: "13h-02: Команда 13 - ошибка 126"
     testtype: command
     command: "13"
     resultcode: 126
     
-  - name: "Команда 13 1E 00 00 - ошибка 126"
+  - name: "13h-03: Команда 13 1E 00 00 - ошибка 126"
     testtype: command
     command: "13 1E 00 00"
     resultcode: 126
-

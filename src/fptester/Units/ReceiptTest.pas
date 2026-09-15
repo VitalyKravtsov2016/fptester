@@ -1,4 +1,4 @@
-unit ReceiptTest;
+п»їunit ReceiptTest;
 
 interface
 
@@ -113,7 +113,7 @@ type
     property CashRegs: TModifiedCashRegs read FCashRegs;
   end;
 
-  // Проверка, что чековые регистры обнулены
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
   { TCheckZeroReceiptRegsCommand }
 
@@ -261,7 +261,8 @@ var
   Command: TTestCommand;
 begin
   inherited Load(node);
-  regnode := node.GetValue('commands');
+  if not node.TryGetValue('commands', regnode) then
+    Exit;
   if (not regnode.IsNull)and(regnode.IsSequence) then
   begin
     Sequence := regnode.AsSequence;
@@ -414,7 +415,7 @@ begin
   if node.TryGetValue('update_state', Value) then
     update_state := Value.AsBoolean;
 
-  // Операционные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   regnode := node.GetValue('operation_registers');
   if (not regnode.IsNull)and(regnode.IsSequence) then
   begin
@@ -440,7 +441,7 @@ begin
       end;
     end;
   end;
-  // Денежные регистры
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   regnode := node.GetValue('cash_registers');
   if (not regnode.IsNull)and(regnode.IsSequence) then
   begin
@@ -474,7 +475,7 @@ var
   State2: TFiscalPrinterState;
 begin
   if not Context.GetPrinterState(StateName, State1) then
-    raise Exception.CreateFmt('Состояние "%s" не найдено', [StateName]);
+    raise Exception.CreateFmt('РЎРѕСЃС‚РѕСЏРЅРёРµ "%s" РЅРµ РЅР°Р№РґРµРЅРѕ', [StateName]);
 
   State2 := Context.ReadPrinterState;
   CompareCashRegs(Context, State1.CashRegs, State2.CashRegs);
@@ -517,12 +518,12 @@ begin
     if OperReg1.Number <> OperReg2.Number then
     begin
       Context.Error('Command name: ' + Name);
-      Context.Error('Номера регистров не соответствуют');
-      Context.Error(Format('Операционный регистр: %d, %s', [OperReg1.Number, OperReg1.Name]));
-      Context.Error(Format('Ожидается номер: %d, получен %d', [
+      Context.Error('РќР°Р±РѕСЂС‹ СЂРµРіРёСЃС‚СЂРѕРІ РЅРµ СЃРѕРіР»Р°СЃРѕРІР°РЅС‹');
+      Context.Error(Format('РћРїРµСЂР°С†РёРѕРЅРЅС‹Р№ СЂРµРіРёСЃС‚СЂ: %d, %s', [OperReg1.Number, OperReg1.Name]));
+      Context.Error(Format('РћР¶РёРґР°РµС‚СЃСЏ РЅРѕРјРµСЂ: %d, РїРѕР»СѓС‡РµРЅ %d', [
         OperReg1.Number, OperReg2.Number]));
 
-      raise Exception.CreateFmt('Номера регистров не соответствуют, %d <> %d',[
+      raise Exception.CreateFmt('РќР°Р±РѕСЂС‹ СЂРµРіРёСЃС‚СЂРѕРІ РЅРµ СЃРѕРіР»Р°СЃРѕРІР°РЅС‹, %d <> %d',[
         OperReg1.Number, OperReg2.Number]);
     end;
     if OperReg1.Value <> OperReg2.Value then
@@ -530,8 +531,8 @@ begin
       if not FindOperReg(OperReg1.Number, OperReg) then
       begin
         Context.Error('Command name: ' + Name);
-        Context.Error(Format('Операционный регистр: %d, %s', [OperReg1.Number, OperReg1.Name]));
-        raise Exception.CreateFmt('Значения регистров не равны, %d <> %d',[
+        Context.Error(Format('РћРїРµСЂР°С†РёРѕРЅРЅС‹Р№ СЂРµРіРёСЃС‚СЂ: %d, %s', [OperReg1.Number, OperReg1.Name]));
+        raise Exception.CreateFmt('Р—РЅР°С‡РµРЅРёРµ СЂРµРіРёСЃС‚СЂР° РЅРµ СЃРѕС€Р»РѕСЃСЊ, %d <> %d',[
           OperReg1.Value, OperReg2.Value]);
       end else
       begin
@@ -540,8 +541,8 @@ begin
           if OperReg2.Value <> (OperReg1.Value + OperReg.Delta) then
           begin
             Context.Error('Command name: ' + Name);
-            Context.Error(Format('Операционный регистр: %d, %s', [OperReg1.Number, OperReg1.Name]));
-            raise Exception.CreateFmt('Значения регистров не равны, %d <> %d',[
+            Context.Error(Format('РћРїРµСЂР°С†РёРѕРЅРЅС‹Р№ СЂРµРіРёСЃС‚СЂ: %d, %s', [OperReg1.Number, OperReg1.Name]));
+            raise Exception.CreateFmt('Р—РЅР°С‡РµРЅРёРµ СЂРµРіРёСЃС‚СЂР° РЅРµ СЃРѕС€Р»РѕСЃСЊ, %d <> %d',[
               OperReg2.Value, OperReg1.Value + OperReg.Delta]);
           end;
         end;
@@ -550,8 +551,8 @@ begin
           if OperReg2.Value <> OperReg.Value then
           begin
             Context.Error('Command name: ' + Name);
-            Context.Error(Format('Операционный регистр: %d, %s', [OperReg1.Number, OperReg1.Name]));
-            raise Exception.CreateFmt('Значения регистров не равны, %d <> %d',[
+            Context.Error(Format('РћРїРµСЂР°С†РёРѕРЅРЅС‹Р№ СЂРµРіРёСЃС‚СЂ: %d, %s', [OperReg1.Number, OperReg1.Name]));
+            raise Exception.CreateFmt('Р—РЅР°С‡РµРЅРёРµ СЂРµРіРёСЃС‚СЂР° РЅРµ СЃРѕС€Р»РѕСЃСЊ, %d <> %d',[
               OperReg2.Value, OperReg.Value]);
           end;
         end;
@@ -592,12 +593,12 @@ begin
     if CashReg1.Number <> CashReg2.Number then
     begin
       Context.Error('Command name: ' + Name);
-      Context.Error('Номера регистров не соответствуют');
-      Context.Error(Format('Денежный регистр: %d, %s', [CashReg1.Number, CashReg1.Name]));
-      Context.Error(Format('Ожидается номер: %d, получен %d', [
+      Context.Error('РќР°Р±РѕСЂС‹ СЂРµРіРёСЃС‚СЂРѕРІ РЅРµ СЃРѕРіР»Р°СЃРѕРІР°РЅС‹');
+      Context.Error(Format('Р”РµРЅРµР¶РЅС‹Р№ СЂРµРіРёСЃС‚СЂ: %d, %s', [CashReg1.Number, CashReg1.Name]));
+      Context.Error(Format('РћР¶РёРґР°РµС‚СЃСЏ РЅРѕРјРµСЂ: %d, РїРѕР»СѓС‡РµРЅ %d', [
         CashReg1.Number, CashReg2.Number]));
 
-      raise Exception.CreateFmt('Номера регистров не соответствуют, %d <> %d',[
+      raise Exception.CreateFmt('РќР°Р±РѕСЂС‹ СЂРµРіРёСЃС‚СЂРѕРІ РЅРµ СЃРѕРіР»Р°СЃРѕРІР°РЅС‹, %d <> %d',[
         CashReg1.Number, CashReg2.Number]);
     end;
     if CashReg1.Value <> CashReg2.Value then
@@ -605,8 +606,8 @@ begin
       if not FindCashReg(CashReg1.Number, CashReg) then
       begin
         Context.Error('Command name: ' + Name);
-        Context.Error(Format('Денежный регистр: %d, %s', [CashReg1.Number, CashReg1.Name]));
-        raise Exception.CreateFmt('Значения регистров не равны, %.6f <> %.6f',[
+        Context.Error(Format('Р”РµРЅРµР¶РЅС‹Р№ СЂРµРіРёСЃС‚СЂ: %d, %s', [CashReg1.Number, CashReg1.Name]));
+        raise Exception.CreateFmt('Р—РЅР°С‡РµРЅРёРµ СЂРµРіРёСЃС‚СЂР° РЅРµ СЃРѕС€Р»РѕСЃСЊ, %.6f <> %.6f',[
           CashReg1.Value, CashReg2.Value]);
       end else
       begin
@@ -615,8 +616,8 @@ begin
           if CashReg2.Value <> (CashReg1.Value + CashReg.Delta) then
           begin
             Context.Error('Command name: ' + Name);
-            Context.Error(Format('Денежный регистр: %d, %s', [CashReg1.Number, CashReg1.Name]));
-            raise Exception.CreateFmt('Значения регистров не равны, %.6f <> %.6f',[
+            Context.Error(Format('Р”РµРЅРµР¶РЅС‹Р№ СЂРµРіРёСЃС‚СЂ: %d, %s', [CashReg1.Number, CashReg1.Name]));
+            raise Exception.CreateFmt('Р—РЅР°С‡РµРЅРёРµ СЂРµРіРёСЃС‚СЂР° РЅРµ СЃРѕС€Р»РѕСЃСЊ, %.6f <> %.6f',[
               CashReg2.Value, CashReg1.Value + CashReg.Delta]);
           end;
         end;
@@ -625,8 +626,8 @@ begin
           if CashReg2.Value <> CashReg.Value then
           begin
             Context.Error('Command name: ' + Name);
-            Context.Error(Format('Денежный регистр: %d, %s', [CashReg1.Number, CashReg1.Name]));
-            raise Exception.CreateFmt('Значения регистров не равны, %.6f <> %.6f',[
+            Context.Error(Format('Р”РµРЅРµР¶РЅС‹Р№ СЂРµРіРёСЃС‚СЂ: %d, %s', [CashReg1.Number, CashReg1.Name]));
+            raise Exception.CreateFmt('Р—РЅР°С‡РµРЅРёРµ СЂРµРіРёСЃС‚СЂР° РЅРµ СЃРѕС€Р»РѕСЃСЊ, %.6f <> %.6f',[
               CashReg2.Value, CashReg.Value]);
           end;
         end;
@@ -778,9 +779,9 @@ begin
   begin
     WriteFileData(Context.Options.FilesPath + ErrorFile, Doc2);
 
-    //Logger.Debug('Ожидается документ:' + Doc1);
-    //Logger.Debug('Получен документ:' + Doc2);
-    raise Exception.Create('Текст документов отличается');
+    //Logger.Debug('РћР¶РёРґР°РµРјС‹Р№ РґРѕРєСѓРјРµРЅС‚:' + Doc1);
+    //Logger.Debug('РџРѕР»СѓС‡РµРЅ РґРѕРєСѓРјРµРЅС‚:' + Doc2);
+    raise Exception.Create('РўРµРєСЃС‚ РґРѕРєСѓРјРµРЅС‚Р° РЅРµ СЃРѕРІРїР°Р»');
   end;
 end;
 

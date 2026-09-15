@@ -1,0 +1,28 @@
+﻿name: "Команда 11h"
+description: "Полный запрос состояния ККТ"
+
+tests:
+  - name: "11h-01: Нормальный запрос"
+    testtype: command
+    command: "11 1E 00 00 00"
+    response: ""
+    
+  - name: "11h-02: Неверная длина команды"
+    testtype: command
+    command: "11"
+    resultcode: 126
+
+  - name: "11h-03: Неверная длина команды 2"
+    testtype: command
+    command: "11 1E"
+    resultcode: 126
+   
+  - name: "11h-04: Неверная длина команды 3"
+    testtype: command
+    command: "11 1E 00 00 00 00"
+    resultcode: 126
+    
+  - name: "11h-05: Неверный пароль"
+    testtype: command
+    command: "11 FF FF FF FF"
+    resultcode: 79

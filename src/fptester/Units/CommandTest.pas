@@ -1,10 +1,10 @@
-unit CommandTest;
+п»їunit CommandTest;
 
 interface
 
 uses
   // VCL
-  Windows, SysUtils, System.Generics.Collections,
+  Windows, Classes, SysUtils, System.Generics.Collections,
   // 3'd
   VSoft.YAML,
   // This
@@ -25,11 +25,24 @@ type
     procedure Load(node: IYAMLValue); override;
   end;
 
+  { TCommandsTest }
+
+  TCommandsTest = class(TDriverTest)
+  private
+    FCommands: TStringList;
+  public
+    constructor CreateTest(AContext: TDriverContext); override;
+    destructor Destroy; override;
+    function Execute: TTestResult; override;
+    procedure Load(node: IYAMLValue); override;
+    property Commands: TStringList read FCommands;
+  end;
+
 implementation
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// В expected можно символом X указать байты, которые не проверять
+// пїЅ expected пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ X пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 function CompareResponse(Response, Expected: string): Boolean;
 var
@@ -57,8 +70,12 @@ var
   value : IYAMLValue;
 begin
   inherited Load(node);
-  command := node.GetValue('command').AsString;
-  response := node.GetValue('response').AsString;
+  command := '';
+  if node.TryGetValue('command', value) then
+    command := value.AsString;
+  response := '';
+  if node.TryGetValue('response', value) then
+    response := value.AsString;
 
   baudrate_after := 6;
   if node.TryGetValue('baudrate_after', value) then
@@ -98,28 +115,19 @@ begin
       Result.IsSucceeded := CompareResponse(Driver.TransferBytes, response);
       if not Result.IsSucceeded then
       begin
-        Result.Text := Format('ожидается: %s, получен: %s', [
+        Result.Text := Format('РћР¶РёРґР°РµС‚СЃСЏ: %s, РїРѕР»СѓС‡РµРЅРѕ: %s', [
           Trim(response), Trim(Driver.TransferBytes)]);
         if Options.Verbose then
         begin
-          Context.Error('Ошибка: ответы не совпадают');
-          Context.Error(Format('Ожидается ответ : "%s"', [Trim(response)]));
-          Context.Error(Format('Получен ответ   : "%s"', [Trim(Driver.TransferBytes)]));
+          Context.Error('РћС€РёР±РєР°: РѕС‚РІРµС‚ РЅРµ СЃРѕРІРїР°РґР°РµС‚');
+          Context.Error(Format('РћР¶РёРґР°РµРјС‹Р№ РѕС‚РІРµС‚ : "%s"', [Trim(response)]));
+          Context.Error(Format('РџРѕР»СѓС‡РµРЅ РѕС‚РІРµС‚   : "%s"', [Trim(Driver.TransferBytes)]));
         end;
         Exit;
       end;
 
-      (* !!!
-      if Test.printed_text <> '' then
-      begin
-        Result.IsSucceeded := TextServer.Text = Test.printed_text;
-        if not Result.IsSucceeded then
-        begin
-          Result.Text := Format('ожидается: %s, получен: %s', [
-            Trim(Test.printed_text), Trim(TextServer.Text)]);
-        end;
-      end;
-      *)
+      if printed_text <> '' then
+        Context.CheckTextPrinted(printed_text);
 
       if baudrate_after <> Driver.BaudRate then
       begin
@@ -138,13 +146,13 @@ begin
         Result.IsSucceeded := True;
       end else
       begin
-        Result.Text := Format('ожидается: %d, получен: %d, %s', [
+        Result.Text := Format('РћР¶РёРґР°РµС‚СЃСЏ: %d, РїРѕР»СѓС‡РµРЅРѕ: %d, %s', [
           ResultCode, ResCode, Driver.ResultCodeDescription]);
         if Options.Verbose then
         begin
-          Context.Error('Ошибка: код отшибки не совпадает');
-          Context.Error(Format('Ожидается код ошибки: %d.', [ResultCode]));
-          Context.Error(Format('Получен код ошибки: %d.', [ResCode]));
+          Context.Error('РћС€РёР±РєР°: РєРѕРґ РѕС€РёР±РєРё РЅРµ СЃРѕРІРїР°РґР°РµС‚');
+          Context.Error(Format('РћР¶РёРґР°РµРјС‹Р№ РєРѕРґ РѕС€РёР±РєРё: %d.', [ResultCode]));
+          Context.Error(Format('РџРѕР»СѓС‡РµРЅ РєРѕРґ РѕС€РёР±РєРё: %d.', [ResCode]));
         end;
       end;
     end;
@@ -154,11 +162,84 @@ begin
       Result.Text := E.Message;
       if Options.Verbose then
       begin
-        Context.Debug('Ошибка: ' + E.Message);
+        Context.Debug('РћС€РёР±РєР°: ' + E.Message);
       end;
     end;
   end;
 end;
 
+
+{ TCommandsTest }
+
+constructor TCommandsTest.CreateTest(AContext: TDriverContext);
+begin
+  inherited CreateTest(AContext);
+  FCommands := TStringList.Create;
+end;
+
+destructor TCommandsTest.Destroy;
+begin
+  FCommands.Free;
+  inherited Destroy;
+end;
+
+procedure TCommandsTest.Load(node: IYAMLValue);
+var
+  value: IYAMLValue;
+  seq: IYAMLSequence;
+  i: Integer;
+  Line: string;
+begin
+  inherited Load(node);
+  FCommands.Clear;
+  if node.TryGetValue('commands', value) and value.IsSequence then
+  begin
+    seq := value.AsSequence;
+    for i := 0 to seq.Count - 1 do
+    begin
+      Line := Trim(seq.Items[i].AsString);
+      if Line <> '' then
+        FCommands.Add(Line);
+    end;
+  end;
+end;
+
+function TCommandsTest.Execute: TTestResult;
+var
+  i: Integer;
+  ResCode: Integer;
+  Line: string;
+begin
+  Result.IsSucceeded := False;
+  Result.Text := '';
+  if FCommands.Count = 0 then
+  begin
+    Result.Text := 'commands list is empty';
+    Exit;
+  end;
+  try
+    Driver.BinaryConversion := BINARY_CONVERSION_HEX;
+    for i := 0 to FCommands.Count - 1 do
+    begin
+      Line := FCommands[i];
+      if Options.Verbose then
+        Context.Debug('-> ' + Line);
+      Driver.TransferBytes := Line;
+      ResCode := Driver.ExchangeBytes;
+      if Options.Verbose then
+        Context.Debug(Format('<- %d %s', [ResCode, Driver.TransferBytes]));
+      if ResCode <> 0 then
+      begin
+        Result.Text := Format('command "%s": %d, %s',
+          [Line, ResCode, Driver.ResultCodeDescription]);
+        Exit;
+      end;
+    end;
+    Result.IsSucceeded := True;
+  except
+    on E: Exception do
+      Result.Text := E.Message;
+  end;
+end;
 
 end.

@@ -31,27 +31,27 @@ name: "Команда 1Ah"
 description: "Запрос денежного регистра"
 
 tests:
-  - name: "Команда: 1A, длина команды 1, ошибка 126"
+  - name: "1Ah-01: Команда: 1A, длина команды 1, ошибка 126"
     testtype: command
     command: "1A"
     resultcode: 126    
     
-  - name: "Команда: 1A, длина команды 7, ошибка 126"
+  - name: "1Ah-02: Команда: 1A, длина команды 7, ошибка 126"
     testtype: command
     command: "1A 1E 00 00 00 00 00 01"
     resultcode: 126    
     
-  - name: "Команда: 1A, номер расширенного регистра 0, ошибка 51"
+  - name: "1Ah-03: Команда: 1A, номер расширенного регистра 0, ошибка 51"
     testtype: command
     command: "1A 1E 00 00 00 00 00"
     resultcode: 51    
     
-  - name: "Команда: 1A, номер расширенного регистра 4095, ошибка 51"
+  - name: "1Ah-04: Команда: 1A, номер расширенного регистра 4095, ошибка 51"
     testtype: command
     command: "1A 1E 00 00 00 FF 0F"
     resultcode: 51    
     
-  - name: "Команда: 1A, номер регистра 1, ошибок нет"
+  - name: "1Ah-05: Команда: 1A, номер регистра 1, ошибок нет"
     testtype: command
     command: "1A 1E 00 00 00 01"
     response: "1A 00 1E XX XX XX XX XX XX"
@@ -59,7 +59,7 @@ tests:
     ecrmode_before: 4
     ecrmode_after: 4
     
-  - name: "Команда: 1A, номер регистра 256, ошибок нет"
+  - name: "1Ah-06: Команда: 1A, номер регистра 256, ошибок нет"
     testtype: command
     command: "1A 1E 00 00 00 FF"
     response: "1A 00 1E XX XX XX XX XX XX"
@@ -67,7 +67,7 @@ tests:
     ecrmode_before: 4
     ecrmode_after: 4
     
-  - name: "Команда: 1A, номер регистра 4096, ошибок нет"
+  - name: "1Ah-07: Команда: 1A, номер регистра 4096, ошибок нет"
     testtype: command
     command: "1A 1E 00 00 00 00 10"
     response: "1A 00 1E XX XX XX XX XX XX"
@@ -75,7 +75,7 @@ tests:
     ecrmode_before: 4
     ecrmode_after: 4
     
-  - name: "Команда: 1A, номер регистра 0, ошибок нет"
+  - name: "1Ah-08: Команда: 1A, номер регистра 0, ошибок нет"
     testtype: command
     command: "1A 1E 00 00 00 00"
     response: "1A 00 1E 00 00 00 00 00 00"
@@ -83,11 +83,10 @@ tests:
     ecrmode_before: 4
     ecrmode_after: 4
    
-  - name: "Команда: 1A, номер регистра 0, ошибок нет"
+  - name: "1Ah-09: Команда: 1A, номер регистра 0, ошибок нет"
     testtype: command
     command: "1A 1E 00 00 00 00"
     response: "1A 00 1E 00 00 00 00 00 00"
     resultcode: 00    
     ecrmode_before: 4
     ecrmode_after: 4
-

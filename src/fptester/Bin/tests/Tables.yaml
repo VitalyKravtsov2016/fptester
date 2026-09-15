@@ -1,0 +1,240 @@
+################################################
+#
+#  Проверка полей таблиц по печати чека
+#
+#  Для каждого поля: записать значение командами 1Eh/1Fh,
+#  напечатать чек, прочитать OCR-текст ленты, убедиться что
+#  значение есть. Затем записать другое значение и проверить,
+#  что текст изменился. Исходное значение восстанавливается.
+#
+#  all_table_fields: обход всех таблиц (2Dh/2Eh), запись/чтение
+#  каждого поля. OCR чека — только для полей, которые печатаются
+#  на простом чеке продажи.
+#
+################################################
+
+name: "Таблицы ФР"
+description: "Проверка параметров таблиц по печати чека"
+
+tests:
+  - name: "Таблица 1, ряд 1, поле 1: Номер ККМ в магазине"
+    testtype: table_field
+    table: 1
+    row: 1
+    field: 1
+    field_type: integer
+    pad: 1
+    values: [7, 99]
+    patterns:
+      - "КАССА {value}"
+      - "КАССА №{value}"
+      - "КАССА № {value}"
+      - "КАССА N{value}"
+      - "КАССА N {value}"
+      - "ККМ {value}"
+      - "ККМ:{value}"
+      - "ККМ: {value}"
+      - "#{value}"
+      - "# {value}"
+      - "№{value}"
+      - "№ {value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+
+  - name: "Таблица 1, ряд 1, поле 2: Авт. обнуление денежной наличности"
+    testtype: table_cash_zero
+    table: 1
+    row: 1
+    field: 2
+    register: 241
+    amount: 10.00
+    values: [0, 1]
+    ecrmode_before: 0
+    ecrmode_after: 4
+
+  - name: "Таблица 1, ряд 1, поле 3: Печать рекламного текста"
+    testtype: table_ad_text
+    table: 1
+    row: 1
+    field: 3
+    ad_table: 4
+    ad_rows: [1, 2, 3]
+    ad_text: "ADVTEXT01"
+    values: [0, 1]
+    ecrmode_before: 0
+    ecrmode_after: 2
+
+  - name: "Таблица 1, ряд 1, поле 5: Печать необнуляемой суммы"
+    testtype: table_z_grand_total
+    table: 1
+    row: 1
+    field: 5
+    values: [0, 1]
+    needles:
+      - "НЕОБНУЛ"
+      - "НЕОБНУЛЯЕМ"
+      - "НЕ0БНУЛ"
+      - "НЕОБН"
+      - "НЕО6"
+      - "СУММЫ НА НАЧ"
+    ecrmode_before: 0
+    ecrmode_after: 4
+
+  - name: "Таблица 1, ряд 1, поле 6: Работа с денежным ящиком"
+    testtype: table_drawer
+    table: 1
+    row: 1
+    field: 6
+    values: [0, 1]
+    ecrmode_before: 0
+    ecrmode_after: 2
+
+  - name: "Таблица 1, ряд 1, поле 7: Отрезка чека"
+    testtype: table_cut
+    table: 1
+    row: 1
+    field: 7
+    values: [0, 2]
+    cut_mark: "отрезка чека"
+    ecrmode_before: 0
+    ecrmode_after: 2
+
+  - name: "Таблица 1, ряд 1, поле 8: Печатать дробное в количестве"
+    testtype: table_frac_qty
+    table: 1
+    row: 1
+    field: 8
+    values: [0, 1]
+
+  - name: "Таблица 1, ряд 1, поле 9: Лог. уровень дат. денежного ящика"
+    testtype: table_drawer_level
+    table: 1
+    row: 1
+    field: 9
+    values: [0, 1]
+
+  - name: "Таблица 1, ряд 1, поле 10: Длительность имп. денежного ящика"
+    testtype: table_drawer_pulse
+    table: 1
+    row: 1
+    field: 10
+    values: [10, 80]
+
+  - name: "Таблица 1, ряд 1, поле 11: Длительность паузы денежного ящика"
+    testtype: table_drawer_pulse
+    table: 1
+    row: 1
+    field: 11
+    values: [1, 8]
+
+  - name: "Таблица 1, ряд 1, поле 12: Количество имп. денежного ящика"
+    testtype: table_drawer_pulse
+    table: 1
+    row: 1
+    field: 12
+    values: [1, 3]
+
+  - name: "Таблица 1, ряд 1, поле 13: Использование весовых датчиков"
+    testtype: table_near_end
+    table: 1
+    row: 1
+    field: 13
+    values: [0, 1]
+
+  - name: "Таблица 1, ряд 1, поле 14: Начисление налогов"
+    testtype: table_tax_mode
+    table: 1
+    row: 1
+    field: 14
+    values: [0, 1]
+
+  - name: "Таблица 1, ряд 1, поле 15: Автоматический перевод времени"
+    testtype: table_auto_time
+    table: 1
+    row: 1
+    field: 15
+    values: [0, 1]
+
+  - name: "Таблица 4, ряд 13, поле 1: Текст клише (заголовок чека)"
+    testtype: table_field
+    table: 4
+    row: 13
+    field: 1
+    field_type: string
+    values:
+      - "AAA_HDR_TEST_1"
+      - "BBB_HDR_TEST_2"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+
+  - name: "Таблица 4, ряд 14, поле 1: Текст клише (окончание чека)"
+    testtype: table_field
+    table: 4
+    row: 14
+    field: 1
+    field_type: string
+    values:
+      - "AAA_FTR_TEST_1"
+      - "BBB_FTR_TEST_2"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+
+  - name: "Таблица 5, ряд 2, поле 1: Наименование типа оплаты 2"
+    testtype: table_field
+    table: 5
+    row: 2
+    field: 1
+    field_type: string
+    values:
+      - "PAY_TYPE_A"
+      - "PAY_TYPE_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+
+  - name: "Таблица 7, ряд 1, поле 1: Наименование отдела 1"
+    testtype: table_field
+    table: 7
+    row: 1
+    field: 1
+    field_type: string
+    values:
+      - "OTDEL_TEST_A"
+      - "OTDEL_TEST_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+
+  - name: "Таблица 18, ряд 1, поле 7: Наименование пользователя"
+    testtype: table_field
+    table: 18
+    row: 1
+    field: 7
+    field_type: string
+    values:
+      - "USER_NAME_A"
+      - "USER_NAME_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+
+  - name: "Таблица 18, ряд 1, поле 8: ФИО оператора"
+    testtype: table_field
+    table: 18
+    row: 1
+    field: 8
+    field_type: string
+    values:
+      - "OPERATOR_A"
+      - "OPERATOR_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2

@@ -136,6 +136,7 @@ begin
         vtVariant: Result[i] := VVariant^;
         vtInterface: Result[i]:= Integer(VPointer);
         vtWideString: Result[i]:= WideString(VWideString);
+        vtUnicodeString: Result[i] := UnicodeString(VUnicodeString);
       else
         Result[i] := NULL;
       end;
@@ -185,6 +186,8 @@ end;
 procedure TLogFile.OpenFile;
 var
   FilePath: string;
+  Preamble: TBytes;
+  Count: DWORD;
 begin
   Lock;
   try
@@ -196,7 +199,18 @@ begin
 
       FHandle := CreateFile(PWideChar(FileName), GENERIC_READ or GENERIC_WRITE,
         FILE_SHARE_READ, nil, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-      if Opened then FileSeek(FHandle, 0, 2); // 0 from end
+      if Opened then
+      begin
+        { UTF-8 BOM so editors do not guess CP1251/OEM. }
+        if Windows.GetFileSize(FHandle, nil) = 0 then
+        begin
+          Preamble := TEncoding.UTF8.GetPreamble;
+          if Length(Preamble) > 0 then
+            WriteFile(FHandle, Preamble[0], Length(Preamble), Count, nil);
+        end
+        else
+          FileSeek(FHandle, 0, 2);
+      end;
     end;
   finally
     Unlock;

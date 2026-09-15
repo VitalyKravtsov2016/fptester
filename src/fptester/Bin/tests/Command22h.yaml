@@ -1,0 +1,188 @@
+﻿################################################
+#
+# Программирование даты
+#
+# Код команды: 22h. Длина сообщения: 8 байт.
+#   Пароль системного администратора (4 байта)
+#   Дата (3 байта) ДД-ММ-ГГ
+#
+# Ответ: 22h. Длина сообщения: 2 байта.
+#   Код ошибки (1 байт)
+#
+################################################
+#
+# Команда доступна в состояниях:
+# 2. Открытая смена, 24 часа не кончились
+# 3. Открытая смена, 24 часа кончились
+# 4. Закрытая смена
+# 6. Ожидание подтверждения ввода даты
+# 8. Открытый документ
+#
+# Команда не меняет состояние ФР
+#
+################################################
+
+name: "Команда 22h"
+description: "Программирование даты"
+
+tests:
+  - name: "22h-01: Установка даты 25.12.24 (корректные данные)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18"
+    response: "22 00"
+    ecrmode_before: 4
+    ecrmode_after: 6
+    
+    # Не совпадает дата
+  - name: "22h-02: Установка даты 01.01.00 (минимальные значения)"
+    testtype: command
+    command: "22 1E 00 00 00 01 01 00"
+    resultcode: 124
+    ecrmode_before: 4
+    ecrmode_after: 6
+    
+  - name: "22h-03: Установка даты 31.12.99 (максимальные значения)"
+    testtype: command
+    command: "22 1E 00 00 00 1F 0C 63"
+    response: "22 00"
+    ecrmode_before: 4
+    ecrmode_after: 6
+    
+  - name: "22h-04: Установка даты 29.02.24 (високосный год)"
+    testtype: command
+    command: "22 1E 00 00 00 1D 02 18"
+    resultcode: 124 # Не совпадает дата
+    ecrmode_before: 4
+    ecrmode_after: 6
+    
+  - name: "22h-05: Установка даты 28.02.23 (не високосный, корректная дата)"
+    testtype: command
+    command: "22 1E 00 00 00 1C 02 17"
+    response: "22 00"
+    ecrmode_before: 4
+    ecrmode_after: 6
+    
+  - name: "22h-06: Команда доступна в состоянии 2 (открытая смена)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18"
+    resultcode: 124 # Не совпадает дата
+    ecrmode_before: 2
+    ecrmode_after: 2
+    
+  - name: "22h-08: Команда доступна в состоянии 4 (закрытая смена)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18"
+    response: "22 00"
+    ecrmode_before: 4
+    ecrmode_after: 6
+    
+  - name: "22h-09: Команда доступна в состоянии 6 (ожидание подтверждения ввода даты)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18"
+    resultcode: 124 # Не совпадает дата
+    ecrmode_before: 6
+    ecrmode_after: 6
+    
+  - name: "22h-10: Команда доступна в состоянии 8 (открытый документ)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18"
+    resultcode: 115 
+    ecrmode_before: 8
+    ecrmode_after: 8
+    
+  - name: "22h-11: Команда недоступна в состоянии 1 (выдача данных)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18"
+    ecrmode_before: 1
+    ecrmode_after: 1
+    resultcode: 115
+    
+  - name: "22h-12: Неверная дата: день 32 (превышение допустимого диапазона)"
+    testtype: command
+    command: "22 1E 00 00 00 20 0C 18"
+    resultcode: 51
+    
+  - name: "22h-13: Неверная дата: день FF (некорректное значение)"
+    testtype: command
+    command: "22 1E 00 00 00 FF 0C 18"
+    resultcode: 51
+    
+  - name: "22h-14: Неверная дата: день 0 (меньше минимального)"
+    testtype: command
+    command: "22 1E 00 00 00 00 0C 18"
+    resultcode: 51
+    
+  - name: "22h-15: Неверная дата: месяц 13 (превышение допустимого диапазона)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0D 18"
+    resultcode: 51
+    
+  - name: "22h-16: Неверная дата: месяц FF (некорректное значение)"
+    testtype: command
+    command: "22 1E 00 00 00 19 FF 18"
+    resultcode: 51
+    
+  - name: "22h-17: Неверная дата: месяц 0 (меньше минимального)"
+    testtype: command
+    command: "22 1E 00 00 00 19 00 18"
+    resultcode: 51
+    
+  - name: "22h-18: Неверная дата: год FF (некорректное значение)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C FF"
+    resultcode: 51
+    
+  - name: "22h-19: Неверная дата: 31.04.24 (апрель - 30 дней)"
+    testtype: command
+    command: "22 1E 00 00 00 1F 04 18"
+    resultcode: 51
+    
+  - name: "22h-20: Неверная дата: 30.02.24 (февраль - 29 дней в високосный)"
+    testtype: command
+    command: "22 1E 00 00 00 1E 02 18"
+    resultcode: 51
+    
+  - name: "22h-21: Неверная дата: 29.02.23 (не високосный год)"
+    testtype: command
+    command: "22 1E 00 00 00 1D 02 17"
+    resultcode: 51
+    
+  - name: "22h-22: Неверная дата: 31.09.24 (сентябрь - 30 дней)"
+    testtype: command
+    command: "22 1E 00 00 00 1F 09 18"
+    resultcode: 51
+    
+  - name: "22h-23: Неверная дата: 31.11.24 (ноябрь - 30 дней)"
+    testtype: command
+    command: "22 1E 00 00 00 1F 0B 18"
+    resultcode: 51
+    
+  - name: "22h-24: Неверный пароль (все байты FF)"
+    testtype: command
+    command: "22 FF FF FF FF 19 0C 18"
+    resultcode: 79
+    
+  - name: "22h-25: Неверный пароль (случайное значение)"
+    testtype: command
+    command: "22 12 34 56 78 19 0C 18"
+    resultcode: 79
+    
+  - name: "22h-26: Неверная длина команды (слишком короткая, только код команды)"
+    testtype: command
+    command: "22"
+    resultcode: 126
+    
+  - name: "22h-27: Неверная длина команды (7 байт, не хватает 1 байта)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C"
+    resultcode: 126
+    
+  - name: "22h-28: Неверная длина команды (9 байт, лишний байт)"
+    testtype: command
+    command: "22 1E 00 00 00 19 0C 18 00"
+    resultcode: 126
+    
+  - name: "22h-29: Пустая команда (отсутствуют данные)"
+    testtype: command
+    command: ""
+    resultcode: 126
