@@ -1,0 +1,1320 @@
+################################################
+#
+#  Таблицы 2-7: пароли, текст чека, типы оплаты, налоги, отделы
+#
+################################################
+
+name: "Таблицы 2-7"
+description: "Пароли, клише, оплаты, налоги, отделы"
+
+tests:
+  - name: "Таблица 2, ряд 28, поле 1: Пароль кассира 28"
+    testtype: table_rw
+    table: 2
+    row: 28
+    field: 1
+    field_type: integer
+    values: [28, 128]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 1, поле 1: Пароль кассира 1"
+    testtype: table_rw
+    table: 2
+    row: 1
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 2, поле 1: Пароль кассира 2"
+    testtype: table_rw
+    table: 2
+    row: 2
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 3, поле 1: Пароль кассира 3"
+    testtype: table_rw
+    table: 2
+    row: 3
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 4, поле 1: Пароль кассира 4"
+    testtype: table_rw
+    table: 2
+    row: 4
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 5, поле 1: Пароль кассира 5"
+    testtype: table_rw
+    table: 2
+    row: 5
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 6, поле 1: Пароль кассира 6"
+    testtype: table_rw
+    table: 2
+    row: 6
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 7, поле 1: Пароль кассира 7"
+    testtype: table_rw
+    table: 2
+    row: 7
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 8, поле 1: Пароль кассира 8"
+    testtype: table_rw
+    table: 2
+    row: 8
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 9, поле 1: Пароль кассира 9"
+    testtype: table_rw
+    table: 2
+    row: 9
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 10, поле 1: Пароль кассира 10"
+    testtype: table_rw
+    table: 2
+    row: 10
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 11, поле 1: Пароль кассира 11"
+    testtype: table_rw
+    table: 2
+    row: 11
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 12, поле 1: Пароль кассира 12"
+    testtype: table_rw
+    table: 2
+    row: 12
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 13, поле 1: Пароль кассира 13"
+    testtype: table_rw
+    table: 2
+    row: 13
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 14, поле 1: Пароль кассира 14"
+    testtype: table_rw
+    table: 2
+    row: 14
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 15, поле 1: Пароль кассира 15"
+    testtype: table_rw
+    table: 2
+    row: 15
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 16, поле 1: Пароль кассира 16"
+    testtype: table_rw
+    table: 2
+    row: 16
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 17, поле 1: Пароль кассира 17"
+    testtype: table_rw
+    table: 2
+    row: 17
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 18, поле 1: Пароль кассира 18"
+    testtype: table_rw
+    table: 2
+    row: 18
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 19, поле 1: Пароль кассира 19"
+    testtype: table_rw
+    table: 2
+    row: 19
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 20, поле 1: Пароль кассира 20"
+    testtype: table_rw
+    table: 2
+    row: 20
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 21, поле 1: Пароль кассира 21"
+    testtype: table_rw
+    table: 2
+    row: 21
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 22, поле 1: Пароль кассира 22"
+    testtype: table_rw
+    table: 2
+    row: 22
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 23, поле 1: Пароль кассира 23"
+    testtype: table_rw
+    table: 2
+    row: 23
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 24, поле 1: Пароль кассира 24"
+    testtype: table_rw
+    table: 2
+    row: 24
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 25, поле 1: Пароль кассира 25"
+    testtype: table_rw
+    table: 2
+    row: 25
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 26, поле 1: Пароль кассира 26"
+    testtype: table_rw
+    table: 2
+    row: 26
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 27, поле 1: Пароль кассира 27"
+    testtype: table_rw
+    table: 2
+    row: 27
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 29, поле 1: Пароль администратора"
+    testtype: table_rw
+    table: 2
+    row: 29
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 30, поле 1: Пароль системного администратора"
+    testtype: table_rw
+    table: 2
+    row: 30
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 1, поле 2: Реквизиты кассира 1"
+    testtype: table_rw
+    table: 2
+    row: 1
+    field: 2
+    field_type: string
+    values: ["CASHIER_01A", "CASHIER_01B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 2, поле 2: Реквизиты кассира 2"
+    testtype: table_rw
+    table: 2
+    row: 2
+    field: 2
+    field_type: string
+    values: ["CASHIER_02A", "CASHIER_02B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 3, поле 2: Реквизиты кассира 3"
+    testtype: table_rw
+    table: 2
+    row: 3
+    field: 2
+    field_type: string
+    values: ["CASHIER_03A", "CASHIER_03B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 4, поле 2: Реквизиты кассира 4"
+    testtype: table_rw
+    table: 2
+    row: 4
+    field: 2
+    field_type: string
+    values: ["CASHIER_04A", "CASHIER_04B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 5, поле 2: Реквизиты кассира 5"
+    testtype: table_rw
+    table: 2
+    row: 5
+    field: 2
+    field_type: string
+    values: ["CASHIER_05A", "CASHIER_05B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 6, поле 2: Реквизиты кассира 6"
+    testtype: table_rw
+    table: 2
+    row: 6
+    field: 2
+    field_type: string
+    values: ["CASHIER_06A", "CASHIER_06B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 7, поле 2: Реквизиты кассира 7"
+    testtype: table_rw
+    table: 2
+    row: 7
+    field: 2
+    field_type: string
+    values: ["CASHIER_07A", "CASHIER_07B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 8, поле 2: Реквизиты кассира 8"
+    testtype: table_rw
+    table: 2
+    row: 8
+    field: 2
+    field_type: string
+    values: ["CASHIER_08A", "CASHIER_08B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 9, поле 2: Реквизиты кассира 9"
+    testtype: table_rw
+    table: 2
+    row: 9
+    field: 2
+    field_type: string
+    values: ["CASHIER_09A", "CASHIER_09B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 10, поле 2: Реквизиты кассира 10"
+    testtype: table_rw
+    table: 2
+    row: 10
+    field: 2
+    field_type: string
+    values: ["CASHIER_10A", "CASHIER_10B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 11, поле 2: Реквизиты кассира 11"
+    testtype: table_rw
+    table: 2
+    row: 11
+    field: 2
+    field_type: string
+    values: ["CASHIER_11A", "CASHIER_11B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 12, поле 2: Реквизиты кассира 12"
+    testtype: table_rw
+    table: 2
+    row: 12
+    field: 2
+    field_type: string
+    values: ["CASHIER_12A", "CASHIER_12B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 13, поле 2: Реквизиты кассира 13"
+    testtype: table_rw
+    table: 2
+    row: 13
+    field: 2
+    field_type: string
+    values: ["CASHIER_13A", "CASHIER_13B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 14, поле 2: Реквизиты кассира 14"
+    testtype: table_rw
+    table: 2
+    row: 14
+    field: 2
+    field_type: string
+    values: ["CASHIER_14A", "CASHIER_14B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 15, поле 2: Реквизиты кассира 15"
+    testtype: table_rw
+    table: 2
+    row: 15
+    field: 2
+    field_type: string
+    values: ["CASHIER_15A", "CASHIER_15B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 16, поле 2: Реквизиты кассира 16"
+    testtype: table_rw
+    table: 2
+    row: 16
+    field: 2
+    field_type: string
+    values: ["CASHIER_16A", "CASHIER_16B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 17, поле 2: Реквизиты кассира 17"
+    testtype: table_rw
+    table: 2
+    row: 17
+    field: 2
+    field_type: string
+    values: ["CASHIER_17A", "CASHIER_17B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 18, поле 2: Реквизиты кассира 18"
+    testtype: table_rw
+    table: 2
+    row: 18
+    field: 2
+    field_type: string
+    values: ["CASHIER_18A", "CASHIER_18B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 19, поле 2: Реквизиты кассира 19"
+    testtype: table_rw
+    table: 2
+    row: 19
+    field: 2
+    field_type: string
+    values: ["CASHIER_19A", "CASHIER_19B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 20, поле 2: Реквизиты кассира 20"
+    testtype: table_rw
+    table: 2
+    row: 20
+    field: 2
+    field_type: string
+    values: ["CASHIER_20A", "CASHIER_20B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 21, поле 2: Реквизиты кассира 21"
+    testtype: table_rw
+    table: 2
+    row: 21
+    field: 2
+    field_type: string
+    values: ["CASHIER_21A", "CASHIER_21B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 22, поле 2: Реквизиты кассира 22"
+    testtype: table_rw
+    table: 2
+    row: 22
+    field: 2
+    field_type: string
+    values: ["CASHIER_22A", "CASHIER_22B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 23, поле 2: Реквизиты кассира 23"
+    testtype: table_rw
+    table: 2
+    row: 23
+    field: 2
+    field_type: string
+    values: ["CASHIER_23A", "CASHIER_23B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 24, поле 2: Реквизиты кассира 24"
+    testtype: table_rw
+    table: 2
+    row: 24
+    field: 2
+    field_type: string
+    values: ["CASHIER_24A", "CASHIER_24B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 25, поле 2: Реквизиты кассира 25"
+    testtype: table_rw
+    table: 2
+    row: 25
+    field: 2
+    field_type: string
+    values: ["CASHIER_25A", "CASHIER_25B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 26, поле 2: Реквизиты кассира 26"
+    testtype: table_rw
+    table: 2
+    row: 26
+    field: 2
+    field_type: string
+    values: ["CASHIER_26A", "CASHIER_26B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 27, поле 2: Реквизиты кассира 27"
+    testtype: table_rw
+    table: 2
+    row: 27
+    field: 2
+    field_type: string
+    values: ["CASHIER_27A", "CASHIER_27B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 28, поле 2: Реквизиты кассира 28"
+    testtype: table_rw
+    table: 2
+    row: 28
+    field: 2
+    field_type: string
+    values: ["CASHIER_28A", "CASHIER_28B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 29, поле 2: Реквизиты администратора"
+    testtype: table_rw
+    table: 2
+    row: 29
+    field: 2
+    field_type: string
+    values: ["CASHIER_29A", "CASHIER_29B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 2, ряд 30, поле 2: Реквизиты системного администратора"
+    testtype: table_rw
+    table: 2
+    row: 30
+    field: 2
+    field_type: string
+    values: ["CASHIER_30A", "CASHIER_30B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 3: не используется"
+    testtype: table_rw
+    table: 3
+    row: 1
+    field: 1
+    field_type: integer
+    optional: true
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 1, поле 1: рекламный текст"
+    testtype: table_field
+    table: 4
+    row: 1
+    field: 1
+    field_type: string
+    values:
+      - "T4R01_A"
+      - "T4R01_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 3
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 2, поле 1: рекламный текст"
+    testtype: table_field
+    table: 4
+    row: 2
+    field: 1
+    field_type: string
+    values:
+      - "T4R02_A"
+      - "T4R02_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 3
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 3, поле 1: рекламный текст"
+    testtype: table_field
+    table: 4
+    row: 3
+    field: 1
+    field_type: string
+    values:
+      - "T4R03_A"
+      - "T4R03_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 3
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 4, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 4
+    field: 1
+    field_type: string
+    values:
+      - "T4R04_A"
+      - "T4R04_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 5, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 5
+    field: 1
+    field_type: string
+    values:
+      - "T4R05_A"
+      - "T4R05_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 6, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 6
+    field: 1
+    field_type: string
+    values:
+      - "T4R06_A"
+      - "T4R06_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 7, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 7
+    field: 1
+    field_type: string
+    values:
+      - "T4R07_A"
+      - "T4R07_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 8, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 8
+    field: 1
+    field_type: string
+    values:
+      - "T4R08_A"
+      - "T4R08_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 9, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 9
+    field: 1
+    field_type: string
+    values:
+      - "T4R09_A"
+      - "T4R09_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 10, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 10
+    field: 1
+    field_type: string
+    values:
+      - "T4R10_A"
+      - "T4R10_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 11, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 11
+    field: 1
+    field_type: string
+    values:
+      - "T4R11_A"
+      - "T4R11_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 4, ряд 12, поле 1: клише"
+    testtype: table_field
+    table: 4
+    row: 12
+    field: 1
+    field_type: string
+    values:
+      - "T4R12_A"
+      - "T4R12_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 1, поле 1: Наименование типа оплаты 1 (НАЛИЧНЫМИ, не редактируется)"
+    testtype: table_rw
+    table: 5
+    row: 1
+    field: 1
+    field_type: string
+    readonly: true
+    values: ["CASH_RO_A"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 3, поле 1: Наименование типа оплаты 3"
+    testtype: table_field
+    table: 5
+    row: 3
+    field: 1
+    field_type: string
+    values:
+      - "PAY03_A"
+      - "PAY03_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 4, поле 1: Наименование типа оплаты 4"
+    testtype: table_field
+    table: 5
+    row: 4
+    field: 1
+    field_type: string
+    values:
+      - "PAY04_A"
+      - "PAY04_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 5, поле 1: Наименование расширенная оплата 1"
+    testtype: table_field
+    table: 5
+    row: 5
+    field: 1
+    field_type: string
+    values:
+      - "PAY05_A"
+      - "PAY05_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 6, поле 1: Наименование расширенная оплата 2"
+    testtype: table_field
+    table: 5
+    row: 6
+    field: 1
+    field_type: string
+    values:
+      - "PAY06_A"
+      - "PAY06_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 7, поле 1: Наименование расширенная оплата 3"
+    testtype: table_field
+    table: 5
+    row: 7
+    field: 1
+    field_type: string
+    values:
+      - "PAY07_A"
+      - "PAY07_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 8, поле 1: Наименование расширенная оплата 4"
+    testtype: table_field
+    table: 5
+    row: 8
+    field: 1
+    field_type: string
+    values:
+      - "PAY08_A"
+      - "PAY08_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 9, поле 1: Наименование расширенная оплата 5"
+    testtype: table_field
+    table: 5
+    row: 9
+    field: 1
+    field_type: string
+    values:
+      - "PAY09_A"
+      - "PAY09_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 10, поле 1: Наименование расширенная оплата 6"
+    testtype: table_field
+    table: 5
+    row: 10
+    field: 1
+    field_type: string
+    values:
+      - "PAY10_A"
+      - "PAY10_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 11, поле 1: Наименование расширенная оплата 7"
+    testtype: table_field
+    table: 5
+    row: 11
+    field: 1
+    field_type: string
+    values:
+      - "PAY11_A"
+      - "PAY11_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 12, поле 1: Наименование расширенная оплата 8"
+    testtype: table_field
+    table: 5
+    row: 12
+    field: 1
+    field_type: string
+    values:
+      - "PAY12_A"
+      - "PAY12_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 13, поле 1: Наименование расширенная оплата 9"
+    testtype: table_field
+    table: 5
+    row: 13
+    field: 1
+    field_type: string
+    values:
+      - "PAY13_A"
+      - "PAY13_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 14, поле 1: Наименование расширенная оплата 10"
+    testtype: table_field
+    table: 5
+    row: 14
+    field: 1
+    field_type: string
+    values:
+      - "PAY14_A"
+      - "PAY14_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 15, поле 1: Наименование расширенная оплата 11"
+    testtype: table_field
+    table: 5
+    row: 15
+    field: 1
+    field_type: string
+    values:
+      - "PAY15_A"
+      - "PAY15_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 5, ряд 16, поле 1: Наименование расширенная оплата 12"
+    testtype: table_field
+    table: 5
+    row: 16
+    field: 1
+    field_type: string
+    values:
+      - "PAY16_A"
+      - "PAY16_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 1
+        row: 1
+        field: 35
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 1, поле 1: Величина налога 1"
+    testtype: table_rw
+    table: 6
+    row: 1
+    field: 1
+    field_type: integer
+    close_shift: true
+    accept_readonly: true
+    values: [0, 2000]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 1, поле 2: Название налога 1"
+    testtype: table_rw
+    table: 6
+    row: 1
+    field: 2
+    field_type: string
+    close_shift: true
+    accept_readonly: true
+    values: ["TAX1_NAME_A", "TAX1_NAME_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 2, поле 1: Величина налога 2"
+    testtype: table_rw
+    table: 6
+    row: 2
+    field: 1
+    field_type: integer
+    close_shift: true
+    accept_readonly: true
+    values: [0, 2000]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 2, поле 2: Название налога 2"
+    testtype: table_rw
+    table: 6
+    row: 2
+    field: 2
+    field_type: string
+    close_shift: true
+    accept_readonly: true
+    values: ["TAX2_NAME_A", "TAX2_NAME_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 3, поле 1: Величина налога 3"
+    testtype: table_rw
+    table: 6
+    row: 3
+    field: 1
+    field_type: integer
+    close_shift: true
+    accept_readonly: true
+    values: [0, 2000]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 3, поле 2: Название налога 3"
+    testtype: table_rw
+    table: 6
+    row: 3
+    field: 2
+    field_type: string
+    close_shift: true
+    accept_readonly: true
+    values: ["TAX3_NAME_A", "TAX3_NAME_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 4, поле 1: Величина налога 4"
+    testtype: table_rw
+    table: 6
+    row: 4
+    field: 1
+    field_type: integer
+    close_shift: true
+    accept_readonly: true
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 4, поле 2: Название налога 4"
+    testtype: table_rw
+    table: 6
+    row: 4
+    field: 2
+    field_type: string
+    close_shift: true
+    accept_readonly: true
+    values: ["TAX4_NAME_A", "TAX4_NAME_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 5, поле 1: Величина налога 5"
+    testtype: table_rw
+    table: 6
+    row: 5
+    field: 1
+    field_type: integer
+    close_shift: true
+    accept_readonly: true
+    values: [0, 2000]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 5, поле 2: Название налога 5"
+    testtype: table_rw
+    table: 6
+    row: 5
+    field: 2
+    field_type: string
+    close_shift: true
+    accept_readonly: true
+    values: ["TAX5_NAME_A", "TAX5_NAME_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 6, поле 1: Величина налога 6"
+    testtype: table_rw
+    table: 6
+    row: 6
+    field: 1
+    field_type: integer
+    close_shift: true
+    accept_readonly: true
+    values: [0, 2000]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 6, ряд 6, поле 2: Название налога 6"
+    testtype: table_rw
+    table: 6
+    row: 6
+    field: 2
+    field_type: string
+    close_shift: true
+    accept_readonly: true
+    values: ["TAX6_NAME_A", "TAX6_NAME_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 2, поле 1: Наименование отдела 2"
+    testtype: table_field
+    table: 7
+    row: 2
+    field: 1
+    field_type: string
+    values:
+      - "DEPT02_A"
+      - "DEPT02_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 3, поле 1: Наименование отдела 3"
+    testtype: table_field
+    table: 7
+    row: 3
+    field: 1
+    field_type: string
+    values:
+      - "DEPT03_A"
+      - "DEPT03_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 4, поле 1: Наименование отдела 4"
+    testtype: table_field
+    table: 7
+    row: 4
+    field: 1
+    field_type: string
+    values:
+      - "DEPT04_A"
+      - "DEPT04_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 5, поле 1: Наименование отдела 5"
+    testtype: table_field
+    table: 7
+    row: 5
+    field: 1
+    field_type: string
+    values:
+      - "DEPT05_A"
+      - "DEPT05_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 6, поле 1: Наименование отдела 6"
+    testtype: table_field
+    table: 7
+    row: 6
+    field: 1
+    field_type: string
+    values:
+      - "DEPT06_A"
+      - "DEPT06_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 7, поле 1: Наименование отдела 7"
+    testtype: table_field
+    table: 7
+    row: 7
+    field: 1
+    field_type: string
+    values:
+      - "DEPT07_A"
+      - "DEPT07_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 8, поле 1: Наименование отдела 8"
+    testtype: table_field
+    table: 7
+    row: 8
+    field: 1
+    field_type: string
+    values:
+      - "DEPT08_A"
+      - "DEPT08_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 9, поле 1: Наименование отдела 9"
+    testtype: table_field
+    table: 7
+    row: 9
+    field: 1
+    field_type: string
+    values:
+      - "DEPT09_A"
+      - "DEPT09_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 10, поле 1: Наименование отдела 10"
+    testtype: table_field
+    table: 7
+    row: 10
+    field: 1
+    field_type: string
+    values:
+      - "DEPT10_A"
+      - "DEPT10_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 11, поле 1: Наименование отдела 11"
+    testtype: table_field
+    table: 7
+    row: 11
+    field: 1
+    field_type: string
+    values:
+      - "DEPT11_A"
+      - "DEPT11_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 12, поле 1: Наименование отдела 12"
+    testtype: table_field
+    table: 7
+    row: 12
+    field: 1
+    field_type: string
+    values:
+      - "DEPT12_A"
+      - "DEPT12_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 13, поле 1: Наименование отдела 13"
+    testtype: table_field
+    table: 7
+    row: 13
+    field: 1
+    field_type: string
+    values:
+      - "DEPT13_A"
+      - "DEPT13_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 14, поле 1: Наименование отдела 14"
+    testtype: table_field
+    table: 7
+    row: 14
+    field: 1
+    field_type: string
+    values:
+      - "DEPT14_A"
+      - "DEPT14_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 15, поле 1: Наименование отдела 15"
+    testtype: table_field
+    table: 7
+    row: 15
+    field: 1
+    field_type: string
+    values:
+      - "DEPT15_A"
+      - "DEPT15_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 7, ряд 16, поле 1: Наименование отдела 16"
+    testtype: table_field
+    table: 7
+    row: 16
+    field: 1
+    field_type: string
+    values:
+      - "DEPT16_A"
+      - "DEPT16_B"
+    patterns:
+      - "{value}"
+    ecrmode_before: 2
+    ecrmode_after: 2

@@ -1,0 +1,686 @@
+################################################
+#
+#  Таблицы 14-18: SD, транзакции, сеть, регион, fiscal storage
+#
+################################################
+
+name: "Таблицы 14-18"
+description: "SD-карта, сеть, региональные настройки, ФН"
+
+tests:
+  - name: "Таблица 14, ряд 1, поле 1: Status (только чтение)"
+    testtype: table_rw
+    table: 14
+    row: 1
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 14, ряд 1, поле 2: Sector size (только чтение)"
+    testtype: table_rw
+    table: 14
+    row: 1
+    field: 2
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 14, ряд 1, поле 3: Total sectors (только чтение)"
+    testtype: table_rw
+    table: 14
+    row: 1
+    field: 3
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 14, ряд 1, поле 4: Free sectors (только чтение)"
+    testtype: table_rw
+    table: 14
+    row: 1
+    field: 4
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 14, ряд 1, поле 5: I/o errors (только чтение)"
+    testtype: table_rw
+    table: 14
+    row: 1
+    field: 5
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 14, ряд 1, поле 6: Retry count (только чтение)"
+    testtype: table_rw
+    table: 14
+    row: 1
+    field: 6
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 15, ряд 1, поле 1: Режим передачи (не используется)"
+    testtype: table_rw
+    table: 15
+    row: 1
+    field: 1
+    field_type: integer
+    optional: true
+    values: [0, 1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 15, ряд 1, поле 2: Server ip1 (не используется)"
+    testtype: table_rw
+    table: 15
+    row: 1
+    field: 2
+    field_type: integer
+    optional: true
+    values: [0, 192]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 15, ряд 1, поле 3: Server ip2 (не используется)"
+    testtype: table_rw
+    table: 15
+    row: 1
+    field: 3
+    field_type: integer
+    optional: true
+    values: [0, 168]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 15, ряд 1, поле 4: Server ip3 (не используется)"
+    testtype: table_rw
+    table: 15
+    row: 1
+    field: 4
+    field_type: integer
+    optional: true
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 15, ряд 1, поле 5: Server ip4 (не используется)"
+    testtype: table_rw
+    table: 15
+    row: 1
+    field: 5
+    field_type: integer
+    optional: true
+    values: [0, 10]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 15, ряд 1, поле 6: Server port (не используется)"
+    testtype: table_rw
+    table: 15
+    row: 1
+    field: 6
+    field_type: integer
+    optional: true
+    values: [0, 8080]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 1: Static ip"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 1
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 2: Статус dhcp"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 2
+    field_type: integer
+    readonly: true
+    accept_readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 3: Local ip1"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 3
+    field_type: integer
+    values: [1, 192]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 4: Local ip2"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 4
+    field_type: integer
+    values: [0, 168]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 5: Local ip3"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 5
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 6: Local ip4"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 6
+    field_type: integer
+    values: [1, 10]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 7: Gw1"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 7
+    field_type: integer
+    values: [0, 192]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 8: Gw2"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 8
+    field_type: integer
+    values: [0, 168]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 9: Gw3"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 9
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 10: Gw4"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 10
+    field_type: integer
+    values: [1, 0]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 11: Mask1"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 11
+    field_type: integer
+    values: [0, 255]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 12: Mask2"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 12
+    field_type: integer
+    values: [0, 255]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 13: Mask3"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 13
+    field_type: integer
+    values: [0, 255]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 14: Mask4"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 14
+    field_type: integer
+    values: [0, 255]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 15: Dns1"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 15
+    field_type: integer
+    values: [0, 8]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 16: Dns2"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 16
+    field_type: integer
+    values: [0, 8]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 17: Dns3"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 17
+    field_type: integer
+    values: [0, 8]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 16, ряд 1, поле 18: Dns4"
+    testtype: table_rw
+    table: 16
+    row: 1
+    field: 18
+    field_type: integer
+    values: [1, 8]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 1: Kz бин/иин"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 1
+    field_type: integer
+    optional: true
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 2: Kz требовать открывать смену"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 2
+    field_type: integer
+    optional: true
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 3: Rus режим исчисления скидок"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 3
+    field_type: integer
+    values: [0, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 4: Rus мин разм модуля qr"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 4
+    field_type: integer
+    values: [4, 7]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 5: Rus мин коор ошибок qr"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 5
+    field_type: integer
+    values: [0, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 6: Rus мин размер qr в точках"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 6
+    field_type: integer
+    values: [140, 200]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 7: Rus не печатать документ"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 7
+    field_type: integer
+    values: [0, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 8: Rus ограничить время смены"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 8
+    field_type: integer
+    values: [0, 5]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 9: Rus печатать сквозной номер"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 9
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 10: Rus печатать параметров ОФД в чеках"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 10
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 11: Rus проверять кс инн"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 11
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 12: Rus печать реквизитов пользователя"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 12
+    field_type: integer
+    values: [0, 7]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 14: Rus печать реквизита пользователя"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 14
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 15: Rus печать отмененных документов"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 15
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 16: Печать налога в операции"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 16
+    field_type: integer
+    values: [0, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 17: Rus формат ФД"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 17
+    field_type: integer
+    readonly: true
+    accept_readonly: true
+    values: [0, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 18: Rus компактный заголовок"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 18
+    field_type: integer
+    values: [0, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 21: Rus паттерн сепаратора заголовка"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 21
+    field_type: integer
+    values: [0, 255]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 22: Rus высота сепаратора заголовка"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 22
+    field_type: integer
+    values: [0, 10]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 13: Rus наименование реквизита пользователя"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 13
+    field_type: string
+    values: ["USER_REQ_A", "USER_REQ_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 14 поведение: печать реквизита пользователя"
+    testtype: table_print_flag
+    table: 17
+    row: 1
+    field: 14
+    values: [0, 1]
+    present_when: [1]
+    needles:
+      - "USER_REQ_A"
+    prelude:
+      - table: 17
+        row: 1
+        field: 12
+        value: 7
+      - table: 17
+        row: 1
+        field: 13
+        value: "USER_REQ_A"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 19: Rus название бонуса 1"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 19
+    field_type: string
+    values: ["BONUS_ONE_A", "BONUS_ONE_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 20: Rus название бонуса 2"
+    testtype: table_rw
+    table: 17
+    row: 1
+    field: 20
+    field_type: string
+    values: ["BONUS_TWO_A", "BONUS_TWO_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 7 поведение: не печатать документ"
+    testtype: table_print_flag
+    table: 17
+    row: 1
+    field: 7
+    values: [0, 2]
+    empty_when: [2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 9 поведение: печатать сквозной номер"
+    testtype: table_print_flag
+    table: 17
+    row: 1
+    field: 9
+    values: [0, 1]
+    present_when: [1]
+    needles:
+      - "#000"
+      - "#00"
+      - "N000"
+      - "№"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 17, ряд 1, поле 10 поведение: печать параметров ОФД"
+    testtype: table_print_flag
+    table: 17
+    row: 1
+    field: 10
+    values: [0, 1]
+    present_when: [1]
+    needles:
+      - "ОФД"
+      - "OFD"
+    prelude:
+      - table: 18
+        row: 1
+        field: 10
+        value: "OFD_NAME_A"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 1: Serial number (только чтение)"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 2: Inn (только чтение)"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 2
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 3: Rnm (только чтение)"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 3
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 4: Fs serial number (только чтение)"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 4
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 5: Tax system (только чтение)"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 5
+    field_type: integer
+    readonly: true
+    optional: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 6: Work mode (только чтение)"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 6
+    field_type: integer
+    readonly: true
+    optional: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 9: Adress"
+    testtype: table_field
+    table: 18
+    row: 1
+    field: 9
+    field_type: string
+    values:
+      - "ADDR_TEST_A"
+      - "ADDR_TEST_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 17
+        row: 1
+        field: 12
+        value: 7
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 10: Ofd name"
+    testtype: table_field
+    table: 18
+    row: 1
+    field: 10
+    field_type: string
+    values:
+      - "OFDNAME_A"
+      - "OFDNAME_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 17
+        row: 1
+        field: 10
+        value: 1
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 11: Ofd url"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 11
+    field_type: string
+    values: ["ofd-url-a.ru", "ofd-url-b.ru"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 12: Ofd inn"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 12
+    field_type: string
+    values: ["1111111117", "2222222224"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 13: Tax office url"
+    testtype: table_rw
+    table: 18
+    row: 1
+    field: 13
+    field_type: string
+    values: ["nalog-a.ru", "nalog-b.ru"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 18, ряд 1, поле 14: Место расчета"
+    testtype: table_field
+    table: 18
+    row: 1
+    field: 14
+    field_type: string
+    values:
+      - "PLACE_A"
+      - "PLACE_B"
+    patterns:
+      - "{value}"
+    prelude:
+      - table: 17
+        row: 1
+        field: 12
+        value: 7
+    ecrmode_before: 2
+    ecrmode_after: 2

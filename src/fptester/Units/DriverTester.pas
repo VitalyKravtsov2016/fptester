@@ -218,6 +218,18 @@ begin
           Test := TTableFlagTest.CreateTest(Context);
           TTableFlagTest(Test).Kind := tfAutoTime;
         end
+        else if (testtype = 'table_rw') or (testtype = 'table_read') then
+        begin
+          Test := TTableRwTest.CreateTest(Context);
+        end
+        else if (testtype = 'table_print_flag') or (testtype = 'print_flag') then
+        begin
+          Test := TTablePrintFlagTest.CreateTest(Context);
+        end
+        else if (testtype = 'table_error_flag') or (testtype = 'error_flag') then
+        begin
+          Test := TTableErrorFlagTest.CreateTest(Context);
+        end
         else
         begin
           Unknown := TUnknownTest.CreateTest(Context);

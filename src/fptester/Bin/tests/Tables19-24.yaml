@@ -1,0 +1,489 @@
+################################################
+#
+#  Таблицы 19-24: ОФД, статус обмена, сеть, мониторинг, интернет-техника
+#
+################################################
+
+name: "Таблицы 19-24"
+description: "ОФД, обмен ФН, сеть, мониторинг, встраиваемая техника"
+
+tests:
+  - name: "Таблица 19, ряд 1, поле 1: Сервер ОФД"
+    testtype: table_rw
+    table: 19
+    row: 1
+    field: 1
+    field_type: string
+    values: ["ofd-test-a.example", "ofd-test-b.example"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 19, ряд 1, поле 2: Порт ОФД"
+    testtype: table_rw
+    table: 19
+    row: 1
+    field: 2
+    field_type: integer
+    values: [7777, 8888]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 19, ряд 1, поле 3: Таймаут чтения ответа"
+    testtype: table_rw
+    table: 19
+    row: 1
+    field: 3
+    field_type: integer
+    optional: true
+    values: [0, 1000]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 1: Exchangestate (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 1
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 2: Readstate (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 2
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 3: Nambermessages (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 3
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 4: Namberfirstdocumentqueue (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 4
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 5: Datetimefirstdocumentqueue (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 5
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 6: Last 26h cmd answer code (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 6
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 7: Last ofd answer code (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 7
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 8: Log0 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 8
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 9: Log1 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 9
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 10: Log2 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 10
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 11: Log3 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 11
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 12: Log4 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 12
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 13: Log5 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 13
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 14: Log6 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 14
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 15: Log7 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 15
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 16: Log8 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 16
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 20, ряд 1, поле 17: Log9 (только чтение)"
+    testtype: table_rw
+    table: 20
+    row: 1
+    field: 17
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 1: Режим ррр"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 1
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 2: Режим обмена с офд"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 2
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 3: Запуск tcp-сервера"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 3
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 4: Порт tcp-сервера"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 4
+    field_type: integer
+    values: [7778, 7780]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 5: Наличие Wifi"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 5
+    field_type: integer
+    readonly: true
+    accept_readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 6: Использовать Wifi"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 6
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 7: Wifi ssid"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 7
+    field_type: string
+    values: ["wifi-ssid-a", "wifi-ssid-b"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 8: Wifi passphrase"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 8
+    field_type: string
+    values: ["wifi-pass-a", "wifi-pass-b"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 21, ряд 1, поле 9: Rndis"
+    testtype: table_rw
+    table: 21
+    row: 1
+    field: 9
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 22, ряд 1, поле 1: Static ip"
+    testtype: table_rw
+    table: 22
+    row: 1
+    field: 1
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 22, ряд 1, поле 2: Local ip"
+    testtype: table_rw
+    table: 22
+    row: 1
+    field: 2
+    field_type: string
+    values: ["10.0.0.1", "10.0.0.2"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 22, ряд 1, поле 3: Mask"
+    testtype: table_rw
+    table: 22
+    row: 1
+    field: 3
+    field_type: string
+    values: ["255.255.255.0", "255.255.0.0"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 22, ряд 1, поле 4: Gw"
+    testtype: table_rw
+    table: 22
+    row: 1
+    field: 4
+    field_type: string
+    values: ["10.0.0.1", "10.0.0.254"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 22, ряд 1, поле 5: Dns"
+    testtype: table_rw
+    table: 22
+    row: 1
+    field: 5
+    field_type: string
+    values: ["8.8.8.8", "1.1.1.1"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 1: Работать с сервером скок"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 1
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 2: Работать с сервером моно"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 2
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 3: Период опроса скок"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 3
+    field_type: integer
+    values: [60, 600]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 4: Таймаут моно"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 4
+    field_type: integer
+    values: [60, 600]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 5: Разрешить автообновление"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 5
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 6: Однократное обновление"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 6
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 7: Есть обновление (только чтение)"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 7
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 8: Есть важное обновление (только чтение)"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 8
+    field_type: integer
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 9: Описание обновления 1 (только чтение)"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 9
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 10: Описание обновления 2 (только чтение)"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 10
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 23, ряд 1, поле 11: Uin (только чтение)"
+    testtype: table_rw
+    table: 23
+    row: 1
+    field: 11
+    field_type: string
+    readonly: true
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 24, ряд 1, поле 1: Заводской номер автомата"
+    testtype: table_rw
+    table: 24
+    row: 1
+    field: 1
+    field_type: string
+    values: ["123456789012", "210987654321"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 24, ряд 1, поле 2: Тип принтера"
+    testtype: table_rw
+    table: 24
+    row: 1
+    field: 2
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 24, ряд 1, поле 3: Выброс чеков"
+    testtype: table_rw
+    table: 24
+    row: 1
+    field: 3
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 24, ряд 1, поле 4: Выброс отчетов"
+    testtype: table_rw
+    table: 24
+    row: 1
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 24, ряд 1, поле 5: Длина презентации чека"
+    testtype: table_rw
+    table: 24
+    row: 1
+    field: 5
+    field_type: integer
+    values: [1, 16]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 24, ряд 1, поле 6: Таймаут ретракции"
+    testtype: table_rw
+    table: 24
+    row: 1
+    field: 6
+    field_type: integer
+    values: [0, 10]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 24, ряд 1, поле 7: Делать петлю при печати"
+    testtype: table_rw
+    table: 24
+    row: 1
+    field: 7
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 24, ряд 1, поле 8: Метод печати qr-кода"
+    testtype: table_rw
+    table: 24
+    row: 1
+    field: 8
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
