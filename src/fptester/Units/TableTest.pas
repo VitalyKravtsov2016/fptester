@@ -20,6 +20,8 @@ type
     FValues: TStringList;
     FPatterns: TStringList;
     FRequireReceipt: Boolean;
+    FCloseShift: Boolean;
+    FPrelude: TObjectList<TObject>;
     function FormatShown(const Value: string): string;
     function ReceiptHasValue(const Receipt, Value: string): Boolean;
     procedure CheckReceiptValue(const Receipt, Value, Step: string);
@@ -87,6 +89,73 @@ type
   private
     FSkipTables: TList<Integer>;
     FPrintAll: Boolean;
+  public
+    constructor CreateTest(AContext: TDriverContext); override;
+    destructor Destroy; override;
+    procedure Load(node: IYAMLValue); override;
+    function Execute: TTestResult; override;
+  end;
+
+  { TTableRwTest — write/read (or read-only / unused) of any table field }
+
+  TTableRwTest = class(TDriverTest)
+  private
+    FTable: Integer;
+    FRow: Integer;
+    FField: Integer;
+    FIsString: Boolean;
+    FReadOnly: Boolean;
+    FOptional: Boolean;
+    FCloseShift: Boolean;
+    FAcceptReadonly: Boolean;
+    FValues: TStringList;
+  public
+    constructor CreateTest(AContext: TDriverContext); override;
+    destructor Destroy; override;
+    procedure Load(node: IYAMLValue); override;
+    function Execute: TTestResult; override;
+  end;
+
+  { TTablePrintFlagTest — flag changes what is printed on a receipt / Z-report }
+
+  TTablePrintFlagTest = class(TDriverTest)
+  private
+    FTable: Integer;
+    FRow: Integer;
+    FField: Integer;
+    FDept: Integer;
+    FPay: Integer;
+    FTax: Integer;
+    FZReport: Boolean;
+    FHeaderPos: Boolean;
+    FHeaderTable: Integer;
+    FHeaderRow: Integer;
+    FHeaderText: string;
+    FItemNeedle: string;
+    FEmptyMax: Integer;
+    FValues: TStringList;
+    FPresentWhen: TList<Integer>;
+    FEmptyWhen: TList<Integer>;
+    FNeedles: TStringList;
+    FPrelude: TObjectList<TObject>;
+  public
+    constructor CreateTest(AContext: TDriverContext); override;
+    destructor Destroy; override;
+    procedure Load(node: IYAMLValue); override;
+    function Execute: TTestResult; override;
+  end;
+
+  { TTableErrorFlagTest — flag makes an operation return a protocol error }
+
+  TTableErrorFlagTest = class(TDriverTest)
+  private
+    FTable: Integer;
+    FRow: Integer;
+    FField: Integer;
+    FErrorCode: Integer;
+    FAction: string;
+    FValues: TStringList;
+    FErrorWhen: TList<Integer>;
   public
     constructor CreateTest(AContext: TDriverContext); override;
     destructor Destroy; override;
@@ -416,7 +485,8 @@ begin
     ((Table = 5) and (Field = 1)) or
     ((Table = 6) and (Field = 2)) or
     ((Table = 7) and (Field = 1)) or
-    ((Table = 18) and ((Field = 7) or (Field = 8)));
+    ((Table = 17) and (Field = 13)) or
+    ((Table = 18) and (Field in [7, 8, 9, 10, 11, 12, 13, 14]));
 end;
 
 function SkipFieldName(const FieldName: string): Boolean;
@@ -469,6 +539,96 @@ begin
   Result.Valid := True;
 end;
 
+type
+  TTablePreludeItem = class
+    Table: Integer;
+    Row: Integer;
+    Field: Integer;
+    Value: string;
+    Orig: string;
+    Info: TFieldInfo;
+  end;
+
+procedure LoadIntList(node: IYAMLValue; const Key: string; List: TList<Integer>);
+var
+  value: IYAMLValue;
+  seq: IYAMLSequence;
+  i: Integer;
+begin
+  if not node.TryGetValue(Key, value) then
+    Exit;
+  if not value.IsSequence then
+    Exit;
+  seq := value.AsSequence;
+  List.Clear;
+  for i := 0 to seq.Count - 1 do
+    List.Add(seq.Items[i].AsInteger);
+end;
+
+procedure LoadPrelude(node: IYAMLValue; List: TObjectList<TObject>);
+var
+  value: IYAMLValue;
+  seq: IYAMLSequence;
+  itemNode: IYAMLValue;
+  Item: TTablePreludeItem;
+  i: Integer;
+begin
+  List.Clear;
+  if not node.TryGetValue('prelude', value) then
+    Exit;
+  if not value.IsSequence then
+    Exit;
+  seq := value.AsSequence;
+  for i := 0 to seq.Count - 1 do
+  begin
+    itemNode := seq.Items[i];
+    Item := TTablePreludeItem.Create;
+    Item.Table := itemNode.GetValue('table').AsInteger;
+    Item.Row := 1;
+    if itemNode.TryGetValue('row', value) then
+      Item.Row := value.AsInteger;
+    Item.Field := itemNode.GetValue('field').AsInteger;
+    Item.Value := Trim(itemNode.GetValue('value').AsString);
+    List.Add(Item);
+  end;
+end;
+
+procedure ApplyPrelude(Driver: TDrvFR; List: TObjectList<TObject>);
+var
+  i, Rc: Integer;
+  Item: TTablePreludeItem;
+begin
+  for i := 0 to List.Count - 1 do
+  begin
+    Item := TTablePreludeItem(List[i]);
+    Rc := GetFieldInfo(Driver, Item.Table, Item.Field, Item.Info);
+    if Rc <> 0 then
+      Item.Info := FallbackFieldInfo(False);
+    Item.Orig := ReadFieldValue(Driver, Item.Table, Item.Row, Item.Field, Item.Info);
+    WriteFieldValue(Driver, Item.Table, Item.Row, Item.Field, Item.Info, Item.Value);
+  end;
+end;
+
+procedure RestorePrelude(Driver: TDrvFR; List: TObjectList<TObject>);
+var
+  i: Integer;
+  Item: TTablePreludeItem;
+begin
+  for i := List.Count - 1 downto 0 do
+  begin
+    Item := TTablePreludeItem(List[i]);
+    if Item.Orig = '' then
+      Continue;
+    try
+      WriteFieldValue(Driver, Item.Table, Item.Row, Item.Field, Item.Info, Item.Orig);
+    except
+    end;
+  end;
+end;
+
+procedure WaitPrintDone(Driver: TDrvFR); forward;
+procedure CloseShiftIfOpen(Driver: TDrvFR); forward;
+
 { TTableFieldTest }
 
 constructor TTableFieldTest.CreateTest(AContext: TDriverContext);
@@ -476,17 +636,20 @@ begin
   inherited CreateTest(AContext);
   FValues := TStringList.Create;
   FPatterns := TStringList.Create;
+  FPrelude := TObjectList<TObject>.Create(True);
   FPad := 0;
   FTable := 1;
   FRow := 1;
   FField := 1;
   FRequireReceipt := True;
+  FCloseShift := False;
 end;
 
 destructor TTableFieldTest.Destroy;
 begin
   FValues.Free;
   FPatterns.Free;
+  FPrelude.Free;
   inherited Destroy;
 end;
 
@@ -532,6 +695,11 @@ begin
     for i := 0 to seq.Count - 1 do
       FPatterns.Add(seq.Items[i].AsString);
   end;
+
+  FCloseShift := False;
+  if node.TryGetValue('close_shift', value) then
+    FCloseShift := value.AsBoolean;
+  LoadPrelude(node, FPrelude);
 end;
 
 function TTableFieldTest.FormatShown(const Value: string): string;
@@ -650,12 +818,16 @@ begin
       Info := FallbackFieldInfo(FIsString);
     FIsString := Info.IsString;
 
+    if FCloseShift then
+      CloseShiftIfOpen(Driver);
+
     Orig := ReadFieldValue(Driver, FTable, FRow, FField, Info);
     Context.Debug(Format('Table %d/%d/%d original=%s',
       [FTable, FRow, FField, Orig]));
     Driver.BinaryConversion := BINARY_CONVERSION_NONE;
 
     try
+      ApplyPrelude(Driver, FPrelude);
       Prev := '';
       for i := 0 to FValues.Count - 1 do
       begin
@@ -692,6 +864,7 @@ begin
         Driver.SysAdminCancelCheck;
       except
       end;
+      RestorePrelude(Driver, FPrelude);
       try
         WriteFieldValue(Driver, FTable, FRow, FField, Info, Orig);
       except
@@ -2096,6 +2269,559 @@ begin
   OrigPerm.Free;
   OrigDay.Free;
   OrigMon.Free;
+end;
+
+{ TTableRwTest }
+
+constructor TTableRwTest.CreateTest(AContext: TDriverContext);
+begin
+  inherited CreateTest(AContext);
+  FValues := TStringList.Create;
+  FTable := 1;
+  FRow := 1;
+  FField := 1;
+  FReadOnly := False;
+  FOptional := False;
+  FCloseShift := False;
+  FAcceptReadonly := False;
+end;
+
+destructor TTableRwTest.Destroy;
+begin
+  FValues.Free;
+  inherited Destroy;
+end;
+
+procedure TTableRwTest.Load(node: IYAMLValue);
+var
+  value: IYAMLValue;
+  seq: IYAMLSequence;
+  i: Integer;
+  kind: string;
+begin
+  inherited Load(node);
+  FTable := node.GetValue('table').AsInteger;
+  FRow := 1;
+  if node.TryGetValue('row', value) then
+    FRow := value.AsInteger;
+  FField := node.GetValue('field').AsInteger;
+  FIsString := False;
+  if node.TryGetValue('field_type', value) then
+  begin
+    kind := LowerCase(value.AsString);
+    FIsString := (kind = 'string') or (kind = 'str');
+  end;
+  FReadOnly := False;
+  if node.TryGetValue('readonly', value) then
+    FReadOnly := value.AsBoolean;
+  FOptional := False;
+  if node.TryGetValue('optional', value) then
+    FOptional := value.AsBoolean;
+  FCloseShift := False;
+  if node.TryGetValue('close_shift', value) then
+    FCloseShift := value.AsBoolean;
+  FAcceptReadonly := False;
+  if node.TryGetValue('accept_readonly', value) then
+    FAcceptReadonly := value.AsBoolean;
+  FValues.Clear;
+  if node.TryGetValue('values', value) and value.IsSequence then
+  begin
+    seq := value.AsSequence;
+    for i := 0 to seq.Count - 1 do
+      FValues.Add(Trim(seq.Items[i].AsString));
+  end;
+  if FValues.Count = 0 then
+    FReadOnly := True;
+end;
+
+function TTableRwTest.Execute: TTestResult;
+var
+  Info: TFieldInfo;
+  Tbl: TTableInfo;
+  Orig, ReadBack: string;
+  i, Rc: Integer;
+begin
+  Result.IsSucceeded := False;
+  Result.Text := '';
+  try
+    if FOptional then
+    begin
+      Rc := GetTableInfo(Driver, FTable, Tbl);
+      if (Rc <> 0) or (not Tbl.Valid) then
+      begin
+        Result.IsSucceeded := True;
+        Result.Text := Format('table %d unused (2Dh rc=%d)', [FTable, Rc]);
+        Exit;
+      end;
+      Rc := GetFieldInfo(Driver, FTable, FField, Info);
+      if (Rc <> 0) or (not Info.Valid) then
+      begin
+        Result.IsSucceeded := True;
+        Result.Text := Format('field %d/%d unused (2Eh rc=%d)',
+          [FTable, FField, Rc]);
+        Exit;
+      end;
+    end
+    else
+    begin
+      Rc := GetFieldInfo(Driver, FTable, FField, Info);
+      if Rc <> 0 then
+        Info := FallbackFieldInfo(FIsString);
+    end;
+    FIsString := Info.IsString;
+
+    if FCloseShift then
+      CloseShiftIfOpen(Driver);
+
+    try
+      Orig := ReadFieldValue(Driver, FTable, FRow, FField, Info);
+    except
+      on E: Exception do
+      begin
+        if FOptional then
+        begin
+          Result.IsSucceeded := True;
+          Result.Text := 'optional read skip: ' + E.Message;
+          Exit;
+        end;
+        raise;
+      end;
+    end;
+    Context.Debug(Format('Table %d/%d/%d original=%s readonly=%s optional=%s',
+      [FTable, FRow, FField, Orig, BoolToStr(FReadOnly, True),
+       BoolToStr(FOptional, True)]));
+
+    if FReadOnly then
+    begin
+      Result.IsSucceeded := True;
+      Result.Text := Format('read %s', [Orig]);
+      if FValues.Count > 0 then
+      begin
+        Rc := WriteFieldValueCode(Driver, FTable, FRow, FField, Info, FValues[0]);
+        try
+          WriteFieldValueCode(Driver, FTable, FRow, FField, Info, Orig);
+        except
+        end;
+        if (Rc = 0) and not SameFieldValue(Info,
+          ReadFieldValue(Driver, FTable, FRow, FField, Info), Orig) then
+        try
+          WriteFieldValue(Driver, FTable, FRow, FField, Info, Orig);
+        except
+        end;
+        if (Rc <> 0) and (Rc <> ErrFieldReadOnly) and (Rc <> $C7) then
+          Context.Debug(Format('readonly write rc=%d (expected 122 or 199)', [Rc]));
+      end;
+      Exit;
+    end;
+
+    if FValues.Count < 2 then
+      raise Exception.Create('table_rw needs at least two values');
+
+    try
+      for i := 0 to FValues.Count - 1 do
+      begin
+        if FValues[i] = '' then
+          Continue;
+        Rc := WriteFieldValueCode(Driver, FTable, FRow, FField, Info, FValues[i]);
+        if FOptional and (Rc <> 0) then
+        begin
+          Result.IsSucceeded := True;
+          Result.Text := Format('optional write rc=%d', [Rc]);
+          Exit;
+        end;
+        if (Rc = ErrFieldReadOnly) or (Rc = $C7) then
+        begin
+          if FAcceptReadonly or FOptional then
+          begin
+            Result.IsSucceeded := True;
+            Result.Text := Format('read-only rc=%d value=%s', [Rc, Orig]);
+            Exit;
+          end;
+        end;
+        if Rc <> 0 then
+          raise Exception.CreateFmt('WriteTable %d/%d/%d: %d',
+            [FTable, FRow, FField, Rc]);
+        ReadBack := ReadFieldValue(Driver, FTable, FRow, FField, Info);
+        if not SameFieldValue(Info, ReadBack, FValues[i]) then
+          raise Exception.CreateFmt('wrote %s, read %s',
+            [FValues[i], ReadBack]);
+        Context.Debug(Format('rw %d/%d/%d = %s',
+          [FTable, FRow, FField, ReadBack]));
+      end;
+    finally
+      try
+        WriteFieldValue(Driver, FTable, FRow, FField, Info, Orig);
+      except
+      end;
+    end;
+
+    Result.IsSucceeded := True;
+  except
+    on E: Exception do
+    begin
+      Result.IsSucceeded := False;
+      Result.Text := E.Message;
+    end;
+  end;
+end;
+
+{ TTablePrintFlagTest }
+
+constructor TTablePrintFlagTest.CreateTest(AContext: TDriverContext);
+begin
+  inherited CreateTest(AContext);
+  FValues := TStringList.Create;
+  FPresentWhen := TList<Integer>.Create;
+  FEmptyWhen := TList<Integer>.Create;
+  FNeedles := TStringList.Create;
+  FPrelude := TObjectList<TObject>.Create(True);
+  FTable := 1;
+  FRow := 1;
+  FField := 1;
+  FDept := 1;
+  FPay := 1;
+  FTax := 6;
+  FZReport := False;
+  FHeaderPos := False;
+  FHeaderTable := 4;
+  FHeaderRow := 13;
+  FHeaderText := 'HDRPOS_TEST';
+  FItemNeedle := 'TABLE TEST';
+  FEmptyMax := 40;
+end;
+
+destructor TTablePrintFlagTest.Destroy;
+begin
+  FValues.Free;
+  FPresentWhen.Free;
+  FEmptyWhen.Free;
+  FNeedles.Free;
+  FPrelude.Free;
+  inherited Destroy;
+end;
+
+procedure TTablePrintFlagTest.Load(node: IYAMLValue);
+var
+  value: IYAMLValue;
+  seq: IYAMLSequence;
+  i: Integer;
+  kind: string;
+begin
+  inherited Load(node);
+  if node.TryGetValue('table', value) then
+    FTable := value.AsInteger;
+  if node.TryGetValue('row', value) then
+    FRow := value.AsInteger;
+  if node.TryGetValue('field', value) then
+    FField := value.AsInteger;
+  if node.TryGetValue('department', value) then
+    FDept := value.AsInteger;
+  if node.TryGetValue('payment', value) then
+    FPay := value.AsInteger;
+  if node.TryGetValue('tax', value) then
+    FTax := value.AsInteger;
+  FZReport := False;
+  if node.TryGetValue('report', value) then
+  begin
+    kind := LowerCase(Trim(value.AsString));
+    FZReport := (kind = 'z') or (kind = 'zreport') or (kind = 'z_report');
+  end;
+  FHeaderPos := False;
+  if node.TryGetValue('header_pos', value) then
+    FHeaderPos := value.AsBoolean;
+  if node.TryGetValue('header_table', value) then
+    FHeaderTable := value.AsInteger;
+  if node.TryGetValue('header_row', value) then
+    FHeaderRow := value.AsInteger;
+  if node.TryGetValue('header_text', value) then
+    FHeaderText := Trim(value.AsString);
+  if node.TryGetValue('item_needle', value) then
+    FItemNeedle := Trim(value.AsString);
+  if node.TryGetValue('empty_max', value) then
+    FEmptyMax := value.AsInteger;
+  FValues.Clear;
+  if node.TryGetValue('values', value) and value.IsSequence then
+  begin
+    seq := value.AsSequence;
+    for i := 0 to seq.Count - 1 do
+      FValues.Add(Trim(seq.Items[i].AsString));
+  end;
+  LoadIntList(node, 'present_when', FPresentWhen);
+  LoadIntList(node, 'empty_when', FEmptyWhen);
+  FNeedles.Clear;
+  if node.TryGetValue('needles', value) and value.IsSequence then
+  begin
+    seq := value.AsSequence;
+    for i := 0 to seq.Count - 1 do
+      FNeedles.Add(Trim(seq.Items[i].AsString));
+  end;
+  LoadPrelude(node, FPrelude);
+  if FValues.Count = 0 then
+  begin
+    FValues.Add('0');
+    FValues.Add('1');
+  end;
+end;
+
+function TTablePrintFlagTest.Execute: TTestResult;
+var
+  Info, HdrInfo: TFieldInfo;
+  Orig, Flag, Receipt, OrigHdr, Norm: string;
+  i, v, Rc, HPos, IPos: Integer;
+  OnFlag, EmptyFlag, Found: Boolean;
+begin
+  Result.IsSucceeded := False;
+  Result.Text := '';
+  OrigHdr := '';
+  HdrInfo := Default(TFieldInfo);
+  try
+    Rc := GetFieldInfo(Driver, FTable, FField, Info);
+    if Rc <> 0 then
+      Info := FallbackFieldInfo(False);
+    Orig := ReadFieldValue(Driver, FTable, FRow, FField, Info);
+    Context.Debug(Format('Table %d/%d/%d original=%s print-flag',
+      [FTable, FRow, FField, Orig]));
+
+    if FHeaderPos then
+    begin
+      Rc := GetFieldInfo(Driver, FHeaderTable, 1, HdrInfo);
+      if Rc <> 0 then
+        HdrInfo := FallbackFieldInfo(True);
+      OrigHdr := ReadFieldValue(Driver, FHeaderTable, FHeaderRow, 1, HdrInfo);
+      WriteFieldValue(Driver, FHeaderTable, FHeaderRow, 1, HdrInfo, FHeaderText);
+    end;
+
+    try
+      ApplyPrelude(Driver, FPrelude);
+      for i := 0 to FValues.Count - 1 do
+      begin
+        Flag := FValues[i];
+        v := StrToIntDef(Flag, 0);
+        OnFlag := FPresentWhen.Contains(v);
+        EmptyFlag := FEmptyWhen.Contains(v);
+        WriteFieldValue(Driver, FTable, FRow, FField, Info, Flag);
+        Context.EnsureShiftOpen;
+        WaitPrintDone(Driver);
+        Context.ClearPrintedText;
+        if FZReport then
+        begin
+          Driver.Password := 30;
+          Rc := Driver.PrintReportWithCleaning;
+          if (Rc <> 0) and (Rc <> -34) then
+            Check(Rc);
+          WaitPrintDone(Driver);
+          if Options.UseEmulator and (Context.Emu <> nil) then
+            Receipt := NormalizePrintedText(Context.Emu.ReadText)
+          else
+            Receipt := Context.WaitPrintedText;
+        end
+        else
+        begin
+          Context.PrintSimpleSaleReceipt(FDept, FPay, FTax);
+          WaitPrintDone(Driver);
+          Receipt := Context.WaitPrintedText;
+        end;
+        Context.Debug(Format('flag=%s receipt:%s%s', [Flag, sLineBreak, Receipt]));
+        Norm := FoldOcr(NormalizePrintedText(Receipt));
+
+        if EmptyFlag then
+        begin
+          if Length(Trim(Receipt)) > FEmptyMax then
+            raise Exception.CreateFmt(
+              'flag=%s: document must not be printed (len=%d)',
+              [Flag, Length(Receipt)]);
+          Continue;
+        end;
+
+        if FHeaderPos then
+        begin
+          HPos := Pos(FoldOcr(FHeaderText), Norm);
+          IPos := Pos(FoldOcr(FItemNeedle), Norm);
+          if HPos = 0 then
+            raise Exception.CreateFmt('flag=%s: header "%s" not on receipt',
+              [Flag, FHeaderText]);
+          if IPos = 0 then
+            raise Exception.CreateFmt('flag=%s: item "%s" not on receipt',
+              [Flag, FItemNeedle]);
+          if (v = 0) and (HPos >= IPos) then
+            raise Exception.CreateFmt(
+              'flag=0: header must print before the item (h=%d i=%d)',
+              [HPos, IPos]);
+          if (v <> 0) and (HPos <= IPos) then
+            raise Exception.CreateFmt(
+              'flag=%s: header must print after the item (h=%d i=%d)',
+              [Flag, HPos, IPos]);
+          Continue;
+        end;
+
+        Found := False;
+        for Rc := 0 to FNeedles.Count - 1 do
+          if HasFold(Receipt, FNeedles[Rc]) then
+          begin
+            Found := True;
+            Break;
+          end;
+        if OnFlag and not Found then
+          raise Exception.CreateFmt(
+            'flag=%s: receipt must contain one of the needles', [Flag]);
+        if (not OnFlag) and (FPresentWhen.Count > 0) and Found then
+          raise Exception.CreateFmt(
+            'flag=%s: receipt must not contain the needles', [Flag]);
+      end;
+    finally
+      RestorePrelude(Driver, FPrelude);
+      try
+        WriteFieldValue(Driver, FTable, FRow, FField, Info, Orig);
+      except
+      end;
+      if OrigHdr <> '' then
+      try
+        WriteFieldValue(Driver, FHeaderTable, FHeaderRow, 1, HdrInfo, OrigHdr);
+      except
+      end;
+    end;
+    Result.IsSucceeded := True;
+  except
+    on E: Exception do
+    begin
+      Result.IsSucceeded := False;
+      Result.Text := E.Message;
+    end;
+  end;
+end;
+
+{ TTableErrorFlagTest }
+
+constructor TTableErrorFlagTest.CreateTest(AContext: TDriverContext);
+begin
+  inherited CreateTest(AContext);
+  FValues := TStringList.Create;
+  FErrorWhen := TList<Integer>.Create;
+  FTable := 1;
+  FRow := 1;
+  FField := 23;
+  FErrorCode := 142;
+  FAction := 'zero_check';
+end;
+
+destructor TTableErrorFlagTest.Destroy;
+begin
+  FValues.Free;
+  FErrorWhen.Free;
+  inherited Destroy;
+end;
+
+procedure TTableErrorFlagTest.Load(node: IYAMLValue);
+var
+  value: IYAMLValue;
+  seq: IYAMLSequence;
+  i: Integer;
+begin
+  inherited Load(node);
+  if node.TryGetValue('table', value) then
+    FTable := value.AsInteger;
+  if node.TryGetValue('row', value) then
+    FRow := value.AsInteger;
+  if node.TryGetValue('field', value) then
+    FField := value.AsInteger;
+  if node.TryGetValue('error_code', value) then
+    FErrorCode := value.AsInteger;
+  if node.TryGetValue('action', value) then
+    FAction := LowerCase(Trim(value.AsString));
+  FValues.Clear;
+  if node.TryGetValue('values', value) and value.IsSequence then
+  begin
+    seq := value.AsSequence;
+    for i := 0 to seq.Count - 1 do
+      FValues.Add(Trim(seq.Items[i].AsString));
+  end;
+  LoadIntList(node, 'error_when', FErrorWhen);
+  if FValues.Count = 0 then
+  begin
+    FValues.Add('0');
+    FValues.Add('1');
+  end;
+  if FErrorWhen.Count = 0 then
+    FErrorWhen.Add(1);
+end;
+
+function TTableErrorFlagTest.Execute: TTestResult;
+var
+  Info: TFieldInfo;
+  Orig, Flag: string;
+  i, v, Rc: Integer;
+  Dummy: TBytes;
+  ExpectErr: Boolean;
+begin
+  Result.IsSucceeded := False;
+  Result.Text := '';
+  try
+    Rc := GetFieldInfo(Driver, FTable, FField, Info);
+    if Rc <> 0 then
+      Info := FallbackFieldInfo(False);
+    Orig := ReadFieldValue(Driver, FTable, FRow, FField, Info);
+    try
+      for i := 0 to FValues.Count - 1 do
+      begin
+        Flag := FValues[i];
+        v := StrToIntDef(Flag, 0);
+        ExpectErr := FErrorWhen.Contains(v);
+        WriteFieldValue(Driver, FTable, FRow, FField, Info, Flag);
+        Context.EnsureShiftOpen;
+        WaitPrintDone(Driver);
+        try
+          Driver.SysAdminCancelCheck;
+        except
+        end;
+        WaitPrintDone(Driver);
+
+        if FAction = 'cut_open' then
+        begin
+          ExchangeCmd(Driver, '8D ' + AdminPwdHex + ' 00', Dummy);
+          Rc := ExchangeCmd(Driver, '25 ' + AdminPwdHex + ' 00', Dummy);
+        end
+        else
+        begin
+          ExchangeCmd(Driver, '8D ' + AdminPwdHex + ' 00', Dummy);
+          Rc := CloseSaleRc(Driver, 0, '');
+        end;
+        Context.Debug(Format('action=%s flag=%s rc=%d expect_err=%s',
+          [FAction, Flag, Rc, BoolToStr(ExpectErr, True)]));
+
+        if ExpectErr then
+        begin
+          if Rc <> FErrorCode then
+            raise Exception.CreateFmt(
+              'flag=%s: expected error %d, got %d', [Flag, FErrorCode, Rc]);
+        end
+        else if (Rc <> 0) and (Rc <> 80) and (Rc <> -34) then
+          raise Exception.CreateFmt(
+            'flag=%s: operation must succeed, rc=%d', [Flag, Rc]);
+
+        try
+          Driver.SysAdminCancelCheck;
+        except
+        end;
+        WaitPrintDone(Driver);
+      end;
+    finally
+      try
+        Driver.SysAdminCancelCheck;
+      except
+      end;
+      try
+        WriteFieldValue(Driver, FTable, FRow, FField, Info, Orig);
+      except
+      end;
+    end;
+    Result.IsSucceeded := True;
+  except
+    on E: Exception do
+    begin
+      Result.IsSucceeded := False;
+      Result.Text := E.Message;
+    end;
+  end;
 end;
 
 end.

@@ -1,0 +1,1212 @@
+################################################
+#
+#  Таблицы 8-13: шрифты, формат чека, служебная, QR, веб-ссылка, термопечать
+#
+################################################
+
+name: "Таблицы 8-13"
+description: "Шрифты, формат чека, служебные и QR параметры"
+
+tests:
+  - name: "Таблица 8, ряд 1, поле 1: Текст в чеке"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 1
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 2: Рекламный текст"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 2
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 3: Заголовок чека"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 3
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 4: 1 строка в операции"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 4
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 5: 2 строка в операции"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 5
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 6: 3 строка в операции"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 6
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 7: 1 строка в скидке"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 7
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 8: 2 строка в скидке"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 8
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 9: 1 строка в надбавке"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 9
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 10: 2 строка в надбавке"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 10
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 11: 1 строка в сторно скидки"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 11
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 12: 2 строка в сторно скидки"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 12
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 13: 1 строка в сторно надбавки"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 13
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 14: 2 строка в сторно надбавки"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 14
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 15: Строка в закрытии чека"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 15
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 16: Скидка в закрытии чека"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 16
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 17: Всего в закрытии чека"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 17
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 18: Итог чека"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 18
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 19: Текст в типе оплаты"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 19
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 20: Текст в сдаче"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 20
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 21: Оборот по налогам"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 21
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 8, ряд 1, поле 22: Налоги"
+    testtype: table_rw
+    table: 8
+    row: 1
+    field: 22
+    field_type: integer
+    values: [1, 4]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 1, поле 1: Номер строки (НАИМЕНОВАНИЕ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 1
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 1, поле 2: Смещение в строке (НАИМЕНОВАНИЕ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 1
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 1, поле 3: Размер в символах (НАИМЕНОВАНИЕ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 1
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 1, поле 4: Выравнивание (НАИМЕНОВАНИЕ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 1
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 1, поле 5: Наименование (НАИМЕНОВАНИЕ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 1
+    field: 5
+    field_type: string
+    values: ["FMT01_A", "FMT01_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 2, поле 1: Номер строки (КОЛИЧЕСТВО X ЦЕНУ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 2
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 2, поле 2: Смещение в строке (КОЛИЧЕСТВО X ЦЕНУ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 2
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 2, поле 3: Размер в символах (КОЛИЧЕСТВО X ЦЕНУ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 2
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 2, поле 4: Выравнивание (КОЛИЧЕСТВО X ЦЕНУ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 2
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 2, поле 5: Наименование (КОЛИЧЕСТВО X ЦЕНУ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 2
+    field: 5
+    field_type: string
+    values: ["FMT02_A", "FMT02_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 3, поле 1: Номер строки (СЕКЦИЯ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 3
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 3, поле 2: Смещение в строке (СЕКЦИЯ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 3
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 3, поле 3: Размер в символах (СЕКЦИЯ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 3
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 3, поле 4: Выравнивание (СЕКЦИЯ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 3
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 3, поле 5: Наименование (СЕКЦИЯ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 3
+    field: 5
+    field_type: string
+    values: ["FMT03_A", "FMT03_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 4, поле 1: Номер строки (СТОИМОСТЬ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 4
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 4, поле 2: Смещение в строке (СТОИМОСТЬ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 4
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 4, поле 3: Размер в символах (СТОИМОСТЬ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 4
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 4, поле 4: Выравнивание (СТОИМОСТЬ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 4
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 4, поле 5: Наименование (СТОИМОСТЬ В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 4
+    field: 5
+    field_type: string
+    values: ["FMT04_A", "FMT04_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 5, поле 1: Номер строки (НАДПИСЬ СТОРНО В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 5
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 5, поле 2: Смещение в строке (НАДПИСЬ СТОРНО В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 5
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 5, поле 3: Размер в символах (НАДПИСЬ СТОРНО В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 5
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 5, поле 4: Выравнивание (НАДПИСЬ СТОРНО В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 5
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 5, поле 5: Наименование (НАДПИСЬ СТОРНО В ОПЕРАЦИИ)"
+    testtype: table_rw
+    table: 9
+    row: 5
+    field: 5
+    field_type: string
+    values: ["FMT05_A", "FMT05_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 6, поле 1: Номер строки (ТЕКСТ В СКИДКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 6
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 6, поле 2: Смещение в строке (ТЕКСТ В СКИДКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 6
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 6, поле 3: Размер в символах (ТЕКСТ В СКИДКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 6
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 6, поле 4: Выравнивание (ТЕКСТ В СКИДКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 6
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 6, поле 5: Наименование (ТЕКСТ В СКИДКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 6
+    field: 5
+    field_type: string
+    values: ["FMT06_A", "FMT06_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 7, поле 1: Номер строки (НАДПИСЬ СКИДКА)"
+    testtype: table_rw
+    table: 9
+    row: 7
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 7, поле 2: Смещение в строке (НАДПИСЬ СКИДКА)"
+    testtype: table_rw
+    table: 9
+    row: 7
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 7, поле 3: Размер в символах (НАДПИСЬ СКИДКА)"
+    testtype: table_rw
+    table: 9
+    row: 7
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 7, поле 4: Выравнивание (НАДПИСЬ СКИДКА)"
+    testtype: table_rw
+    table: 9
+    row: 7
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 7, поле 5: Наименование (НАДПИСЬ СКИДКА)"
+    testtype: table_rw
+    table: 9
+    row: 7
+    field: 5
+    field_type: string
+    values: ["FMT07_A", "FMT07_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 8, поле 1: Номер строки (СУММА СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 8
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 8, поле 2: Смещение в строке (СУММА СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 8
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 8, поле 3: Размер в символах (СУММА СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 8
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 8, поле 4: Выравнивание (СУММА СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 8
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 8, поле 5: Наименование (СУММА СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 8
+    field: 5
+    field_type: string
+    values: ["FMT08_A", "FMT08_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 9, поле 1: Номер строки (ТЕКСТ В НАДБАВКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 9
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 9, поле 2: Смещение в строке (ТЕКСТ В НАДБАВКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 9
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 9, поле 3: Размер в символах (ТЕКСТ В НАДБАВКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 9
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 9, поле 4: Выравнивание (ТЕКСТ В НАДБАВКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 9
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 9, поле 5: Наименование (ТЕКСТ В НАДБАВКЕ)"
+    testtype: table_rw
+    table: 9
+    row: 9
+    field: 5
+    field_type: string
+    values: ["FMT09_A", "FMT09_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 10, поле 1: Номер строки (НАДПИСЬ НАДБАВКА)"
+    testtype: table_rw
+    table: 9
+    row: 10
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 10, поле 2: Смещение в строке (НАДПИСЬ НАДБАВКА)"
+    testtype: table_rw
+    table: 9
+    row: 10
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 10, поле 3: Размер в символах (НАДПИСЬ НАДБАВКА)"
+    testtype: table_rw
+    table: 9
+    row: 10
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 10, поле 4: Выравнивание (НАДПИСЬ НАДБАВКА)"
+    testtype: table_rw
+    table: 9
+    row: 10
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 10, поле 5: Наименование (НАДПИСЬ НАДБАВКА)"
+    testtype: table_rw
+    table: 9
+    row: 10
+    field: 5
+    field_type: string
+    values: ["FMT10_A", "FMT10_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 11, поле 1: Номер строки (СУММА НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 11
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 11, поле 2: Смещение в строке (СУММА НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 11
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 11, поле 3: Размер в символах (СУММА НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 11
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 11, поле 4: Выравнивание (СУММА НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 11
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 11, поле 5: Наименование (СУММА НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 11
+    field: 5
+    field_type: string
+    values: ["FMT11_A", "FMT11_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 12, поле 1: Номер строки (ТЕКСТ В СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 12
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 12, поле 2: Смещение в строке (ТЕКСТ В СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 12
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 12, поле 3: Размер в символах (ТЕКСТ В СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 12
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 12, поле 4: Выравнивание (ТЕКСТ В СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 12
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 12, поле 5: Наименование (ТЕКСТ В СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 12
+    field: 5
+    field_type: string
+    values: ["FMT12_A", "FMT12_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 13, поле 1: Номер строки (НАДПИСЬ СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 13
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 13, поле 2: Смещение в строке (НАДПИСЬ СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 13
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 13, поле 3: Размер в символах (НАДПИСЬ СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 13
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 13, поле 4: Выравнивание (НАДПИСЬ СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 13
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 13, поле 5: Наименование (НАДПИСЬ СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 13
+    field: 5
+    field_type: string
+    values: ["FMT13_A", "FMT13_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 14, поле 1: Номер строки (СУММА СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 14
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 14, поле 2: Смещение в строке (СУММА СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 14
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 14, поле 3: Размер в символах (СУММА СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 14
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 14, поле 4: Выравнивание (СУММА СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 14
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 14, поле 5: Наименование (СУММА СТОРНО СКИДКИ)"
+    testtype: table_rw
+    table: 9
+    row: 14
+    field: 5
+    field_type: string
+    values: ["FMT14_A", "FMT14_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 15, поле 1: Номер строки (ТЕКСТ В СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 15
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 15, поле 2: Смещение в строке (ТЕКСТ В СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 15
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 15, поле 3: Размер в символах (ТЕКСТ В СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 15
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 15, поле 4: Выравнивание (ТЕКСТ В СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 15
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 15, поле 5: Наименование (ТЕКСТ В СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 15
+    field: 5
+    field_type: string
+    values: ["FMT15_A", "FMT15_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 16, поле 1: Номер строки (НАДПИСЬ СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 16
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 16, поле 2: Смещение в строке (НАДПИСЬ СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 16
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 16, поле 3: Размер в символах (НАДПИСЬ СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 16
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 16, поле 4: Выравнивание (НАДПИСЬ СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 16
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 16, поле 5: Наименование (НАДПИСЬ СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 16
+    field: 5
+    field_type: string
+    values: ["FMT16_A", "FMT16_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 17, поле 1: Номер строки (СУММА СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 17
+    field: 1
+    field_type: integer
+    values: [1, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 17, поле 2: Смещение в строке (СУММА СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 17
+    field: 2
+    field_type: integer
+    values: [0, 20]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 17, поле 3: Размер в символах (СУММА СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 17
+    field: 3
+    field_type: integer
+    values: [10, 40]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 17, поле 4: Выравнивание (СУММА СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 17
+    field: 4
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 9, ряд 17, поле 5: Наименование (СУММА СТОРНО НАДБАВКИ)"
+    testtype: table_rw
+    table: 9
+    row: 17
+    field: 5
+    field_type: string
+    values: ["FMT17_A", "FMT17_B"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 1: Расстояние от головки до ножа"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 1
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 2: Расстояние от ножа до гребёнки"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 2
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 3: Нижний порог напряжения"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 3
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 4: Верхний порог напряжения"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 4
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 5: Зарезервировано"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 5
+    field_type: integer
+    optional: true
+    accept_readonly: true
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 6: Калибровка ТПГ"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 6
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 7: Ширина печати"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 7
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 8: Интерфейсная плата"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 8
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 10, ряд 1, поле 9: Эмуляция штрих"
+    testtype: table_rw
+    table: 10
+    row: 1
+    field: 9
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 1: Кодировать текст в UTF-8"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 1
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 2: Размер модуля кода рекламного текста"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 2
+    field_type: integer
+    values: [0, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 3: Избыточность кода рекламного текста"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 3
+    field_type: integer
+    values: [0, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 4: Маска кода рекламного текста"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 4
+    field_type: integer
+    values: [0, 8]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 5: Выравнивание кода рекламного текста"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 5
+    field_type: integer
+    values: [0, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 6: Размер модуля кода веб-ссылки"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 6
+    field_type: integer
+    values: [3, 8]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 7: Избыточность кода веб-ссылки"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 7
+    field_type: integer
+    values: [0, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 8: Маска кода веб-ссылки"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 8
+    field_type: integer
+    values: [0, 8]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 11, ряд 1, поле 9: Выравнивание кода веб-ссылки"
+    testtype: table_rw
+    table: 11
+    row: 1
+    field: 9
+    field_type: integer
+    values: [0, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 12, ряд 1, поле 1: Ссылка строка 1"
+    testtype: table_rw
+    table: 12
+    row: 1
+    field: 1
+    field_type: string
+    values: ["https://example.com/a", "https://example.com/b"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 12, ряд 1, поле 2: Ссылка строка 2"
+    testtype: table_rw
+    table: 12
+    row: 1
+    field: 2
+    field_type: string
+    values: ["link-row2-aaaa", "link-row2-bbbb"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 12, ряд 1, поле 3: Ссылка строка 3"
+    testtype: table_rw
+    table: 12
+    row: 1
+    field: 3
+    field_type: string
+    values: ["link-row3-aaaa", "link-row3-bbbb"]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 13, ряд 1, поле 1: Стандартная энергия печати"
+    testtype: table_rw
+    table: 13
+    row: 1
+    field: 1
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 13, ряд 1, поле 2: Температурный коэффициент"
+    testtype: table_rw
+    table: 13
+    row: 1
+    field: 2
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 13, ряд 1, поле 3: Нормализованное сопротивление"
+    testtype: table_rw
+    table: 13
+    row: 1
+    field: 3
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 13, ряд 1, поле 4: Тепловой коэффициент бумаги"
+    testtype: table_rw
+    table: 13
+    row: 1
+    field: 4
+    field_type: integer
+    accept_readonly: true
+    values: [1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2

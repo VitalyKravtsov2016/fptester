@@ -1,0 +1,332 @@
+################################################
+#
+#  Таблица 1 — оставшиеся поля (руководство по настройке ККТ)
+#  Поля 1-3, 5-15 уже покрыты Tables.yaml.
+#
+################################################
+
+name: "Таблица 1 остальные поля"
+description: "Поля таблицы 1, не покрытые Tables.yaml"
+
+tests:
+  - name: "Таблица 1, ряд 1, поле 4: Не используется"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 4
+    field_type: integer
+    optional: true
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 16: Печать налогов"
+    testtype: table_print_flag
+    table: 1
+    row: 1
+    field: 16
+    values: [0, 1]
+    present_when: [1]
+    needles:
+      - "НДС"
+      - "HDC"
+      - "20%"
+    tax: 1
+    prelude:
+      - table: 1
+        row: 1
+        field: 14
+        value: 0
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 17: Печать заголовка чека"
+    testtype: table_print_flag
+    table: 1
+    row: 1
+    field: 17
+    values: [0, 1]
+    header_pos: true
+    header_text: "HDRPOS_TEST"
+    item_needle: "TABLE TEST"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 18: Печать единичного количества"
+    testtype: table_print_flag
+    table: 1
+    row: 1
+    field: 18
+    values: [0, 1]
+    present_when: [1]
+    needles:
+      - "1.000"
+      - "1,000"
+      - "1.OOO"
+    prelude:
+      - table: 1
+        row: 1
+        field: 8
+        value: 0
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 19: Сохранять строки в буфере чека"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 19
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 20: Печать чека по закрытию"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 20
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 21: Промотка ленты перед отрезкой чека"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 21
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 22: Отрезка при открытом чеке"
+    testtype: table_error_flag
+    table: 1
+    row: 1
+    field: 22
+    action: cut_open
+    error_code: 74
+    values: [0, 1]
+    error_when: [0]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 23: Запрет нулевого чека"
+    testtype: table_error_flag
+    table: 1
+    row: 1
+    field: 23
+    action: zero_check
+    error_code: 142
+    values: [0, 1]
+    error_when: [1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 24: Отступ в строке типов оплаты"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 24
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 25: Использование форматирования в чеке"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 25
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 26: Обнуление счетчика чеков"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 26
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 27: Контроль времени"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 27
+    field_type: integer
+    values: [0, 7]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 28: Отключение звука при ошибках"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 28
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 29: Межстрочный интервал"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 29
+    field_type: integer
+    values: [0, 10]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 30: Не используется"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 30
+    field_type: integer
+    optional: true
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 31: Сжатие шрифта на чековой ленте"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 31
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 32: Разгон при печати"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 32
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 33: Коррекция яркости"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 33
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 34: Яркость печати"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 34
+    field_type: integer
+    values: [0, 3]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 35: Печать типов оплаты"
+    testtype: table_print_flag
+    table: 1
+    row: 1
+    field: 35
+    values: [0, 1]
+    present_when: [1]
+    needles:
+      - "PAY_TYPE_A"
+      - "PAY TYPE A"
+      - "PAY_TYPE"
+    payment: 2
+    prelude:
+      - table: 5
+        row: 2
+        field: 1
+        value: "PAY_TYPE_A"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 36: Положение ККТ (принтера)"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 36
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 37: Печать РНМ"
+    testtype: table_print_flag
+    table: 1
+    row: 1
+    field: 37
+    values: [0, 1]
+    present_when: [1]
+    needles:
+      - "РНМ"
+      - "PHM"
+      - "PHM "
+      - "RNM"
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 38: Укороченное клише"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 38
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 39: Печать клише после завершения документа"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 39
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 40: Скорость печати"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 40
+    field_type: integer
+    values: [0, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 41: Кодирование реквизитов чека"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 41
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 42: Кодирование ссылки"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 42
+    field_type: integer
+    values: [0, 1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 43: Автопечать журнала"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 43
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 44: Ведение журнала"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 44
+    field_type: integer
+    values: [0, 1, 2]
+    ecrmode_before: 2
+    ecrmode_after: 2
+  - name: "Таблица 1, ряд 1, поле 45: Режим низкого потребления"
+    testtype: table_rw
+    table: 1
+    row: 1
+    field: 45
+    field_type: integer
+    values: [0, 1]
+    ecrmode_before: 2
+    ecrmode_after: 2
